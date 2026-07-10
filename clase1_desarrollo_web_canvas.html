@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clase 1 — Introducción al Desarrollo Web</title>
+<link rel="stylesheet" href="canvas_shared.css">
+</head>
+<body>
+
+<div class="canvas">
+  <div class="sidebar">
+    <div class="sidebar-top">
+      <div class="sidebar-badge">Semana 1</div>
+      <div class="sidebar-title">Clase 1 — Introducción al desarrollo web</div>
+      <div class="sidebar-sub">1 hora · 10 clases en total</div>
+    </div>
+    <div class="nav">
+      <div class="nav-label">Contenido</div>
+      <div class="nav-item active" onclick="show('bienvenida',this)"><div class="nav-dot"></div>Bienvenida<span class="time-badge">5 min</span></div>
+      <div class="nav-item" onclick="show('arquitectura',this)"><div class="nav-dot"></div>Arquitectura web<span class="time-badge">10 min</span></div>
+      <div class="nav-item" onclick="show('stack',this)"><div class="nav-dot"></div>Stack tecnológico<span class="time-badge">10 min</span></div>
+      <div class="nav-item" onclick="show('instalacion',this)"><div class="nav-dot"></div>Instalación<span class="time-badge">20 min</span></div>
+      <div class="nav-item" onclick="show('interprete',this)"><div class="nav-dot"></div>Práctica en Python<span class="time-badge">25 min</span></div>
+      <div class="nav-item" onclick="show('cierre',this)"><div class="nav-dot"></div>Actividad de cierre<span class="time-badge">15 min</span></div>
+      <div class="nav-label">Referencia</div>
+      <div class="nav-item" onclick="show('troubleshooting',this)"><div class="nav-dot"></div>Troubleshooting</div>
+      <div class="nav-item" onclick="show('recursos',this)"><div class="nav-dot"></div>Recursos</div>
+    </div>
+    <div class="sidebar-home-link" style="margin-top:auto;padding:12px 16px;border-top:0.5px solid var(--color-border-tertiary);">
+      <a href="index.html" style="font-size:12px;color:var(--color-text-info);text-decoration:none;font-weight:500;">← Volver al índice</a>
+    </div>
+  </div>
+
+  <div class="main">
+
+    <!-- BIENVENIDA -->
+    <div id="bienvenida" class="section active">
+      <div class="section-header">
+        <div class="section-tag">Apertura · 5 min</div>
+        <div class="section-title">Bienvenida y presentación del curso</div>
+        <div class="section-desc">Contexto general del programa, presentación del equipo y del proyecto que vamos a construir juntos.</div>
+      </div>
+      <div class="card">
+        <div class="card-title">¿De qué trata este curso?</div>
+        <div class="card-body">A lo largo de 2 semanas y 10 clases vamos a construir, desde cero, un sistema de gestión de turnos y trámites para una repartición gubernamental. Al final, ese sistema va a tener backend, base de datos, y una interfaz para el ciudadano.<br><br>No se necesita experiencia previa. Sí se necesita curiosidad, disposición para equivocarse y ganas de construir cosas que funcionen.</div>
+      </div>
+      
+      <div class="card">
+        <div class="card-title">Proyecto integrador: sistema de turnos</div>
+        <div class="card-body">Como hilo conductor vamos a desarrollar un sistema similar al que usan ANSES, AFIP o cualquier municipio para atender al ciudadano. Al final del curso va a incluir:</div>
+        <div style="margin-top:12px">
+          <span class="pill pill-info">Backend Django</span>
+          <span class="pill pill-info">Base de datos PostgreSQL</span>
+          <span class="pill pill-success">API REST</span>
+          <span class="pill pill-success">Frontend con templates + JavaScript</span>
+          <span class="pill pill-warn">Panel de administración</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ARQUITECTURA -->
+    <div id="arquitectura" class="section">
+      <div class="section-header">
+        <div class="section-tag">Conceptos · 10 min</div>
+        <div class="section-title">Arquitectura de una aplicación web</div>
+        <div class="section-desc">Cuando un ciudadano accede a Argentina.gob.ar o solicita un turno en PAMI, hay tres capas de tecnología trabajando en simultáneo.</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Esquema de arquitectura web</div>
+        <img
+          src="images/arquitectura_web.png"
+          alt="Diagrama de arquitectura de una aplicación web"
+          style="display:block; width:100%; height:auto; border-radius:10px; margin-top:12px;"
+        >
+      </div>
+      <div class="grid-2">
+        <div class="layer-card">
+          <div class="layer-icon" style="background:var(--color-background-success)">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="2" width="14" height="10" rx="2" stroke="var(--color-text-success)" stroke-width="1.2"/><path d="M5 14h6" stroke="var(--color-text-success)" stroke-width="1.2" stroke-linecap="round"/></svg>
+          </div>
+          <div class="layer-name">Frontend</div>
+          <div class="layer-tech">HTML · CSS · JavaScript</div>
+          <div class="layer-desc">Lo que el ciudadano ve e interactúa. Formularios, botones, pantallas. Corre en el navegador o la app del usuario.</div>
+          <div class="layer-example">Ej: El formulario de solicitud de turno en Mi Argentina. Alguien programó cada campo, el botón y el mensaje de confirmación.</div>
+        </div>
+        <div class="layer-card">
+          <div class="layer-icon" style="background:var(--color-background-info)">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="2" stroke="var(--color-text-info)" stroke-width="1.2"/><path d="M5 8h6M8 5v6" stroke="var(--color-text-info)" stroke-width="1.2" stroke-linecap="round"/></svg>
+          </div>
+          <div class="layer-name">Backend</div>
+          <div class="layer-tech">Python · Django</div>
+          <div class="layer-desc">El servidor: recibe solicitudes, aplica reglas de negocio, valida datos, consulta la base de datos y devuelve respuestas.</div>
+          <div class="layer-example">Ej: Cuando AFIP valida si una declaración tiene errores antes de aceptarla. Nadie lo ve, pero sin esto nada funciona.</div>
+        </div>
+        <div class="layer-card">
+          <div class="layer-icon" style="background:var(--color-background-warning)">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><ellipse cx="8" cy="5" rx="6" ry="2.5" stroke="var(--color-text-warning)" stroke-width="1.2"/><path d="M2 5v6c0 1.38 2.69 2.5 6 2.5s6-1.12 6-2.5V5" stroke="var(--color-text-warning)" stroke-width="1.2"/></svg>
+          </div>
+          <div class="layer-name">Base de datos</div>
+          <div class="layer-tech">PostgreSQL</div>
+          <div class="layer-desc">Guarda toda la información de forma persistente: ciudadanos, trámites, turnos, documentos, historial.</div>
+          <div class="layer-example">Ej: El padrón electoral, el SUBE, el Registro Civil. En su núcleo son bases de datos con aplicaciones encima.</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">¿Cómo fluye una petición? — Ejemplo: turno en PAMI</div>
+        <div class="flow">
+          <div class="flow-step">
+            <div class="flow-left"><div class="flow-num">1</div><div class="flow-line"></div></div>
+            <div class="flow-content"><div class="flow-title">El ciudadano toca "Pedir turno"</div><div class="flow-text">El frontend captura la acción. El ciudadano ve un spinner o mensaje de carga.</div></div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-left"><div class="flow-num">2</div><div class="flow-line"></div></div>
+            <div class="flow-content"><div class="flow-title">El frontend envía una solicitud HTTP</div><div class="flow-text">"CUIL 20-12345678-3 quiere un turno para el martes." Esto viaja por internet hasta el servidor.</div></div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-left"><div class="flow-num">3</div><div class="flow-line"></div></div>
+            <div class="flow-content"><div class="flow-title">El backend procesa la solicitud</div><div class="flow-text">Verifica credenciales, controla cobertura activa, busca disponibilidad horaria. Aplica las reglas del sistema.</div></div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-left"><div class="flow-num">4</div><div class="flow-line"></div></div>
+            <div class="flow-content"><div class="flow-title">Guarda en la base de datos</div><div class="flow-text">El turno queda registrado con fecha, hora, médico asignado y estado "confirmado".</div></div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-left"><div class="flow-num">5</div></div>
+            <div class="flow-content"><div class="flow-title">El frontend muestra la confirmación</div><div class="flow-text">"Tu turno es el martes 15 a las 10:30 en sede Palermo." Todo esto ocurre en menos de un segundo.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STACK -->
+    <div id="stack" class="section">
+      <div class="section-header">
+        <div class="section-tag">Tecnología · 10 min</div>
+        <div class="section-title">Stack tecnológico del curso</div>
+        <div class="section-desc">Por qué elegimos estas herramientas y no otras.</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Python</div>
+        <div class="card-body">Python es un lenguaje de programación de propósito general:</div>
+        <ul style="margin:8px 0 12px 20px; color:var(--color-text-secondary); font-size:14px; line-height:1.55">
+          <li>Permite crear scripts.</li>
+          <li>Permite automatizar tareas.</li>
+          <li>Permite construir APIs.</li>
+          <li>Permite desarrollar aplicaciones web.</li>
+          <li>Permite analizar datos.</li>
+        </ul>
+        <div class="card-body">Se destaca por su sintaxis clara y cercana al lenguaje humano, por eso es ideal para comenzar a programar sin perder potencia profesional. <br>
+          Además, es un <strong>lenguaje dinámico</strong>: no tenés que declarar el tipo de dato de cada variable por adelantado, porque Python lo infiere en tiempo de ejecución.<br><br>Uno de los lenguajes más usados en el Estado y en la industria. Ya se usa en ARSAT, el Ministerio de Modernización y múltiples agencias que procesan datos públicos.</div>
+        <div class="tip"><strong>¿Por qué es importante aprenderlo?</strong> Porque con Python podés resolver problemas reales rápidamente: desde validar trámites y procesar archivos masivos hasta construir servicios web escalables. Además, te abre salida laboral en backend, automatización, análisis de datos y machine learning.</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Django</div>
+        <div class="card-body">El framework web de Python más maduro. Viene con panel de administración, gestión de usuarios, ORM para la base de datos y seguridad incorporada. No hay que reinventar la rueda. Muchos sistemas de gestión interna del Estado hispanohablante están construidos sobre Django.</div>
+      </div>
+      <div class="grid-2">
+        <div class="card" style="margin-bottom:0">
+          <div class="card-title">React</div>
+          <div class="card-body" style="font-size:13px">Librería de JavaScript para construir interfaces. Permite crear componentes reutilizables y actualizar solo las partes de la pantalla que cambian.</div>
+        </div>
+        <div class="card" style="margin-bottom:0">
+          <div class="card-title">JavaScript en el navegador</div>
+          <div class="card-body" style="font-size:13px">Lenguaje que aporta interactividad: validaciones de formularios, manejo de eventos y actualización dinámica del contenido sin recargar la página.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- INSTALACION -->
+    <div id="instalacion" class="section">
+      <div class="section-header">
+        <div class="section-tag">Setup · 20 min</div>
+        <div class="section-title">Instalación del entorno de desarrollo</div>
+        <div class="section-desc">Instalar todo lo necesario para trabajar. Al final de esta sección todos deben poder ejecutar <code>python3 --version</code> en la terminal.</div>
+      </div>
+      <div class="card">
+        <div class="install-row">
+          <div class="install-icon">Py</div>
+          <div style="flex:1">
+            <div class="install-name">Python 3.11+</div>
+            <div class="install-desc">Lenguaje principal del curso. Verificar que sea versión 3 y no Python 2.</div>
+            <div class="install-desc">Sitio oficial: <a href="https://www.python.org" target="_blank">python.org</a></div>
+            
+            <div class="install-cmds">
+              <div class="os-row"><span class="os-label">Windows</span><span class="install-cmd">Descargar de python.org — marcar "Add Python to PATH"</span></div>
+              <div class="os-row"><span class="os-label">Mac</span><span class="install-cmd">brew install python3</span></div>
+              <div class="os-row"><span class="os-label">Linux</span><span class="install-cmd">sudo apt install python3 python3-pip</span></div>
+              <div class="os-row"><span class="os-label">Verificar</span><span class="install-cmd">python3 --version</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="install-row">
+          <div class="install-icon">VS</div>
+          <div style="flex:1">
+            <div class="install-name">Visual Studio Code</div>
+            <div class="install-desc">Editor de código gratuito con excelente soporte para Python. Instalar también la extensión oficial de Python (Microsoft).</div>
+            <div class="install-desc">Sitio oficial: <a href="https://code.visualstudio.com" target="_blank">visualstudio.com</a></div>
+
+            <div class="install-cmds">
+              <div class="os-row"><span class="os-label">Instalar</span><span class="install-cmd">code.visualstudio.com → extensión "Python" de Microsoft</span></div>
+              <div class="os-row"><span class="os-label">Verificar</span><span class="install-cmd">code --version</span></div>
+            </div>
+          </div>
+        </div>        
+        <div class="install-row">
+          <div class="install-icon">N</div>
+          <div style="flex:1">
+            <div class="install-name">Node.js (LTS)</div>
+            <div class="install-desc">Necesario para trabajar JavaScript moderno, herramientas de frontend y ejercicios prácticos en las semanas 6–7. Conviene instalarlo ahora.</div>
+            <div class="install-cmds">
+              <div class="os-row"><span class="os-label">Instalar</span><span class="install-cmd">nodejs.org → versión LTS</span></div>
+              <div class="os-row"><span class="os-label">Verificar</span><span class="install-cmd">node --version && npm --version</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+
+    <!-- INTERPRETE -->
+    <div id="interprete" class="section">
+      <div class="section-header">
+        <div class="section-tag">Práctica guiada · 25 min</div>
+        <div class="section-title">Práctica en el intérprete de Python</div>
+        <div class="section-desc">Abrir la terminal y ejecutar <code>python3</code>. El símbolo <code>>>></code> indica que Python espera instrucciones. Todos los ejercicios se hacen en vivo, replicando lo que muestra el instructor.</div>
+      </div>
+
+      <div class="card">
+        <div class="ex-header"><div class="ex-num">1</div><div class="ex-title">Imprimir texto</div></div>
+        <div class="code-block"><span class="kw">>>></span> <span class="kw">print</span>(<span class="string">"Bienvenido al sistema de turnos de ANSES"</span>)
+Bienvenido al sistema de turnos de ANSES
+
+<span class="kw">>>></span> <span class="kw">print</span>(<span class="string">"Número de expediente: EXP-2024-00123"</span>)
+Número de expediente: EXP-2024-00123</div>
+        <div class="card-body" style="font-size:13px">El texto siempre va entre comillas. Probarlo con el nombre propio: <code>print("Hola, soy [nombre] y trabajo en [organismo]")</code></div>
+      </div>
+
+      <div class="card">
+        <div class="ex-header"><div class="ex-num">2</div><div class="ex-title">Operaciones matemáticas</div></div>
+        <div class="code-block"><span class="kw">>>></span> 47 * 250
+11750
+<span class="comment"># Trámites por año (47/día × 250 días hábiles)</span>
+
+<span class="kw">>>></span> 100 / 4
+25.0
+<span class="comment"># El .0 indica que el resultado es decimal</span></div>
+        <div class="tip">Ejercicio: calcular cuántos trámites procesa una oficina en un año si atiende 47 por día durante 250 días hábiles.</div>
+      </div>
+
+      <div class="card">
+        <div class="ex-header"><div class="ex-num">3</div><div class="ex-title">Leer errores (importante)</div></div>
+        <div class="card-body" style="font-size:13px;margin-bottom:10px">Los errores son parte del trabajo diario. Vamos a cometerlos a propósito para aprender a leerlos.</div>
+        <div class="code-block"><span class="kw">>>></span> print(<span class="string">"Turno confirmado"</span>
+SyntaxError: '(' was never closed
+<span class="comment"># Falta el paréntesis de cierre</span>
+
+<span class="kw">>>></span> 10 / 0
+ZeroDivisionError: division by zero
+
+<span class="kw">>>></span> print(turno)
+NameError: name 'turno' is not defined
+<span class="comment"># No se puede usar algo que no se definió antes</span></div>
+        <div class="tip">Regla práctica: ir directo a la última línea del error. Ahí está el tipo y la descripción. Es toda la información que se necesita para solucionarlo.</div>
+      </div>
+
+      <div class="card">
+        <div class="ex-header"><div class="ex-num">4</div><div class="ex-title">Variables y f-strings</div></div>
+        <div class="code-block"><span class="kw">>>></span> nombre = <span class="string">"Juan Pérez"</span>
+<span class="kw">>>></span> dni = 28456789
+<span class="kw">>>></span> <span class="kw">print</span>(<span class="string">f"Ciudadano: {nombre} — DNI: {dni}"</span>)
+Ciudadano: Juan Pérez — DNI: 28456789</div>
+        <div class="warn"><code>print("DNI: " + dni)</code> da TypeError — Python no mezcla texto y números. Usar f-strings o <code>str(dni)</code>.</div>
+      </div>
+
+      <div class="card">
+        <div class="ex-header"><div class="ex-num">5</div><div class="ex-title">Cálculo con contexto real</div></div>
+        <div class="card-body" style="font-size:13px;margin-bottom:10px">Un agente de AFIP calcula el monto de una multa con recargo:</div>
+        <div class="code-block"><span class="kw">>>></span> deuda_original = 85000
+<span class="kw">>>></span> tasa_recargo = 0.15
+<span class="kw">>>></span> recargo = deuda_original * tasa_recargo
+<span class="kw">>>></span> total = deuda_original + recargo
+<span class="kw">>>></span> <span class="kw">print</span>(<span class="string">f"Deuda: ${deuda_original}"</span>)
+<span class="kw">>>></span> <span class="kw">print</span>(<span class="string">f"Recargo 15%: ${recargo}"</span>)
+<span class="kw">>>></span> <span class="kw">print</span>(<span class="string">f"Total: ${total}"</span>)
+<span class="output">Deuda: $85000
+Recargo 15%: $12750.0
+Total: $97750.0</span></div>
+        <div class="card-body" style="font-size:13px;margin-top:10px">Nombres descriptivos, cálculos explícitos, salida legible — esos tres hábitos diferencian código profesional.</div>
+      </div>
+    </div>
+
+    <!-- CIERRE -->
+    <div id="cierre" class="section">
+      <div class="section-header">
+        <div class="section-tag">Actividad · 15 min</div>
+        <div class="section-title">Primer programa en un archivo real</div>
+        <div class="section-desc">El intérprete interactivo es para explorar. Los programas reales viven en archivos. Vamos a crear el primero.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Paso 1 — Crear la carpeta del proyecto</div>
+        <div class="code-block">mkdir sistema-turnos
+cd sistema-turnos
+code .</div>
+        <div class="card-body" style="font-size:13px;margin-top:8px">Esta carpeta va a contener todo el trabajo del curso. El comando <code>code .</code> abre VS Code en la carpeta actual.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Paso 2 — Crear <code>bienvenida.py</code> y escribir el programa</div>
+        <div class="tip">Tipear el código en lugar de copiarlo. Ese hábito acelera el aprendizaje en las primeras semanas.</div>
+        <div class="code-block"><span class="comment"># Sistema de Gestión de Turnos - Módulo de Bienvenida
+# Proyecto del curso de Desarrollo Web - Semana 1</span>
+
+organismo = <span class="string">"Administración Nacional de la Seguridad Social"</span>
+sigla = <span class="string">"ANSES"</span>
+version = <span class="string">"1.0"</span>
+
+<span class="kw">print</span>(<span class="string">"=" * 50</span>)
+<span class="kw">print</span>(<span class="string">f"  {sigla} - Sistema de Atención al Ciudadano"</span>)
+<span class="kw">print</span>(<span class="string">f"  Versión {version}"</span>)
+<span class="kw">print</span>(<span class="string">"=" * 50</span>)
+<span class="kw">print</span>()
+<span class="kw">print</span>(<span class="string">f"Organismo: {organismo}"</span>)
+<span class="kw">print</span>(<span class="string">"Estado del sistema: operativo"</span>)
+<span class="kw">print</span>(<span class="string">"Turnos disponibles hoy: 48"</span>)
+<span class="kw">print</span>()
+<span class="kw">print</span>(<span class="string">"Para continuar, comuníquese con el administrador."</span>)
+<span class="kw">print</span>(<span class="string">"=" * 50</span>)</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Paso 3 — Ejecutar</div>
+        <div class="code-block">python3 bienvenida.py</div>
+        <div class="code-block" style="margin-top:8px"><span class="output">==================================================
+  ANSES - Sistema de Atención al Ciudadano
+  Versión 1.0
+==================================================
+
+Organismo: Administración Nacional de la Seguridad Social
+Estado del sistema: operativo
+Turnos disponibles hoy: 48
+
+Para continuar, comuníquese con el administrador.
+==================================================</span></div>
+      </div>
+
+      
+    </div>
+
+    <!-- TROUBLESHOOTING -->
+    <div id="troubleshooting" class="section">
+      <div class="section-header">
+        <div class="section-tag">Referencia</div>
+        <div class="section-title">Troubleshooting de instalación</div>
+        <div class="section-desc">Problemas frecuentes en la primera clase y cómo resolverlos.</div>
+      </div>
+      <div class="card">
+        <div class="trouble-item">
+          <div class="trouble-q">"Python no se reconoce como comando interno" (Windows)</div>
+          <div class="trouble-a">Durante la instalación no se marcó "Add Python to PATH". Desinstalar y volver a instalar marcando esa opción. Alternativa: buscar "Editar variables de entorno del sistema" y agregar la ruta de Python manualmente.</div>
+        </div>
+        <div class="divider"></div>
+        <div class="trouble-item">
+          <div class="trouble-q">"Tengo Python 2 en lugar de Python 3"</div>
+          <div class="trouble-a">En Mac y Linux el comando <code>python</code> puede apuntar a Python 2. Siempre usar <code>python3</code> durante el curso. Verificar con <code>python3 --version</code>.</div>
+        </div>
+        <div class="divider"></div>
+        <div class="trouble-item">
+          <div class="trouble-q">"VS Code no encuentra Python al ejecutar el archivo"</div>
+          <div class="trouble-a">En la esquina inferior derecha de VS Code aparece el intérprete seleccionado. Hacer clic y elegir la versión Python 3 instalada.</div>
+        </div>
+        <div class="divider"></div>
+        <div class="trouble-item">
+          <div class="trouble-q">"El comando <code>code .</code> no funciona"</div>
+          <div class="trouble-a">Abrir VS Code → Ver → Paleta de comandos (Ctrl+Shift+P) → escribir "Shell Command" → seleccionar "Install 'code' command in PATH". Abrir terminal nueva e intentar de nuevo.</div>
+        </div>
+        
+        </div>
+      </div>
+    </div>
+
+    <!-- RECURSOS -->
+    <div id="recursos" class="section">
+      <div class="section-header">
+        <div class="section-tag">Referencia</div>
+        <div class="section-title">Recursos adicionales</div>
+        <div class="section-desc">Documentación oficial y materiales de consulta para profundizar entre clases.</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Para esta semana</div>
+        <div class="install-row">
+          <div style="flex:1">
+            <div class="install-name">Documentación oficial de Python (español)</div>
+            <div class="install-desc">Tutorial completo paso a paso, ideal para repasar entre clases.</div>
+            <div class="install-cmd">docs.python.org/es/3/tutorial</div>
+          </div>
+        </div>
+        <div class="install-row">
+          <div style="flex:1">
+            <div class="install-name">Portal de datos abiertos del Estado argentino</div>
+            <div class="install-desc">Ver APIs gubernamentales reales que siguen el mismo modelo que vamos a construir.</div>
+            <div class="install-cmd">datos.gob.ar</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Para cuando lleguemos a Django y React</div>
+        <div class="install-row">
+          <div style="flex:1">
+            <div class="install-name">Documentación de Django</div>
+            <div class="install-cmd">docs.djangoproject.com</div>
+          </div>
+        </div>
+        <div class="install-row">
+          <div style="flex:1">
+            <div class="install-name">MDN Web Docs — JavaScript</div>
+            <div class="install-cmd">developer.mozilla.org/es/docs/Web/JavaScript</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Para la próxima clase</div>
+        <div class="card-body">Tener Python, VS Code y Git instalados y funcionando. Si surge algún problema con la instalación, anotarlo para resolverlo al inicio de la Clase 2. La Clase 2 arranca directamente con variables, tipos de datos y operaciones básicas.</div>
+        <div style="margin-top:12px">
+          <span class="pill pill-success">python3 --version ✓</span>
+          <span class="pill pill-success">git --version ✓</span>
+          <span class="pill pill-success">code --version ✓</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+function show(id, el) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  el.classList.add('active');
+  document.querySelector('.main').scrollTop = 0;
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clase 2 — Variables, tipos de datos y operaciones básicas</title>
+<link rel="stylesheet" href="canvas_shared.css">
+<style>
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
+.type-card{border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:16px;background:var(--color-background-primary)}
+.type-icon{width:36px;height:36px;border-radius:var(--border-radius-md);display:flex;align-items:center;justify-content:center;margin-bottom:12px;font-size:15px;font-weight:600;font-family:var(--font-mono)}
+.type-name{font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:4px}
+.type-keyword{font-size:11px;color:var(--color-text-tertiary);font-family:var(--font-mono);margin-bottom:8px}
+.type-desc{font-size:13px;color:var(--color-text-secondary);line-height:1.6}
+.type-example{font-size:12px;color:var(--color-text-info);background:var(--color-background-info);padding:6px 10px;border-radius:var(--border-radius-md);margin-top:10px;line-height:1.5;font-family:var(--font-mono)}
+.code-block .num{color:var(--color-text-warning)}
+.code-block .fn{color:var(--color-text-danger)}
+.pill-danger{background:var(--color-background-danger);color:var(--color-text-danger)}
+.danger{border-left:2px solid var(--color-border-danger);border-radius:0;background:var(--color-background-danger);padding:12px 14px;margin:12px 0;font-size:13px;color:var(--color-text-danger);line-height:1.6}
+.ref-row{display:flex;align-items:flex-start;gap:12px;padding:14px 0;border-bottom:0.5px solid var(--color-border-tertiary)}
+.ref-row:last-child{border-bottom:none}
+.ref-icon{width:32px;height:32px;border-radius:var(--border-radius-md);background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:12px;font-weight:600;font-family:var(--font-mono);color:var(--color-text-tertiary)}
+.ref-name{font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:2px}
+.ref-desc{font-size:12px;color:var(--color-text-secondary);line-height:1.5;margin-bottom:6px}
+.ref-tag{font-family:var(--font-mono);font-size:11px;color:var(--color-text-secondary);background:var(--color-background-secondary);padding:3px 8px;border-radius:4px;display:inline-block}
+.ops-table{width:100%;border-collapse:collapse;font-size:13px;margin:12px 0}
+.ops-table th{text-align:left;font-size:11px;color:var(--color-text-tertiary);letter-spacing:.5px;text-transform:uppercase;padding:8px 12px;border-bottom:0.5px solid var(--color-border-tertiary);font-weight:500}
+.ops-table td{padding:8px 12px;border-bottom:0.5px solid var(--color-border-tertiary);color:var(--color-text-secondary);line-height:1.5}
+.ops-table tr:last-child td{border-bottom:none}
+.ops-table td:first-child{font-family:var(--font-mono);font-size:13px;color:var(--color-text-primary);font-weight:500}
+.ops-table td:nth-child(2){color:var(--color-text-tertiary);font-family:var(--font-mono);font-size:12px}
+.checklist{list-style:none;display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.checklist li{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:var(--color-text-secondary);line-height:1.5}
+.check-icon{width:18px;height:18px;border-radius:50%;background:var(--color-background-success);color:var(--color-text-success);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;font-size:10px}
+.compare-row{display:flex;gap:12px;margin-bottom:12px}
+.compare-col{flex:1;background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:12px}
+.compare-label{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--color-text-tertiary);margin-bottom:6px}
+.compare-code{font-family:var(--font-mono);font-size:12px;color:var(--color-text-primary);line-height:1.7}
+</style>
+</head>
+<body>
+
+<h2 class="sr-only">Material completo de la Clase 2: Variables, tipos de datos y operaciones básicas en Python</h2>
+
+<div class="canvas">
+  <div class="sidebar">
+    <div class="sidebar-top">
+      <div class="sidebar-badge">Semana 1 · Clase 2</div>
+      <div class="sidebar-title">Variables, tipos de datos y operaciones básicas</div>
+      <div class="sidebar-sub">1 hora · Python desde cero</div>
+    </div>
+    <div class="nav">
+      <div class="nav-label">Contenido</div>
+      <div class="nav-item active" onclick="show('repaso',this)"><div class="nav-dot"></div>Repaso clase 1<span class="time-badge">5 min</span></div>
+      <div class="nav-item" onclick="show('variables',this)"><div class="nav-dot"></div>Variables<span class="time-badge">20 min</span></div>
+      <div class="nav-item" onclick="show('tipos',this)"><div class="nav-dot"></div>Tipos de datos<span class="time-badge">25 min</span></div>
+      <div class="nav-item" onclick="show('float_finanzas',this)"><div class="nav-dot"></div>Float en finanzas<span class="time-badge">15 min</span></div>
+      <div class="nav-item" onclick="show('operaciones',this)"><div class="nav-dot"></div>Operaciones<span class="time-badge">20 min</span></div>
+      <div class="nav-item" onclick="show('conversion',this)"><div class="nav-dot"></div>Conversión de tipos<span class="time-badge">15 min</span></div>
+      <div class="nav-item" onclick="show('practica',this)"><div class="nav-dot"></div>Práctica guiada<span class="time-badge">25 min</span></div>
+      <div class="nav-item" onclick="show('cierre',this)"><div class="nav-dot"></div>Actividad de cierre<span class="time-badge">15 min</span></div>
+      <div class="nav-label">Referencia</div>
+      <div class="nav-item" onclick="show('errores',this)"><div class="nav-dot"></div>Errores frecuentes</div>
+      <div class="nav-item" onclick="show('recursos',this)"><div class="nav-dot"></div>Recursos</div>
+    </div>
+    <div class="sidebar-home-link" style="margin-top:auto;padding:12px 16px;border-top:0.5px solid var(--color-border-tertiary);">
+      <a href="index.html" style="font-size:12px;color:var(--color-text-info);text-decoration:none;font-weight:500;">← Volver al índice</a>
+    </div>
+  </div>
+
+  <div class="main">
+
+    <!-- REPASO -->
+    <div id="repaso" class="section active">
+      <div class="section-header">
+        <div class="section-tag">Apertura · 5 min</div>
+        <div class="section-title">Repaso de la clase anterior</div>
+        <div class="section-desc">Verificación rápida del entorno y revisión de lo trabajado en la Clase 1 antes de avanzar.</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Verificación del entorno — todos deben poder hacer esto</div>
+        <div class="code-block"><span class="comment"># En la terminal:</span>
+python3 --version
+<span class="output">Python 3.11.x  ✓</span>
+
+<span class="comment"># Abrir el intérprete interactivo:</span>
+python3
+<span class="output">>>>  ✓  (Python espera instrucciones)</span></div>
+        <div class="warn">Si no funciona python3, resolver ahora. El material de hoy depende de tener el entorno operativo. Ver sección "Troubleshooting" de la Clase 1.</div>
+      </div>
+      <div class="card">
+        <div class="card-title">¿Qué construimos en la Clase 1?</div>
+        <div class="card-body">Creamos la carpeta <code style="font-family:var(--font-mono);font-size:13px;background:var(--color-background-secondary);padding:1px 5px;border-radius:4px">sistema-turnos/</code> y el archivo <code style="font-family:var(--font-mono);font-size:13px;background:var(--color-background-secondary);padding:1px 5px;border-radius:4px">bienvenida.py</code> que imprimía los datos del organismo. Hoy ese mismo archivo va a crecer: vamos a agregarle lógica real usando variables y tipos de datos.</div>
+        <div class="code-block"><span class="comment"># Lo que ya tenemos (bienvenida.py)</span>
+organismo = <span class="string">"Administración Nacional de la Seguridad Social"</span>
+sigla = <span class="string">"ANSES"</span>
+version = <span class="string">"1.0"</span>
+<span class="kw">print</span>(<span class="string">f"  {sigla} - Sistema de Atención al Ciudadano"</span>)
+<span class="comment"># Hoy vamos a entender qué son exactamente esas tres primeras líneas.</span></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Estructura de la clase de hoy</div>
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-time">Bloque 1</div>
+            <div class="tl-label">Variables y nombres</div>
+            <div class="progress-bar"><div class="progress-fill" style="width:100%"></div></div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-time">Bloque 2</div>
+            <div class="tl-label">Tipos de datos</div>
+            <div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-time">Bloque 3</div>
+            <div class="tl-label">Operaciones</div>
+            <div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-time">Bloque 4</div>
+            <div class="tl-label">Ejercicio integrador</div>
+            <div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VARIABLES -->
+    <div id="variables" class="section">
+      <div class="section-header">
+        <div class="section-tag">Conceptos · 20 min</div>
+        <div class="section-title">Variables</div>
+        <div class="section-desc">Una variable es un nombre que apunta a un valor guardado en memoria. Es la herramienta más básica de la programación: sin variables, no hay programa.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">¿Qué es una variable?</div>
+        <div class="card-body">Cuando ANSES registra un turno, necesita recordar el nombre del ciudadano, su CUIL, la fecha y la dependencia. Esos datos tienen que vivir en algún lado mientras el programa corre. Las variables son los cajones donde los guardamos.</div>
+        <div class="code-block"><span class="comment"># Definir una variable: nombre = valor</span>
+nombre_ciudadano = <span class="string">"María González"</span>
+cuil = <span class="string">"27-34567890-1"</span>
+turno_numero = <span class="num">1042</span>
+turno_disponible = <span class="kw">True</span>
+
+<span class="comment"># Usar las variables</span>
+<span class="kw">print</span>(<span class="string">f"Turno #{turno_numero} — {nombre_ciudadano}"</span>)
+<span class="output">Turno #1042 — María González</span></div>
+        <div class="tip">La variable no es el dato: es el nombre con el que Python lo recuerda. Es como la etiqueta de una carpeta en el archivo.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Reglas para nombrar variables</div>
+        <div class="card-body" style="margin-bottom:14px">Python tiene reglas estrictas. Violarlas produce errores de sintaxis antes de que el programa corra.</div>
+        <div class="compare-row">
+          <div class="compare-col" style="border-color:var(--color-border-success)">
+            <div class="compare-label" style="color:var(--color-text-success)">✓ Válido</div>
+            <div class="compare-code">nombre_ciudadano
+cuil
+turno_numero_2
+fecha_alta
+_id_interno</div>
+          </div>
+          <div class="compare-col" style="border-color:var(--color-border-danger)">
+            <div class="compare-label" style="color:var(--color-text-danger)">✗ Inválido</div>
+            <div class="compare-code">2do_turno       <span style="color:var(--color-text-tertiary)"># empieza con número</span>
+nombre ciudadano <span style="color:var(--color-text-tertiary)"># tiene espacio</span>
+turno-nro       <span style="color:var(--color-text-tertiary)"># tiene guión</span>
+class           <span style="color:var(--color-text-tertiary)"># palabra reservada</span></div>
+          </div>
+        </div>
+        <div class="tip">Convención en Python: <strong>snake_case</strong>. Todo en minúsculas, palabras separadas por guión bajo. Ej: <code style="font-family:var(--font-mono)">fecha_nacimiento</code>, <code style="font-family:var(--font-mono)">codigo_dependencia</code>. Es el estándar en todo el ecosistema Python.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Las variables se pueden reasignar</div>
+        <div class="card-body" style="margin-bottom:10px">Una variable puede cambiar de valor en cualquier momento. Python usa siempre el último valor asignado.</div>
+        <div class="code-block">estado_turno = <span class="string">"pendiente"</span>
+<span class="kw">print</span>(estado_turno)
+<span class="output">pendiente</span>
+
+estado_turno = <span class="string">"confirmado"</span>
+<span class="kw">print</span>(estado_turno)
+<span class="output">confirmado</span>
+
+estado_turno = <span class="string">"atendido"</span>
+<span class="kw">print</span>(estado_turno)
+<span class="output">atendido</span></div>
+        <div class="card-body" style="font-size:13px;margin-top:8px">Esto modela perfectamente el ciclo de vida de un turno: cambia de estado a medida que el sistema procesa al ciudadano.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">type() — inspeccionar qué hay en una variable</div>
+        <div class="card-body" style="margin-bottom:10px">Python permite preguntar de qué tipo es un valor con la función <code style="font-family:var(--font-mono)">type()</code>. Muy útil para entender errores.</div>
+        <div class="code-block"><span class="kw">print</span>(<span class="fn">type</span>(<span class="string">"ANSES"</span>))
+<span class="output">&lt;class 'str'&gt;</span>
+
+<span class="kw">print</span>(<span class="fn">type</span>(<span class="num">42</span>))
+<span class="output">&lt;class 'int'&gt;</span>
+
+<span class="kw">print</span>(<span class="fn">type</span>(<span class="num">3.14</span>))
+<span class="output">&lt;class 'float'&gt;</span>
+
+<span class="kw">print</span>(<span class="fn">type</span>(<span class="kw">True</span>))
+<span class="output">&lt;class 'bool'&gt;</span></div>
+      </div>
+    </div>
+
+    <!-- TIPOS DE DATOS -->
+    <div id="tipos" class="section">
+      <div class="section-header">
+        <div class="section-tag">Conceptos · 25 min</div>
+        <div class="section-title">Tipos de datos</div>
+        <div class="section-desc">Python clasifica cada valor en un tipo. El tipo determina qué operaciones se pueden hacer con ese valor. Conocer los tipos evita la mayoría de los errores de principiante.</div>
+      </div>
+
+      <div class="grid-2">
+        <div class="type-card">
+          <div class="type-icon" style="background:var(--color-background-info);color:var(--color-text-info)">str</div>
+          <div class="type-name">String — Texto</div>
+          <div class="type-keyword">str</div>
+          <div class="type-desc">Cualquier texto: nombres, direcciones, códigos, mensajes. Siempre va entre comillas simples o dobles.</div>
+          <div class="type-example">nombre = "Juan Pérez"
+organismo = 'AFIP'
+cuil = "20-12345678-3"</div>
+        </div>
+        <div class="type-card">
+          <div class="type-icon" style="background:var(--color-background-warning);color:var(--color-text-warning)">int</div>
+          <div class="type-name">Integer — Entero</div>
+          <div class="type-keyword">int</div>
+          <div class="type-desc">Números sin decimales. Contadores, identificadores, cantidades. Sin comillas.</div>
+          <div class="type-example">turnos_disponibles = 48
+numero_expediente = 20240123
+anio = 2024</div>
+        </div>
+        <div class="type-card">
+          <div class="type-icon" style="background:var(--color-background-danger);color:var(--color-text-danger)">flt</div>
+          <div class="type-name">Float — Decimal</div>
+          <div class="type-keyword">float</div>
+          <div class="type-desc">Números con parte decimal aproximada. Útil para mediciones y porcentajes; en dinero puede generar pequeñas diferencias por precisión binaria.</div>
+          <div class="type-example">tasa_recargo = 0.15
+monto_multa = 12750.50
+latitud = -34.6037</div>
+        </div>
+        <div class="type-card">
+          <div class="type-icon" style="background:var(--color-background-success);color:var(--color-text-success)">T/F</div>
+          <div class="type-name">Boolean — Verdadero/Falso</div>
+          <div class="type-keyword">bool</div>
+          <div class="type-desc">Solo dos valores posibles: True o False. Representa estados binarios: activo/inactivo, aprobado/rechazado.</div>
+          <div class="type-example">turno_disponible = True
+cobertura_activa = False
+mayor_de_edad = True</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Strings en profundidad — los más usados en sistemas de gestión</div>
+        <div class="card-body" style="margin-bottom:12px">Los strings tienen operaciones propias que se aplican con punto. Son las más frecuentes al trabajar con datos de ciudadanos.</div>
+        <div class="code-block">nombre = <span class="string">"  María Elena González  "</span>
+
+<span class="comment"># Eliminar espacios extra (datos de formularios siempre traen basura)</span>
+<span class="kw">print</span>(nombre.<span class="fn">strip</span>())
+<span class="output">María Elena González</span>
+
+<span class="comment"># Convertir a mayúsculas (para comparaciones y reportes)</span>
+<span class="kw">print</span>(nombre.<span class="fn">strip</span>().<span class="fn">upper</span>())
+<span class="output">MARÍA ELENA GONZÁLEZ</span>
+
+<span class="comment"># Longitud del string</span>
+<span class="kw">print</span>(<span class="fn">len</span>(nombre.<span class="fn">strip</span>()))
+<span class="output">20</span>
+
+<span class="comment"># Reemplazar texto</span>
+cuil = <span class="string">"20-12345678-3"</span>
+<span class="kw">print</span>(cuil.<span class="fn">replace</span>(<span class="string">"-"</span>, <span class="string">""</span>))
+<span class="output">20123456783</span></div>
+        <div class="tip">strip(), upper(), lower(), replace() y len() aparecen constantemente al procesar datos del ciudadano. Memorizar estos cinco es prioritario.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">El CUIL no es un número — ejemplo clave de por qué importa el tipo</div>
+        <div class="card-body" style="margin-bottom:10px">Este es el error conceptual más común al modelar datos de personas en sistemas gubernamentales.</div>
+        <div class="code-block"><span class="comment"># ✗ Incorrecto — el CUIL como número</span>
+cuil_mal = <span class="num">20123456783</span>
+<span class="comment"># ¿Qué pasa si el CUIL empieza en 01? Python elimina el cero.
+# ¿Cómo se muestra el guión 20-12345678-3? No se puede.
+# ¿Tiene sentido sumar dos CUILes? No.</span>
+
+<span class="comment"># ✓ Correcto — el CUIL como texto</span>
+cuil_bien = <span class="string">"20-12345678-3"</span>
+<span class="comment"># Conserva el formato. Se puede validar, mostrar, comparar.</span></div>
+        <div class="warn">Regla práctica: si un número representa una identidad (DNI, CUIL, CUIT, expediente, código postal) → es str, no int. Si se va a sumar o calcular → es int o float.</div>
+      </div>
+    </div>
+
+    <!-- FLOAT EN FINANZAS -->
+    <div id="float_finanzas" class="section">
+      <div class="section-header">
+        <div class="section-tag">Aplicación · 15 min</div>
+        <div class="section-title">Float en transacciones financieras</div>
+        <div class="section-desc">En sistemas de cobro, facturación y liquidación, usar <code style="font-family:var(--font-mono)">float</code> puede generar diferencias de centavos. Esta sección muestra por qué y qué usar en su lugar.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Por qué no usar float para dinero</div>
+        <div class="card-body" style="margin-bottom:10px">En dinero, un centavo importa. <code style="font-family:var(--font-mono)">float</code> guarda números en binario y muchos decimales no se representan exactos (por ejemplo, 0.1). Eso genera diferencias pequeñas pero reales que se acumulan en cajas, conciliaciones y reportes.</div>
+        <div class="code-block"><span class="comment"># Caso real 1: cobro de comisión por transacción</span>
+comision = <span class="num">0.1</span> + <span class="num">0.2</span>
+<span class="kw">print</span>(comision)
+<span class="output">0.30000000000000004</span>
+
+<span class="comment"># Caso real 2: sumar 0.10 en 10.000 pagos chicos</span>
+total = <span class="num">0.0</span>
+<span class="kw">for</span> _ <span class="kw">in</span> <span class="fn">range</span>(<span class="num">10000</span>):
+    total += <span class="num">0.10</span>
+<span class="kw">print</span>(total)
+<span class="output">999.9999999999062</span></div>
+        <div class="danger">Conclusión operativa: <strong>float sirve para cálculos científicos o métricas</strong>, pero no para saldos, pagos, impuestos, intereses o facturación.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Qué usar en su lugar: Decimal o enteros</div>
+        <div class="code-block"><span class="comment"># Alternativa 1 (recomendada): Decimal para montos exactos</span>
+<span class="kw">from</span> decimal <span class="kw">import</span> Decimal
+
+precio = Decimal(<span class="string">"1250.35"</span>)
+impuesto = Decimal(<span class="string">"0.21"</span>)
+total = precio * (<span class="num">1</span> + impuesto)
+<span class="kw">print</span>(total)
+<span class="output">1513.9235</span>
+
+<span class="comment"># Alternativa 2: enteros en centavos (muy común en pasarelas de pago)</span>
+monto_centavos = <span class="num">125035</span>   <span class="comment"># $1250.35</span>
+descuento_centavos = <span class="num">5000</span> <span class="comment"># $50.00</span>
+total_centavos = monto_centavos - descuento_centavos
+<span class="kw">print</span>(total_centavos)
+<span class="output">120035</span></div>
+        <ul class="checklist">
+          <li><span class="check-icon">✓</span><span><strong>Decimal</strong>: ideal para impuestos, intereses y redondeo contable.</span></li>
+          <li><span class="check-icon">✓</span><span><strong>Enteros (centavos)</strong>: ideal para alto volumen transaccional y APIs de pago.</span></li>
+          <li><span class="check-icon">✓</span><span>Regla práctica: guardar dinero como <code style="font-family:var(--font-mono)">Decimal</code> o centavos enteros; usar <code style="font-family:var(--font-mono)">float</code> solo para mostrar aproximaciones.</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- OPERACIONES -->
+    <div id="operaciones" class="section">
+      <div class="section-header">
+        <div class="section-tag">Conceptos · 20 min</div>
+        <div class="section-title">Operaciones básicas</div>
+        <div class="section-desc">Cada tipo de dato permite distintas operaciones. Conocer cuáles son evita los TypeError que aparecen al mezclar tipos incompatibles.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Operaciones aritméticas (int y float)</div>
+        <table class="ops-table">
+          <tr><th>Operador</th><th>Ejemplo</th><th>Resultado</th><th>Uso en gestión pública</th></tr>
+          <tr><td>+</td><td>1200 + 350</td><td>1550</td><td>Suma de montos o días</td></tr>
+          <tr><td>-</td><td>48 - 12</td><td>36</td><td>Turnos libres restantes</td></tr>
+          <tr><td>*</td><td>47 * 250</td><td>11750</td><td>Trámites anuales estimados</td></tr>
+          <tr><td>/</td><td>100 / 4</td><td>25.0</td><td>División (siempre devuelve float)</td></tr>
+          <tr><td>//</td><td>100 // 4</td><td>25</td><td>División entera (sin decimales)</td></tr>
+          <tr><td>%</td><td>10 % 3</td><td>1</td><td>Resto — verificar paridad, turnos por turno</td></tr>
+          <tr><td>**</td><td>2 ** 8</td><td>256</td><td>Potenciación — cálculos de interés compuesto</td></tr>
+        </table>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Operaciones con strings</div>
+        <div class="code-block"><span class="comment"># Concatenación — unir strings con +</span>
+nombre = <span class="string">"Juan"</span>
+apellido = <span class="string">"Pérez"</span>
+nombre_completo = nombre + <span class="string">" "</span> + apellido
+<span class="kw">print</span>(nombre_completo)
+<span class="output">Juan Pérez</span>
+
+<span class="comment"># Repetición — multiplicar string por número</span>
+separador = <span class="string">"="</span> * <span class="num">40</span>
+<span class="kw">print</span>(separador)
+<span class="output">========================================</span>
+
+<span class="comment"># f-strings — la forma recomendada de combinar texto y variables</span>
+turno = <span class="num">1042</span>
+dependencia = <span class="string">"Palermo"</span>
+<span class="kw">print</span>(<span class="string">f"Turno {turno} asignado a sede {dependencia}"</span>)
+<span class="output">Turno 1042 asignado a sede Palermo</span></div>
+        <div class="tip">Preferir siempre f-strings sobre concatenación con +. Son más legibles, menos propensas a error y permiten expresiones dentro de las llaves: <code style="font-family:var(--font-mono)">f"Total: ${deuda * 1.15:.2f}"</code></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Operadores de comparación — devuelven True o False</div>
+        <div class="code-block">turnos_disponibles = <span class="num">48</span>
+turno_solicitado = <span class="num">50</span>
+
+<span class="kw">print</span>(turnos_disponibles > <span class="num">0</span>)       <span class="comment"># ¿Hay turnos?</span>
+<span class="output">True</span>
+
+<span class="kw">print</span>(turno_solicitado > turnos_disponibles)  <span class="comment"># ¿Se puede atender?</span>
+<span class="output">False</span>
+
+edad = <span class="num">17</span>
+<span class="kw">print</span>(edad >= <span class="num">18</span>)   <span class="comment"># ¿Es mayor de edad?</span>
+<span class="output">False</span>
+
+cuil_ingresado = <span class="string">"20-12345678-3"</span>
+cuil_sistema = <span class="string">"20-12345678-3"</span>
+<span class="kw">print</span>(cuil_ingresado == cuil_sistema)   <span class="comment"># ¿Coincide el CUIL?</span>
+<span class="output">True</span></div>
+        <div class="card-body" style="font-size:13px;margin-top:10px">Los operadores de comparación son la base de los <strong>condicionales</strong>, que vemos en la Clase 3. Todo el comportamiento lógico del sistema de turnos va a depender de estos resultados.</div>
+      </div>
+    </div>
+
+    <!-- CONVERSIÓN DE TIPOS -->
+    <div id="conversion" class="section">
+      <div class="section-header">
+        <div class="section-tag">Conceptos · 15 min</div>
+        <div class="section-title">Conversión de tipos</div>
+        <div class="section-desc">Los datos que ingresan al sistema (desde formularios, archivos, APIs) casi siempre llegan como texto. Saber convertirlos al tipo correcto es una habilidad fundamental.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Las funciones de conversión</div>
+        <div class="code-block"><span class="comment"># str() → convierte a texto</span>
+numero = <span class="num">1042</span>
+<span class="kw">print</span>(<span class="string">"Turno N°: "</span> + <span class="fn">str</span>(numero))
+<span class="output">Turno N°: 1042</span>
+
+<span class="comment"># int() → convierte a entero</span>
+dato_formulario = <span class="string">"25"</span>   <span class="comment"># llegó como texto</span>
+edad = <span class="fn">int</span>(dato_formulario)
+<span class="kw">print</span>(edad + <span class="num">1</span>)
+<span class="output">26</span>
+
+<span class="comment"># float() → convierte a decimal</span>
+monto_texto = <span class="string">"85000.50"</span>
+monto = <span class="fn">float</span>(monto_texto)
+<span class="kw">print</span>(monto * <span class="num">1.15</span>)
+<span class="output">97750.575</span></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">El error de tipo más frecuente — y cómo resolverlo</div>
+        <div class="code-block"><span class="comment"># Dato de formulario: llega siempre como string</span>
+turnos_str = <span class="string">"48"</span>
+
+<span class="comment"># ✗ Esto falla</span>
+total = turnos_str + <span class="num">10</span>
+<span class="output">TypeError: can only concatenate str (not "int") to str</span>
+
+<span class="comment"># ✓ Convertir primero, operar después</span>
+total = <span class="fn">int</span>(turnos_str) + <span class="num">10</span>
+<span class="kw">print</span>(total)
+<span class="output">58</span></div>
+        <div class="danger">int() falla si el string no es un número válido: <code style="font-family:var(--font-mono)">int("veinte")</code> → ValueError. En producción siempre validar antes de convertir. Lo veremos en la Semana 2 con manejo de errores.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Formatear números para salidas legibles</div>
+        <div class="code-block">monto = <span class="num">97750.575</span>
+
+<span class="comment"># Redondear a 2 decimales</span>
+<span class="kw">print</span>(<span class="fn">round</span>(monto, <span class="num">2</span>))
+<span class="output">97750.58</span>
+
+<span class="comment"># Formatear como moneda en f-string</span>
+<span class="kw">print</span>(<span class="string">f"Total a pagar: ${monto:.2f}"</span>)
+<span class="output">Total a pagar: $97750.58</span>
+
+<span class="comment"># El :.2f dentro de las llaves indica "2 decimales fijos"</span></div>
+        <div class="tip">El formato <code style="font-family:var(--font-mono)">:.2f</code> es el estándar para mostrar montos en sistemas de gestión. Evita que aparezcan números como $97750.574999999.</div>
+      </div>
+    </div>
+
+    <!-- PRÁCTICA GUIADA -->
+    <div id="practica" class="section">
+      <div class="section-header">
+        <div class="section-tag">Práctica guiada · 25 min</div>
+        <div class="section-title">Ejercicios en el intérprete</div>
+        <div class="section-desc">Abrir el intérprete con <code style="font-family:var(--font-mono);font-size:13px;background:var(--color-background-secondary);padding:1px 5px;border-radius:4px">python3</code> y replicar cada ejercicio mientras el instructor lo hace en pantalla.</div>
+      </div>
+
+      <div class="card">
+        <div class="ex-header"><div class="ex-num">1</div><div class="ex-title">Modelar un ciudadano</div></div>
+        <div class="card-body" style="font-size:13px;margin-bottom:10px">Representar a un ciudadano con sus datos básicos usando el tipo correcto para cada campo.</div>
+        <div class="code-block"><span class="kw">>>></span> nombre = <span class="string">"Ana Rodríguez"</span>
+<span class="kw">>>></span> cuil = <span class="string">"27-28456789-4"</span>
+<span class="kw">>>></span> edad = <span class="num">43</span>
+<span class="kw">>>></span> cobertura_activa = <span class="kw">True</span>
+<span class="kw">>>></span> saldo_deuda = <span class="num">0.0</span>
+
+<span class="kw">>>></span> <span class="kw">print</span>(<span class="string">f"Ciudadano: {nombre}"</span>)
+<span class="kw">>>></span> <span class="kw">print</span>(<span class="string">f"CUIL: {cuil}"</span>)
+<span class="kw">>>></span> <span class="kw">print</span>(<span class="string">f"Edad: {edad} años"</span>)
+<span class="kw">>>></span> <span class="kw">print</span>(<span class="string">f"Cobertura: {cobertura_activa}"</span>)
+<span class="kw">>>></span> <span class="kw">print</span>(<span class="string">f"Deuda: ${saldo_deuda:.2f}"</span>)
+<span class="output">Ciudadano: Ana Rodríguez
+CUIL: 27-28456789-4
+Edad: 43 años
+Cobertura: True
+Deuda: $0.00</span></div>
+      </div>
+
+      <div class="card">
+        <div class="ex-header"><div class="ex-num">2</div><div class="ex-title">Calcular disponibilidad de turnos</div></div>
+        <div class="card-body" style="font-size:13px;margin-bottom:10px">Un agente necesita saber cuántos turnos quedan libres en el día.</div>
+        <div class="code-block"><span class="kw">>>></span> capacidad_diaria = <span class="num">60</span>
+<span class="kw">>>></span> turnos_tomados = <span class="num">47</span>
+<span class="kw">>>></span> turnos_libres = capacidad_diaria - turnos_tomados
+<span class="kw">>>></span> porcentaje_ocupacion = (turnos_tomados / capacidad_diaria) * <span class="num">100</span>
+
+<span class="kw">>>></span> <span class="kw">print</span>(<span class="string">f"Capacidad: {capacidad_diaria} turnos"</span>)
+<span class="kw">>>></span> <span class="kw">print</span>(<span class="string">f"Tomados: {turnos_tomados}"</span>)
+<span class="kw">>>></span> <span class="kw">print</span>(<span class="string">f"Libres: {turnos_libres}"</span>)
+<span class="kw">>>></span> <span class="kw">print</span>(<span class="string">f"Ocupación: {porcentaje_ocupacion:.1f}%"</span>)
+<span class="kw">>>></span> <span class="kw">print</span>(<span class="string">f"¿Hay turnos? {turnos_libres > 0}"</span>)
+<span class="output">Capacidad: 60 turnos
+Tomados: 47
+Libres: 13
+Ocupación: 78.3%
+¿Hay turnos? True</span></div>
+      </div>
+
+      <div class="card">
+        <div class="ex-header"><div class="ex-num">3</div><div class="ex-title">Calcular multa con recargo</div></div>
+        <div class="card-body" style="font-size:13px;margin-bottom:10px">Un agente de AFIP necesita calcular el total a pagar incluyendo recargo por mora.</div>
+        <div class="code-block"><span class="kw">>>></span> deuda_original = <span class="num">85000</span>
+<span class="kw">>>></span> meses_mora = <span class="num">3</span>
+<span class="kw">>>></span> tasa_mensual = <span class="num">0.05</span>   <span class="comment"># 5% mensual</span>
+
+<span class="kw">>>></span> recargo_total = deuda_original * tasa_mensual * meses_mora
+<span class="kw">>>></span> total_a_pagar = deuda_original + recargo_total
+
+<span class="kw">>>></span> <span class="kw">print</span>(<span class="string">"=" * 35</span>)
+<span class="kw">>>></span> <span class="kw">print</span>(<span class="string">"  LIQUIDACIÓN DE DEUDA — AFIP"</span>)
+<span class="kw">>>></span> <span class="kw">print</span>(<span class="string">"=" * 35</span>)
+<span class="kw">>>></span> <span class="kw">print</span>(<span class="string">f"Deuda original:  ${deuda_original:,.2f}"</span>)
+<span class="kw">>>></span> <span class="kw">print</span>(<span class="string">f"Meses en mora:   {meses_mora}"</span>)
+<span class="kw">>>></span> <span class="kw">print</span>(<span class="string">f"Recargo ({<span class="fn">int</span>(tasa_mensual*100)}%/mes): ${recargo_total:,.2f}"</span>)
+<span class="kw">>>></span> <span class="kw">print</span>(<span class="string">f"TOTAL A PAGAR:   ${total_a_pagar:,.2f}"</span>)
+<span class="output">===================================
+  LIQUIDACIÓN DE DEUDA — AFIP
+===================================
+Deuda original:  $85,000.00
+Meses en mora:   3
+Recargo (5%/mes): $12,750.00
+TOTAL A PAGAR:   $97,750.00</span></div>
+        <div class="tip">El formato <code style="font-family:var(--font-mono)">:,.2f</code> agrega separador de miles (coma) y dos decimales. Indispensable para mostrar montos en sistemas financieros del Estado.</div>
+      </div>
+
+      <div class="card">
+        <div class="ex-header"><div class="ex-num">4</div><div class="ex-title">Procesar datos de un formulario</div></div>
+        <div class="card-body" style="font-size:13px;margin-bottom:10px">Simular la llegada de datos desde un formulario web (todo llega como string) y convertirlos al tipo correcto.</div>
+        <div class="code-block"><span class="comment"># Datos tal como llegan del formulario — todo es texto</span>
+<span class="kw">>>></span> nombre_raw = <span class="string">"  carlos méndez  "</span>
+<span class="kw">>>></span> edad_raw = <span class="string">"34"</span>
+<span class="kw">>>></span> deuda_raw = <span class="string">"12500.75"</span>
+
+<span class="comment"># Limpiar y convertir</span>
+<span class="kw">>>></span> nombre = nombre_raw.<span class="fn">strip</span>().<span class="fn">title</span>()
+<span class="kw">>>></span> edad = <span class="fn">int</span>(edad_raw)
+<span class="kw">>>></span> deuda = <span class="fn">float</span>(deuda_raw)
+
+<span class="comment"># Usar los datos ya procesados</span>
+<span class="kw">>>></span> <span class="kw">print</span>(<span class="string">f"Nombre: {nombre}"</span>)
+<span class="kw">>>></span> <span class="kw">print</span>(<span class="string">f"Edad: {edad} años"</span>)
+<span class="kw">>>></span> <span class="kw">print</span>(<span class="string">f"Deuda: ${deuda:,.2f}"</span>)
+<span class="kw">>>></span> <span class="kw">print</span>(<span class="string">f"Mayor de edad: {edad >= 18}"</span>)
+<span class="output">Nombre: Carlos Méndez
+Edad: 34 años
+Deuda: $12,500.75
+Mayor de edad: True</span></div>
+        <div class="card-body" style="font-size:13px;margin-top:10px">El método <code style="font-family:var(--font-mono)">.title()</code> capitaliza la primera letra de cada palabra — útil para normalizar nombres ingresados en mayúsculas o minúsculas.</div>
+      </div>
+    </div>
+
+    <!-- CIERRE -->
+    <div id="cierre" class="section">
+      <div class="section-header">
+        <div class="section-tag">Actividad · 15 min</div>
+        <div class="section-title">Ampliar el sistema de turnos</div>
+        <div class="section-desc">Retomamos el archivo <code style="font-family:var(--font-mono);font-size:13px;background:var(--color-background-secondary);padding:1px 5px;border-radius:4px">bienvenida.py</code> de la Clase 1 y lo transformamos en algo más real.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">El archivo nuevo: <code style="font-family:var(--font-mono);font-size:13px">sistema_turnos.py</code></div>
+        <div class="tip">Tipear el código. No copiar. El músculo se desarrolla escribiendo.</div>
+        <div class="code-block"><span class="comment"># Sistema de Gestión de Turnos — Módulo Principal
+# Semana 1, Clase 2 — Variables y tipos de datos</span>
+
+<span class="comment"># === CONFIGURACIÓN DEL ORGANISMO ===</span>
+organismo = <span class="string">"Administración Nacional de la Seguridad Social"</span>
+sigla = <span class="string">"ANSES"</span>
+dependencia = <span class="string">"Sede Palermo"</span>
+sistema_version = <span class="string">"1.1"</span>
+
+<span class="comment"># === ESTADO DEL DÍA ===</span>
+capacidad_diaria = <span class="num">60</span>
+turnos_tomados = <span class="num">47</span>
+turnos_libres = capacidad_diaria - turnos_tomados
+sistema_activo = <span class="kw">True</span>
+
+<span class="comment"># === PRÓXIMO TURNO ===</span>
+proximo_turno = <span class="num">1043</span>
+nombre_ciudadano = <span class="string">"Laura Fernández"</span>
+cuil_ciudadano = <span class="string">"27-31456789-5"</span>
+tramite = <span class="string">"Jubilación por vejez"</span>
+
+<span class="comment"># === SALIDA DEL SISTEMA ===</span>
+<span class="kw">print</span>(<span class="string">"=" * 50</span>)
+<span class="kw">print</span>(<span class="string">f"  {sigla} — {dependencia}"</span>)
+<span class="kw">print</span>(<span class="string">f"  Sistema v{sistema_version} | Activo: {sistema_activo}"</span>)
+<span class="kw">print</span>(<span class="string">"=" * 50</span>)
+<span class="kw">print</span>()
+<span class="kw">print</span>(<span class="string">f"Capacidad del día: {capacidad_diaria} turnos"</span>)
+<span class="kw">print</span>(<span class="string">f"Turnos tomados:    {turnos_tomados}"</span>)
+<span class="kw">print</span>(<span class="string">f"Turnos libres:     {turnos_libres}"</span>)
+<span class="kw">print</span>(<span class="string">f"Ocupación:         {(turnos_tomados/capacidad_diaria*100):.1f}%"</span>)
+<span class="kw">print</span>()
+<span class="kw">print</span>(<span class="string">"--- PRÓXIMO TURNO ---"</span>)
+<span class="kw">print</span>(<span class="string">f"Turno N°: {proximo_turno}"</span>)
+<span class="kw">print</span>(<span class="string">f"Ciudadano: {nombre_ciudadano}"</span>)
+<span class="kw">print</span>(<span class="string">f"CUIL: {cuil_ciudadano}"</span>)
+<span class="kw">print</span>(<span class="string">f"Trámite: {tramite}"</span>)
+<span class="kw">print</span>(<span class="string">f"¿Hay turnos disponibles? {turnos_libres > 0}"</span>)
+<span class="kw">print</span>(<span class="string">"=" * 50</span>)</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Ejecutar y verificar la salida</div>
+        <div class="code-block">python3 sistema_turnos.py</div>
+        <div class="code-block" style="margin-top:8px"><span class="output">==================================================
+  ANSES — Sede Palermo
+  Sistema v1.1 | Activo: True
+==================================================
+
+Capacidad del día: 60 turnos
+Turnos tomados:    47
+Turnos libres:     13
+Ocupación:         78.3%
+
+--- PRÓXIMO TURNO ---
+Turno N°: 1043
+Ciudadano: Laura Fernández
+CUIL: 27-31456789-5
+Trámite: Jubilación por vejez
+¿Hay turnos disponibles? True
+==================================================</span></div>
+      </div>
+
+      
+    </div>
+
+    <!-- ERRORES FRECUENTES -->
+    <div id="errores" class="section">
+      <div class="section-header">
+        <div class="section-tag">Referencia</div>
+        <div class="section-title">Errores frecuentes en variables y tipos</div>
+        <div class="section-desc">Los errores más comunes de esta clase y cómo leerlos correctamente.</div>
+      </div>
+      <div class="card">
+
+        <div class="trouble-item" style="margin-bottom:14px">
+          <div style="font-size:13px;font-weight:500;color:var(--color-text-danger);margin-bottom:4px">TypeError: can only concatenate str (not "int") to str</div>
+          <div class="code-block" style="margin:8px 0"><span class="comment"># Causa: mezclar string y número con +</span>
+<span class="kw">print</span>(<span class="string">"Turno: "</span> + <span class="num">1042</span>)   <span class="comment"># ✗</span>
+<span class="comment"># Solución A: convertir a string</span>
+<span class="kw">print</span>(<span class="string">"Turno: "</span> + <span class="fn">str</span>(<span class="num">1042</span>))  <span class="comment"># ✓</span>
+<span class="comment"># Solución B: usar f-string (preferida)</span>
+<span class="kw">print</span>(<span class="string">f"Turno: {<span class="num">1042</span>}"</span>)         <span class="comment"># ✓</span></div>
+        </div>
+
+        <div class="divider"></div>
+        <div class="trouble-item" style="margin-bottom:14px">
+          <div style="font-size:13px;font-weight:500;color:var(--color-text-danger);margin-bottom:4px">NameError: name 'turno' is not defined</div>
+          <div class="code-block" style="margin:8px 0"><span class="comment"># Causa: usar variable antes de definirla, o error de tipeo</span>
+<span class="kw">print</span>(Turno)   <span class="comment"># ✗ — Python diferencia mayúsculas</span>
+<span class="kw">print</span>(turno)   <span class="comment"># ✗ — si no se definió antes</span>
+turno = <span class="num">1042</span>
+<span class="kw">print</span>(turno)   <span class="comment"># ✓</span></div>
+        </div>
+
+        <div class="divider"></div>
+        <div class="trouble-item" style="margin-bottom:14px">
+          <div style="font-size:13px;font-weight:500;color:var(--color-text-danger);margin-bottom:4px">ValueError: invalid literal for int() with base 10: 'veinte'</div>
+          <div class="code-block" style="margin:8px 0"><span class="comment"># Causa: int() recibe texto que no es número</span>
+edad = <span class="fn">int</span>(<span class="string">"veinte"</span>)   <span class="comment"># ✗</span>
+edad = <span class="fn">int</span>(<span class="string">"20"</span>)        <span class="comment"># ✓</span>
+edad = <span class="fn">int</span>(<span class="string">"20.5"</span>)      <span class="comment"># ✗ — usar float() para decimales</span>
+edad = <span class="fn">int</span>(<span class="fn">float</span>(<span class="string">"20.5"</span>))  <span class="comment"># ✓ — conversión en dos pasos</span></div>
+        </div>
+
+        <div class="divider"></div>
+        <div class="trouble-item">
+          <div style="font-size:13px;font-weight:500;color:var(--color-text-danger);margin-bottom:4px">SyntaxError al definir variable</div>
+          <div class="code-block" style="margin:8px 0"><span class="comment"># Causa: nombre de variable inválido</span>
+2do_turno = <span class="num">1042</span>       <span class="comment"># ✗ — empieza con número</span>
+nombre completo = <span class="string">"Ana"</span>  <span class="comment"># ✗ — tiene espacio</span>
+segundo_turno = <span class="num">1042</span>   <span class="comment"># ✓</span>
+nombre_completo = <span class="string">"Ana"</span>  <span class="comment"># ✓</span></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- RECURSOS -->
+    <div id="recursos" class="section">
+      <div class="section-header">
+        <div class="section-tag">Referencia</div>
+        <div class="section-title">Recursos y preparación para la Clase 3</div>
+        <div class="section-desc">Material de consulta y qué tener listo para la próxima clase.</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Para repasar esta semana</div>
+        <div class="ref-row">
+          <div class="ref-icon">Py</div>
+          <div style="flex:1">
+            <div class="ref-name">Tutorial oficial de Python — Variables y tipos</div>
+            <div class="ref-desc">Capítulo 3 del tutorial oficial, cubre exactamente lo visto hoy con ejemplos adicionales.</div>
+            <div class="ref-tag">docs.python.org/es/3/tutorial/introduction.html</div>
+          </div>
+        </div>
+        <div class="ref-row">
+          <div class="ref-icon">fst</div>
+          <div style="flex:1">
+            <div class="ref-name">Documentación de f-strings</div>
+            <div class="ref-desc">Referencia completa de formatos: decimales, alineación, separadores de miles.</div>
+            <div class="ref-tag">docs.python.org/es/3/reference/lexical_analysis.html#f-strings</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Lo que viene en la Clase 3</div>
+        <div class="card-body" style="margin-bottom:12px">En la Clase 3 vamos a agregar <strong>condicionales</strong> al sistema de turnos. El programa va a tomar decisiones reales: si hay turnos disponibles o no, si el ciudadano tiene cobertura activa, si la deuda supera un umbral.</div>
+        <div class="card-body" style="font-size:13px">Para eso necesitamos entender bien los operadores de comparación que vimos hoy (<code style="font-family:var(--font-mono)">&gt;</code>, <code style="font-family:var(--font-mono)">&lt;</code>, <code style="font-family:var(--font-mono)">==</code>, <code style="font-family:var(--font-mono)">!=</code>) porque son los que van dentro del <code style="font-family:var(--font-mono)">if</code>.</div>
+        <div style="margin-top:14px">
+          <span class="pill pill-success">sistema_turnos.py funcionando ✓</span>
+          <span class="pill pill-success">str / int / float / bool ✓</span>
+          <span class="pill pill-success">f-strings con formato ✓</span>
+          <span class="pill pill-warn">Clase 3: if / else →</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+function show(id, el) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  el.classList.add('active');
+  document.querySelector('.main').scrollTop = 0;
+}
+</script>
+</body>
+</html>

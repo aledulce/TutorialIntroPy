@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clase 5 — Estructuras de datos: listas y diccionarios</title>
+<link rel="stylesheet" href="canvas_shared.css">
+</head>
+<body>
+
+<div class="canvas">
+  <div class="sidebar">
+    <div class="sidebar-top">
+      <div class="sidebar-badge">Semana 2</div>
+      <div class="sidebar-title">Clase 5 — Estructuras de datos: listas y diccionarios</div>
+      <div class="sidebar-sub">1 hora · Clase 5 de 10</div>
+    </div>
+    <div class="nav">
+      <div class="nav-label">Contenido</div>
+      <div class="nav-item active" onclick="show('intro',this)"><div class="nav-dot"></div>Introducción<span class="time-badge">10 min</span></div>
+      <div class="nav-item" onclick="show('listas',this)"><div class="nav-dot"></div>Listas<span class="time-badge">30 min</span></div>
+      <div class="nav-item" onclick="show('diccionarios',this)"><div class="nav-dot"></div>Diccionarios<span class="time-badge">30 min</span></div>
+      <div class="nav-item" onclick="show('combinando',this)"><div class="nav-dot"></div>Combinando estructuras<span class="time-badge">20 min</span></div>
+      <div class="nav-item" onclick="show('practica',this)"><div class="nav-dot"></div>Práctica guiada<span class="time-badge">20 min</span></div>
+      <div class="nav-item" onclick="show('cierre',this)"><div class="nav-dot"></div>Actividad de cierre<span class="time-badge">10 min</span></div>
+      <div class="nav-label">Referencia</div>
+      <div class="nav-item" onclick="show('metodos',this)"><div class="nav-dot"></div>Métodos útiles</div>
+      <div class="nav-item" onclick="show('recursos',this)"><div class="nav-dot"></div>Recursos</div>
+    </div>
+    <div class="sidebar-home-link" style="margin-top:auto;padding:12px 16px;border-top:0.5px solid var(--color-border-tertiary);">
+      <a href="index.html" style="font-size:12px;color:var(--color-text-info);text-decoration:none;font-weight:500;">← Volver al índice</a>
+    </div>
+  </div>
+
+  <div class="main">
+
+    <!-- INTRO -->
+    <div id="intro" class="section active">
+      <div class="section-header">
+        <div class="section-tag">Apertura · 10 min</div>
+        <div class="section-title">¿Por qué necesitamos estructuras de datos?</div>
+        <div class="section-desc">Hasta ahora guardamos información en variables simples: un nombre, un número, un texto. Pero los sistemas reales manejan colecciones de datos. Esta clase aprendemos a hacerlo.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">El problema de las variables simples</div>
+        <div class="card-body">Imaginemos que necesitamos registrar los turnos disponibles en una oficina de ANSES. Con lo que sabemos hasta ahora haríamos esto:</div>
+        <div class="code-block"><span class="comment"># Esto no escala. ¿Qué pasa si hay 200 turnos?</span>
+turno_1 = <span class="string">"09:00"</span>
+turno_2 = <span class="string">"09:30"</span>
+turno_3 = <span class="string">"10:00"</span>
+turno_4 = <span class="string">"10:30"</span>
+<span class="comment"># ... y así hasta turno_48</span></div>
+        <div class="card-body" style="margin-top:10px">No es práctico. No se puede iterar, buscar, agregar ni eliminar fácilmente. Las estructuras de datos resuelven exactamente este problema.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Las dos estructuras fundamentales de hoy</div>
+        <div class="grid-2" style="margin-top:12px">
+          <div class="layer-card">
+            <div class="layer-icon" style="background:var(--color-background-success)">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="4" width="14" height="3" rx="1" fill="var(--color-text-success)" opacity="0.3"/><rect x="1" y="4" width="14" height="3" rx="1" stroke="var(--color-text-success)" stroke-width="1.1"/><rect x="1" y="9" width="14" height="3" rx="1" stroke="var(--color-text-success)" stroke-width="1.1"/></svg>
+            </div>
+            <div class="layer-name">Lista <code>[]</code></div>
+            <div class="layer-tech">Colección ordenada de valores</div>
+            <div class="layer-desc">Agrupa múltiples valores en una sola variable. Mantiene el orden. Los elementos se acceden por posición (índice).</div>
+            <div class="layer-example">Ej: Lista de horarios disponibles, cola de turnos, documentos requeridos para un trámite.</div>
+          </div>
+          <div class="layer-card">
+            <div class="layer-icon" style="background:var(--color-background-info)">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="3" width="6" height="10" rx="1" stroke="var(--color-text-info)" stroke-width="1.1"/><rect x="9" y="3" width="6" height="10" rx="1" stroke="var(--color-text-info)" stroke-width="1.1"/><path d="M7 8h2" stroke="var(--color-text-info)" stroke-width="1.1" stroke-linecap="round"/></svg>
+            </div>
+            <div class="layer-name">Diccionario <code>{}</code></div>
+            <div class="layer-tech">Colección de pares clave: valor</div>
+            <div class="layer-desc">Asocia nombres (claves) con datos (valores). Se accede por nombre, no por posición. Ideal para representar entidades.</div>
+            <div class="layer-example">Ej: Datos de un ciudadano: nombre, DNI, dirección, estado del trámite.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">¿Dónde los vamos a usar en el proyecto?</div>
+        <div class="card-body">En el sistema de turnos de ANSES que estamos construyendo:</div>
+        <div style="margin-top:12px">
+          <span class="pill pill-success">Lista de turnos disponibles</span>
+          <span class="pill pill-success">Lista de documentos requeridos</span>
+          <span class="pill pill-info">Diccionario con datos del ciudadano</span>
+          <span class="pill pill-info">Diccionario con datos del trámite</span>
+          <span class="pill pill-warn">Lista de diccionarios (tabla de turnos)</span>
+        </div>
+        <div class="card-body" style="margin-top:12px">Al final de esta clase, estas estructuras ya van a ser herramientas naturales para pensar los datos del sistema.</div>
+      </div>
+    </div>
+
+    <!-- LISTAS -->
+    <div id="listas" class="section">
+      <div class="section-header">
+        <div class="section-tag">Concepto · 30 min</div>
+        <div class="section-title">Listas</div>
+        <div class="section-desc">Una lista agrupa múltiples valores en una sola variable. Los valores mantienen su orden y se pueden modificar.</div>
+      </div>
+
+      <div class="card">
+        <div class="ex-header"><div class="ex-num">1</div><div class="ex-title">Crear una lista</div></div>
+        <div class="code-block"><span class="comment"># Horarios disponibles en la sede Palermo de ANSES</span>
+horarios = [<span class="string">"09:00"</span>, <span class="string">"09:30"</span>, <span class="string">"10:00"</span>, <span class="string">"10:30"</span>, <span class="string">"11:00"</span>]
+
+<span class="kw">print</span>(horarios)
+<span class="output">['09:00', '09:30', '10:00', '10:30', '11:00']</span>
+
+<span class="kw">print</span>(<span class="kw">len</span>(horarios))   <span class="comment"># Cuántos elementos tiene</span>
+<span class="output">5</span></div>
+        <div class="card-body" style="font-size:13px;margin-top:10px">Los corchetes <code>[]</code> definen la lista. Los elementos van separados por comas. Pueden ser textos, números o cualquier tipo de dato.</div>
+      </div>
+
+      <div class="card">
+        <div class="ex-header"><div class="ex-num">2</div><div class="ex-title">Acceder a elementos por índice</div></div>
+        <div class="card-body" style="font-size:13px;margin-bottom:10px">Python cuenta desde cero. El primer elemento tiene índice 0, el segundo índice 1, y así.</div>
+        <div class="code-block">horarios = [<span class="string">"09:00"</span>, <span class="string">"09:30"</span>, <span class="string">"10:00"</span>, <span class="string">"10:30"</span>, <span class="string">"11:00"</span>]
+<span class="comment">#               [0]        [1]        [2]        [3]        [4]</span>
+
+<span class="kw">print</span>(horarios[0])   <span class="comment"># Primer horario</span>
+<span class="output">09:00</span>
+
+<span class="kw">print</span>(horarios[2])   <span class="comment"># Tercer horario</span>
+<span class="output">10:00</span>
+
+<span class="kw">print</span>(horarios[-1])  <span class="comment"># Último horario (índice negativo)</span>
+<span class="output">11:00</span></div>
+        <div class="warn">Intentar acceder a <code>horarios[5]</code> da <strong>IndexError</strong>: el índice 5 no existe en una lista de 5 elementos (los índices van del 0 al 4).</div>
+      </div>
+
+      <div class="card">
+        <div class="ex-header"><div class="ex-num">3</div><div class="ex-title">Agregar y eliminar elementos</div></div>
+        <div class="code-block">horarios = [<span class="string">"09:00"</span>, <span class="string">"09:30"</span>, <span class="string">"10:00"</span>]
+
+<span class="comment"># Agregar al final</span>
+horarios.append(<span class="string">"10:30"</span>)
+<span class="kw">print</span>(horarios)
+<span class="output">['09:00', '09:30', '10:00', '10:30']</span>
+
+<span class="comment"># Eliminar por valor</span>
+horarios.remove(<span class="string">"09:30"</span>)   <span class="comment"># El turno fue tomado</span>
+<span class="kw">print</span>(horarios)
+<span class="output">['09:00', '10:00', '10:30']</span>
+
+<span class="comment"># Eliminar por posición</span>
+horarios.pop(0)             <span class="comment"># Elimina el primero</span>
+<span class="kw">print</span>(horarios)
+<span class="output">['10:00', '10:30']</span></div>
+      </div>
+
+      <div class="card">
+        <div class="ex-header"><div class="ex-num">4</div><div class="ex-title">Recorrer una lista con for</div></div>
+        <div class="card-body" style="font-size:13px;margin-bottom:10px">Una de las operaciones más frecuentes: hacer algo con cada elemento de la lista.</div>
+        <div class="code-block">documentos_requeridos = [
+    <span class="string">"DNI original"</span>,
+    <span class="string">"Constancia de CUIL"</span>,
+    <span class="string">"Último recibo de sueldo"</span>,
+    <span class="string">"Formulario PS.6.75"</span>
+]
+
+<span class="kw">print</span>(<span class="string">"Documentos requeridos para el trámite:"</span>)
+<span class="kw">for</span> doc <span class="kw">in</span> documentos_requeridos:
+    <span class="kw">print</span>(<span class="string">f"  - {doc}"</span>)
+<span class="output">Documentos requeridos para el trámite:
+  - DNI original
+  - Constancia de CUIL
+  - Último recibo de sueldo
+  - Formulario PS.6.75</span></div>
+        <div class="tip">La variable <code>doc</code> es temporal: toma el valor de cada elemento en cada vuelta del loop. El nombre puede ser cualquiera, pero tiene que ser descriptivo.</div>
+      </div>
+
+      <div class="card">
+        <div class="ex-header"><div class="ex-num">5</div><div class="ex-title">Verificar si un elemento está en la lista</div></div>
+        <div class="code-block">documentos_requeridos = [<span class="string">"DNI original"</span>, <span class="string">"Constancia de CUIL"</span>, <span class="string">"Formulario PS.6.75"</span>]
+documentos_presentados = [<span class="string">"DNI original"</span>, <span class="string">"Constancia de CUIL"</span>]
+
+<span class="kw">for</span> doc <span class="kw">in</span> documentos_requeridos:
+    <span class="kw">if</span> doc <span class="kw">in</span> documentos_presentados:
+        <span class="kw">print</span>(<span class="string">f"  ✓ {doc}"</span>)
+    <span class="kw">else</span>:
+        <span class="kw">print</span>(<span class="string">f"  ✗ {doc} — FALTA"</span>)
+<span class="output">  ✓ DNI original
+  ✓ Constancia de CUIL
+  ✗ Formulario PS.6.75 — FALTA</span></div>
+        <div class="card-body" style="font-size:13px;margin-top:10px">El operador <code>in</code> devuelve <code>True</code> o <code>False</code>. Es la forma más directa de buscar en una lista en Python.</div>
+      </div>
+    </div>
+
+    <!-- DICCIONARIOS -->
+    <div id="diccionarios" class="section">
+      <div class="section-header">
+        <div class="section-tag">Concepto · 30 min</div>
+        <div class="section-title">Diccionarios</div>
+        <div class="section-desc">Un diccionario asocia nombres (claves) con datos (valores). Es la estructura ideal para representar entidades del sistema: ciudadanos, trámites, turnos.</div>
+      </div>
+
+      <div class="card">
+        <div class="ex-header"><div class="ex-num">1</div><div class="ex-title">Crear un diccionario</div></div>
+        <div class="code-block"><span class="comment"># Datos de un ciudadano en el sistema</span>
+ciudadano = {
+    <span class="string">"nombre"</span>: <span class="string">"María González"</span>,
+    <span class="string">"dni"</span>: 30456789,
+    <span class="string">"cuil"</span>: <span class="string">"27-30456789-3"</span>,
+    <span class="string">"cobertura_activa"</span>: <span class="kw">True</span>
+}
+
+<span class="kw">print</span>(ciudadano)
+<span class="output">{'nombre': 'María González', 'dni': 30456789, 'cuil': '27-30456789-3', 'cobertura_activa': True}</span></div>
+        <div class="card-body" style="font-size:13px;margin-top:10px">Las llaves <code>{}</code> definen el diccionario. Cada par <code>clave: valor</code> se separa con coma. Las claves son strings, los valores pueden ser cualquier tipo.</div>
+      </div>
+
+      <div class="card">
+        <div class="ex-header"><div class="ex-num">2</div><div class="ex-title">Acceder a valores por clave</div></div>
+        <div class="code-block">ciudadano = {
+    <span class="string">"nombre"</span>: <span class="string">"María González"</span>,
+    <span class="string">"dni"</span>: 30456789,
+    <span class="string">"cuil"</span>: <span class="string">"27-30456789-3"</span>
+}
+
+<span class="kw">print</span>(ciudadano[<span class="string">"nombre"</span>])
+<span class="output">María González</span>
+
+<span class="kw">print</span>(<span class="string">f"DNI: {ciudadano['dni']}"</span>)
+<span class="output">DNI: 30456789</span>
+
+<span class="comment"># Forma segura: .get() no lanza error si la clave no existe</span>
+email = ciudadano.get(<span class="string">"email"</span>, <span class="string">"sin email registrado"</span>)
+<span class="kw">print</span>(email)
+<span class="output">sin email registrado</span></div>
+        <div class="tip">Preferir <code>.get(clave, valor_por_defecto)</code> cuando no se puede garantizar que la clave exista. Evita errores <strong>KeyError</strong> en producción.</div>
+      </div>
+
+      <div class="card">
+        <div class="ex-header"><div class="ex-num">3</div><div class="ex-title">Agregar y modificar datos</div></div>
+        <div class="code-block">ciudadano = {
+    <span class="string">"nombre"</span>: <span class="string">"María González"</span>,
+    <span class="string">"dni"</span>: 30456789
+}
+
+<span class="comment"># Agregar nueva clave</span>
+ciudadano[<span class="string">"telefono"</span>] = <span class="string">"11-4523-8800"</span>
+
+<span class="comment"># Modificar valor existente</span>
+ciudadano[<span class="string">"nombre"</span>] = <span class="string">"María Laura González"</span>
+
+<span class="kw">print</span>(ciudadano)
+<span class="output">{'nombre': 'María Laura González', 'dni': 30456789, 'telefono': '11-4523-8800'}</span></div>
+      </div>
+
+      <div class="card">
+        <div class="ex-header"><div class="ex-num">4</div><div class="ex-title">Recorrer un diccionario</div></div>
+        <div class="code-block">tramite = {
+    <span class="string">"tipo"</span>: <span class="string">"Jubilación ordinaria"</span>,
+    <span class="string">"expediente"</span>: <span class="string">"EXP-2024-00847"</span>,
+    <span class="string">"estado"</span>: <span class="string">"En evaluación"</span>,
+    <span class="string">"dias_restantes"</span>: 15
+}
+
+<span class="comment"># Recorrer claves y valores</span>
+<span class="kw">print</span>(<span class="string">"=== Estado del trámite ==="</span>)
+<span class="kw">for</span> clave, valor <span class="kw">in</span> tramite.items():
+    <span class="kw">print</span>(<span class="string">f"  {clave}: {valor}"</span>)
+<span class="output">=== Estado del trámite ===
+  tipo: Jubilación ordinaria
+  expediente: EXP-2024-00847
+  estado: En evaluación
+  dias_restantes: 15</span></div>
+        <div class="card-body" style="font-size:13px;margin-top:10px">El método <code>.items()</code> devuelve cada par clave-valor. Es la forma estándar de recorrer un diccionario completo.</div>
+      </div>
+
+      <div class="card">
+        <div class="ex-header"><div class="ex-num">5</div><div class="ex-title">Verificar si una clave existe</div></div>
+        <div class="code-block">ciudadano = {
+    <span class="string">"nombre"</span>: <span class="string">"María González"</span>,
+    <span class="string">"dni"</span>: 30456789
+}
+
+<span class="kw">if</span> <span class="string">"telefono"</span> <span class="kw">in</span> ciudadano:
+    <span class="kw">print</span>(<span class="string">f"Teléfono: {ciudadano['telefono']}"</span>)
+<span class="kw">else</span>:
+    <span class="kw">print</span>(<span class="string">"El ciudadano no tiene teléfono registrado."</span>)
+<span class="output">El ciudadano no tiene teléfono registrado.</span></div>
+        <div class="warn">Usar <code>"clave" in diccionario</code> <strong>antes</strong> de acceder a una clave cuando no se sabe si existe. El acceso directo a una clave inexistente lanza <strong>KeyError</strong> y detiene el programa.</div>
+      </div>
+    </div>
+
+    <!-- COMBINANDO -->
+    <div id="combinando" class="section">
+      <div class="section-header">
+        <div class="section-tag">Integración · 20 min</div>
+        <div class="section-title">Combinando listas y diccionarios</div>
+        <div class="section-desc">La mayoría de los datos reales son listas de diccionarios: una colección de entidades, donde cada entidad tiene sus propios campos. Esta es la base de cualquier tabla de base de datos.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Lista de diccionarios: la estructura más frecuente</div>
+        <div class="card-body" style="margin-bottom:10px">Un registro de turnos del día es exactamente esto: una lista donde cada elemento es un turno (diccionario).</div>
+        <div class="code-block">turnos_del_dia = [
+    {<span class="string">"horario"</span>: <span class="string">"09:00"</span>, <span class="string">"ciudadano"</span>: <span class="string">"Juan Martínez"</span>, <span class="string">"tramite"</span>: <span class="string">"Asignación Familiar"</span>, <span class="string">"estado"</span>: <span class="string">"atendido"</span>},
+    {<span class="string">"horario"</span>: <span class="string">"09:30"</span>, <span class="string">"ciudadano"</span>: <span class="string">"Ana López"</span>,     <span class="string">"tramite"</span>: <span class="string">"Jubilación"</span>,          <span class="string">"estado"</span>: <span class="string">"en espera"</span>},
+    {<span class="string">"horario"</span>: <span class="string">"10:00"</span>, <span class="string">"ciudadano"</span>: <span class="string">"Pedro Silva"</span>,    <span class="string">"tramite"</span>: <span class="string">"Pensión"</span>,             <span class="string">"estado"</span>: <span class="string">"en espera"</span>},
+    {<span class="string">"horario"</span>: <span class="string">"10:30"</span>, <span class="string">"ciudadano"</span>: <span class="string">"Rosa Díaz"</span>,      <span class="string">"tramite"</span>: <span class="string">"Asignación Familiar"</span>, <span class="string">"estado"</span>: <span class="string">"ausente"</span>},
+]</div>
+        <div class="tip">Esta estructura es exactamente lo que Django va a devolver cuando consultemos la base de datos. Entenderla ahora facilita mucho el trabajo en la Semana 3.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Acceder a datos anidados</div>
+        <div class="code-block"><span class="comment"># Acceder al primer turno</span>
+primer_turno = turnos_del_dia[0]
+<span class="kw">print</span>(primer_turno[<span class="string">"ciudadano"</span>])
+<span class="output">Juan Martínez</span>
+
+<span class="comment"># En una sola línea</span>
+<span class="kw">print</span>(turnos_del_dia[2][<span class="string">"tramite"</span>])
+<span class="output">Pensión</span>
+
+<span class="comment"># Recorrer y mostrar todos</span>
+<span class="kw">for</span> turno <span class="kw">in</span> turnos_del_dia:
+    <span class="kw">print</span>(<span class="string">f"  {turno['horario']}  {turno['ciudadano']:<20}  {turno['estado']}"</span>)
+<span class="output">  09:00  Juan Martínez         atendido
+  09:30  Ana López             en espera
+  10:00  Pedro Silva           en espera
+  10:30  Rosa Díaz             ausente</span></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Filtrar con condiciones</div>
+        <div class="card-body" style="margin-bottom:10px">¿Cuántos turnos todavía están en espera? ¿Qué ciudadanos hay que llamar?</div>
+        <div class="code-block">turnos_pendientes = []
+
+<span class="kw">for</span> turno <span class="kw">in</span> turnos_del_dia:
+    <span class="kw">if</span> turno[<span class="string">"estado"</span>] == <span class="string">"en espera"</span>:
+        turnos_pendientes.append(turno)
+
+<span class="kw">print</span>(<span class="string">f"Turnos pendientes: {len(turnos_pendientes)}"</span>)
+<span class="kw">for</span> t <span class="kw">in</span> turnos_pendientes:
+    <span class="kw">print</span>(<span class="string">f"  → {t['horario']} — {t['ciudadano']}"</span>)
+<span class="output">Turnos pendientes: 2
+  → 09:30 — Ana López
+  → 10:00 — Pedro Silva</span></div>
+        <div class="card-body" style="font-size:13px;margin-top:10px">Este patrón — recorrer una lista, evaluar una condición, acumular en otra lista — es uno de los más usados en backend. Lo vamos a ver cientos de veces en el curso.</div>
+      </div>
+    </div>
+
+    <!-- PRACTICA -->
+    <div id="practica" class="section">
+      <div class="section-header">
+        <div class="section-tag">Práctica guiada · 20 min</div>
+        <div class="section-title">Práctica en el intérprete de Python</div>
+        <div class="section-desc">Abrir la terminal, ejecutar <code>python3</code> y resolver los ejercicios en vivo. El instructor realiza cada ejercicio mientras la clase replica.</div>
+      </div>
+
+      <div class="card">
+        <div class="ex-header"><div class="ex-num">1</div><div class="ex-title">Construir la lista de horarios disponibles</div></div>
+        <div class="code-block"><span class="kw">>>></span> horarios = [<span class="string">"09:00"</span>, <span class="string">"09:30"</span>, <span class="string">"10:00"</span>, <span class="string">"10:30"</span>, <span class="string">"11:00"</span>]
+<span class="kw">>>></span> <span class="kw">print</span>(<span class="string">f"Hay {len(horarios)} turnos disponibles"</span>)
+Hay 5 turnos disponibles
+
+<span class="kw">>>></span> horarios.append(<span class="string">"11:30"</span>)
+<span class="kw">>>></span> <span class="kw">print</span>(<span class="string">f"Ahora hay {len(horarios)} turnos"</span>)
+Ahora hay 6 turnos
+
+<span class="kw">>>></span> horarios.remove(<span class="string">"09:00"</span>)   <span class="comment"># Turno tomado</span>
+<span class="kw">>>></span> <span class="kw">print</span>(horarios)
+['09:30', '10:00', '10:30', '11:00', '11:30']</div>
+      </div>
+
+      <div class="card">
+        <div class="ex-header"><div class="ex-num">2</div><div class="ex-title">Crear el diccionario de un ciudadano</div></div>
+        <div class="code-block"><span class="kw">>>></span> ciudadano = {
+...     <span class="string">"nombre"</span>: <span class="string">"Luis Fernández"</span>,
+...     <span class="string">"dni"</span>: 25678901,
+...     <span class="string">"tramite"</span>: <span class="string">"Asignación Familiar"</span>,
+...     <span class="string">"turno"</span>: <span class="string">"10:30"</span>
+... }
+<span class="kw">>>></span> <span class="kw">print</span>(<span class="string">f"Ciudadano: {ciudadano['nombre']}, turno: {ciudadano['turno']}"</span>)
+Ciudadano: Luis Fernández, turno: 10:30</div>
+      </div>
+
+      <div class="card">
+        <div class="ex-header"><div class="ex-num">3</div><div class="ex-title">Calcular estadísticas de la jornada</div></div>
+        <div class="code-block">turnos = [
+    {<span class="string">"ciudadano"</span>: <span class="string">"Juan"</span>,  <span class="string">"estado"</span>: <span class="string">"atendido"</span>},
+    {<span class="string">"ciudadano"</span>: <span class="string">"Ana"</span>,   <span class="string">"estado"</span>: <span class="string">"atendido"</span>},
+    {<span class="string">"ciudadano"</span>: <span class="string">"Pedro"</span>, <span class="string">"estado"</span>: <span class="string">"ausente"</span>},
+    {<span class="string">"ciudadano"</span>: <span class="string">"Rosa"</span>,  <span class="string">"estado"</span>: <span class="string">"atendido"</span>},
+    {<span class="string">"ciudadano"</span>: <span class="string">"Carlos"</span>,<span class="string">"estado"</span>: <span class="string">"ausente"</span>},
+]
+
+atendidos = 0
+ausentes = 0
+
+<span class="kw">for</span> t <span class="kw">in</span> turnos:
+    <span class="kw">if</span> t[<span class="string">"estado"</span>] == <span class="string">"atendido"</span>:
+        atendidos += 1
+    <span class="kw">else</span>:
+        ausentes += 1
+
+<span class="kw">print</span>(<span class="string">f"Atendidos: {atendidos} | Ausentes: {ausentes} | Total: {len(turnos)}"</span>)
+<span class="output">Atendidos: 3 | Ausentes: 2 | Total: 5</span></div>
+        <div class="tip">Este tipo de conteo por categorías es la base de cualquier reporte o dashboard. En las semanas siguientes lo vamos a convertir en un endpoint de la API.</div>
+      </div>
+    </div>
+
+    <!-- CIERRE -->
+    <div id="cierre" class="section">
+      <div class="section-header">
+        <div class="section-tag">Actividad · 10 min</div>
+        <div class="section-title">Actividad de cierre: módulo de datos del sistema</div>
+        <div class="section-desc">Crear el archivo <code>datos.py</code> dentro de la carpeta <code>sistema-turnos</code>. Este archivo va a crecer en las próximas semanas.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Paso 1 — Abrir VS Code en la carpeta del proyecto</div>
+        <div class="code-block">cd sistema-turnos
+code .</div>
+        <div class="card-body" style="font-size:13px;margin-top:8px">Crear un archivo nuevo llamado <code>datos.py</code> dentro de la carpeta.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Paso 2 — Escribir el módulo de datos</div>
+        <div class="tip">Tipear el código en lugar de copiarlo. Cada línea escrita es una línea aprendida.</div>
+        <div class="code-block"><span class="comment"># Sistema de Gestión de Turnos - Módulo de Datos
+# Proyecto del curso de Desarrollo Web - Semana 2</span>
+
+<span class="comment"># --- Datos de la sede ---</span>
+sede = {
+    <span class="string">"nombre"</span>: <span class="string">"ANSES Palermo"</span>,
+    <span class="string">"direccion"</span>: <span class="string">"Av. Santa Fe 3132, CABA"</span>,
+    <span class="string">"capacidad_diaria"</span>: 48
+}
+
+<span class="comment"># --- Horarios disponibles ---</span>
+horarios_disponibles = [
+    <span class="string">"09:00"</span>, <span class="string">"09:30"</span>, <span class="string">"10:00"</span>, <span class="string">"10:30"</span>,
+    <span class="string">"11:00"</span>, <span class="string">"11:30"</span>, <span class="string">"14:00"</span>, <span class="string">"14:30"</span>
+]
+
+<span class="comment"># --- Trámites disponibles ---</span>
+tramites = [
+    <span class="string">"Jubilación ordinaria"</span>,
+    <span class="string">"Asignación Familiar"</span>,
+    <span class="string">"Pensión por fallecimiento"</span>,
+    <span class="string">"SUAF"</span>
+]
+
+<span class="comment"># --- Registro del día ---</span>
+turnos_registrados = [
+    {<span class="string">"horario"</span>: <span class="string">"09:00"</span>, <span class="string">"nombre"</span>: <span class="string">"Juan Martínez"</span>, <span class="string">"tramite"</span>: <span class="string">"Asignación Familiar"</span>, <span class="string">"estado"</span>: <span class="string">"atendido"</span>},
+    {<span class="string">"horario"</span>: <span class="string">"09:30"</span>, <span class="string">"nombre"</span>: <span class="string">"Ana López"</span>,     <span class="string">"tramite"</span>: <span class="string">"Jubilación ordinaria"</span>,  <span class="string">"estado"</span>: <span class="string">"en espera"</span>},
+    {<span class="string">"horario"</span>: <span class="string">"10:00"</span>, <span class="string">"nombre"</span>: <span class="string">"Pedro Silva"</span>,  <span class="string">"tramite"</span>: <span class="string">"Pensión por fallecimiento"</span>,<span class="string">"estado"</span>: <span class="string">"en espera"</span>},
+]
+
+<span class="comment"># --- Mostrar resumen de la sede ---</span>
+<span class="kw">print</span>(<span class="string">"=" * 50</span>)
+<span class="kw">print</span>(<span class="string">f"  {sede['nombre']}"</span>)
+<span class="kw">print</span>(<span class="string">f"  {sede['direccion']}"</span>)
+<span class="kw">print</span>(<span class="string">"=" * 50</span>)
+
+<span class="kw">print</span>(<span class="string">f"\nHorarios disponibles ({len(horarios_disponibles)}):"</span>)
+<span class="kw">for</span> h <span class="kw">in</span> horarios_disponibles:
+    <span class="kw">print</span>(<span class="string">f"  {h}"</span>)
+
+<span class="kw">print</span>(<span class="string">f"\nTurnos registrados hoy: {len(turnos_registrados)}"</span>)
+<span class="kw">for</span> t <span class="kw">in</span> turnos_registrados:
+    <span class="kw">print</span>(<span class="string">f"  {t['horario']}  {t['nombre']:<22}  [{t['estado']}]"</span>)</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Paso 3 — Ejecutar y verificar</div>
+        <div class="code-block">python3 datos.py</div>
+        <div class="code-block" style="margin-top:8px"><span class="output">==================================================
+  ANSES Palermo
+  Av. Santa Fe 3132, CABA
+==================================================
+
+Horarios disponibles (8):
+  09:00
+  09:30
+  10:00
+  10:30
+  11:00
+  11:30
+  14:00
+  14:30
+
+Turnos registrados hoy: 3
+  09:00  Juan Martínez          [atendido]
+  09:30  Ana López              [en espera]
+  10:00  Pedro Silva            [en espera]</span></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Desafío opcional</div>
+        <div class="card-body">Agregar al final del programa un bloque que cuente y muestre cuántos turnos están atendidos, cuántos en espera y cuántos ausentes. Usar un loop y contadores, como en el ejercicio 3 de la práctica guiada.</div>
+      </div>
+    </div>
+
+    <!-- MÉTODOS ÚTILES -->
+    <div id="metodos" class="section">
+      <div class="section-header">
+        <div class="section-tag">Referencia</div>
+        <div class="section-title">Métodos útiles de listas y diccionarios</div>
+        <div class="section-desc">Referencia rápida de los métodos más frecuentes. No hace falta memorizarlos todos: con el uso diario se vuelven naturales.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Métodos de listas</div>
+        <div class="code-block">lista = [<span class="string">"a"</span>, <span class="string">"b"</span>, <span class="string">"c"</span>]
+
+lista.append(<span class="string">"d"</span>)         <span class="comment"># Agrega al final</span>
+lista.insert(1, <span class="string">"x"</span>)       <span class="comment"># Inserta en posición 1</span>
+lista.remove(<span class="string">"b"</span>)         <span class="comment"># Elimina por valor (primera ocurrencia)</span>
+lista.pop()               <span class="comment"># Elimina y devuelve el último</span>
+lista.pop(0)              <span class="comment"># Elimina y devuelve el de posición 0</span>
+lista.sort()              <span class="comment"># Ordena en el lugar (solo para tipos comparables)</span>
+lista.reverse()           <span class="comment"># Invierte el orden</span>
+lista.index(<span class="string">"a"</span>)         <span class="comment"># Devuelve la posición de "a"</span>
+lista.count(<span class="string">"a"</span>)         <span class="comment"># Cuántas veces aparece "a"</span>
+lista.clear()             <span class="comment"># Vacía la lista</span>
+nueva = lista.copy()      <span class="comment"># Copia la lista (no la misma referencia)</span></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Métodos de diccionarios</div>
+        <div class="code-block">d = {<span class="string">"a"</span>: 1, <span class="string">"b"</span>: 2, <span class="string">"c"</span>: 3}
+
+d.keys()                  <span class="comment"># Lista de claves: dict_keys(['a', 'b', 'c'])</span>
+d.values()                <span class="comment"># Lista de valores: dict_values([1, 2, 3])</span>
+d.items()                 <span class="comment"># Lista de pares: dict_items([('a', 1), ...])</span>
+d.get(<span class="string">"x"</span>, <span class="string">"no existe"</span>)  <span class="comment"># Acceso seguro con valor por defecto</span>
+d.pop(<span class="string">"b"</span>)               <span class="comment"># Elimina "b" y devuelve su valor (2)</span>
+d.update({<span class="string">"d"</span>: 4})       <span class="comment"># Agrega o actualiza claves en bloque</span>
+d.clear()                 <span class="comment"># Vacía el diccionario</span>
+copia = d.copy()          <span class="comment"># Copia superficial del diccionario</span>
+<span class="string">"a"</span> <span class="kw">in</span> d                  <span class="comment"># True si "a" es clave del diccionario</span></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Errores comunes y cómo evitarlos</div>
+        <div class="trouble-item">
+          <div class="trouble-q">IndexError: list index out of range</div>
+          <div class="trouble-a">Se intentó acceder a una posición que no existe. Verificar con <code>len(lista)</code> antes o usar <code>if i &lt; len(lista)</code>.</div>
+        </div>
+        <div class="divider"></div>
+        <div class="trouble-item">
+          <div class="trouble-q">KeyError: 'nombre'</div>
+          <div class="trouble-a">La clave no existe en el diccionario. Usar <code>diccionario.get("nombre")</code> o verificar con <code>"nombre" in diccionario</code> antes de acceder.</div>
+        </div>
+        <div class="divider"></div>
+        <div class="trouble-item">
+          <div class="trouble-q">TypeError: unhashable type: 'list'</div>
+          <div class="trouble-a">Se intentó usar una lista como clave de diccionario. Las claves deben ser tipos inmutables: strings, números, tuplas.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RECURSOS -->
+    <div id="recursos" class="section">
+      <div class="section-header">
+        <div class="section-tag">Referencia</div>
+        <div class="section-title">Recursos adicionales</div>
+        <div class="section-desc">Documentación oficial y materiales para profundizar entre la Clase 5 y la Clase 6.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Para esta semana</div>
+        <div class="install-row">
+          <div style="flex:1">
+            <div class="install-name">Documentación de listas en Python (español)</div>
+            <div class="install-desc">Referencia completa de todos los métodos disponibles, con ejemplos.</div>
+            <div class="install-cmd">docs.python.org/es/3/tutorial/datastructures.html</div>
+          </div>
+        </div>
+        <div class="install-row">
+          <div style="flex:1">
+            <div class="install-name">Visualizador de estructuras de datos — Python Tutor</div>
+            <div class="install-desc">Permite ejecutar código paso a paso y ver exactamente qué hay en memoria en cada momento. Muy útil para entender listas y diccionarios anidados.</div>
+            <div class="install-cmd">pythontutor.com</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Para la próxima clase — Clase 6</div>
+        <div class="card-body">En la Clase 6 trabajamos <strong>funciones</strong>: cómo encapsular lógica en bloques reutilizables. Las estructuras de datos de hoy van a ser los parámetros y valores de retorno de esas funciones. El módulo <code>datos.py</code> que creamos hoy va a seguir creciendo.</div>
+        <div style="margin-top:12px">
+          <span class="pill pill-success">datos.py funcionando ✓</span>
+          <span class="pill pill-success">listas: crear, recorrer, filtrar ✓</span>
+          <span class="pill pill-success">diccionarios: crear, acceder, modificar ✓</span>
+          <span class="pill pill-warn">lista de diccionarios ✓</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+function show(id, el) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  el.classList.add('active');
+  document.querySelector('.main').scrollTop = 0;
+}
+</script>
+</body>
+</html>

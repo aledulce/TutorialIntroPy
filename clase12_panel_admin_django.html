@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clase 10 — Panel de Administración de Django</title>
+<link rel="stylesheet" href="canvas_shared.css">
+</head>
+<body>
+
+<div class="canvas">
+  <div class="sidebar">
+    <div class="sidebar-top">
+      <div class="sidebar-badge">Semana 2</div>
+      <div class="sidebar-title">Clase 10 — Panel de administración de Django</div>
+      <div class="sidebar-sub">2 horas · clase 10 de 10</div>
+    </div>
+    <div class="nav">
+      <div class="nav-label">Contenido</div>
+      <div class="nav-item active" onclick="show('intro',this)"><div class="nav-dot"></div>¿Qué es el admin?<span class="time-badge">10 min</span></div>
+      <div class="nav-item" onclick="show('activacion',this)"><div class="nav-dot"></div>Activación y acceso<span class="time-badge">20 min</span></div>
+      <div class="nav-item" onclick="show('registro',this)"><div class="nav-dot"></div>Registrar modelos<span class="time-badge">20 min</span></div>
+      <div class="nav-item" onclick="show('personalizacion',this)"><div class="nav-dot"></div>Personalización<span class="time-badge">25 min</span></div>
+      <div class="nav-item" onclick="show('acciones',this)"><div class="nav-dot"></div>Acciones y filtros<span class="time-badge">20 min</span></div>
+      <div class="nav-item" onclick="show('practica',this)"><div class="nav-dot"></div>Práctica guiada<span class="time-badge">20 min</span></div>
+      
+      <div class="nav-label">Referencia</div>
+      <div class="nav-item" onclick="show('cheatsheet',this)"><div class="nav-dot"></div>Cheatsheet admin</div>
+      <div class="nav-item" onclick="show('recursos',this)"><div class="nav-dot"></div>Recursos</div>
+    </div>
+    <div class="sidebar-home-link" style="margin-top:auto;padding:12px 16px;border-top:0.5px solid var(--color-border-tertiary);">
+      <a href="index.html" style="font-size:12px;color:var(--color-text-info);text-decoration:none;font-weight:500;">← Volver al índice</a>
+    </div>
+  </div>
+
+  <div class="main">
+
+    <!-- INTRO -->
+    <div id="intro" class="section active">
+      <div class="section-header">
+        <div class="section-tag">Apertura · 10 min</div>
+        <div class="section-title">¿Qué es el panel de administración?</div>
+        <div class="section-desc">Django incluye de fábrica una herramienta que en otros frameworks tarda semanas construir. En esta clase la dejamos lista para gestionar los datos del sistema de turnos.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Una interfaz completa sin escribir una sola línea de frontend</div>
+        <div class="card-body">El panel de administración de Django (<code>/admin</code>) es una aplicación web generada automáticamente que permite crear, leer, actualizar y eliminar registros en la base de datos. No hay que diseñar pantallas ni escribir HTML: Django lo construye a partir de los modelos que ya definimos.<br><br>En el sistema de turnos va a ser la herramienta que usan los agentes administrativos para gestionar ciudadanos, trámites y disponibilidad horaria — sin tocar la consola ni escribir SQL.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">¿Para qué sirve en el mundo real?</div>
+        <div class="card-body">En organismos del Estado es frecuente que el área de sistemas entregue un sistema y los empleados necesiten administrar datos sin ayuda técnica. El panel admin cubre ese rol desde el día uno.</div>
+        <div style="margin-top:12px">
+          <span class="pill pill-info">Gestionar turnos y ciudadanos</span>
+          <span class="pill pill-info">Cargar datos iniciales</span>
+          <span class="pill pill-success">Revisar registros en producción</span>
+          <span class="pill pill-success">Depurar problemas rápidamente</span>
+          <span class="pill pill-warn">Exportar datos para auditoría</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Posición en el curso</div>
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-time">Clase 7</div>
+            <div class="tl-label">Proyecto Django y estructura general</div>
+            <div class="progress-bar"><div class="progress-fill" style="width:100%"></div></div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-time">Clase 8</div>
+            <div class="tl-label">Rutas y vistas</div>
+            <div class="progress-bar"><div class="progress-fill" style="width:100%"></div></div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-time">Clase 9</div>
+            <div class="tl-label">Templates y contenido dinámico</div>
+            <div class="progress-bar"><div class="progress-fill" style="width:100%"></div></div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-time">Clase 10 ←</div>
+            <div class="tl-label">Panel admin para gestión de datos</div>
+            <div class="progress-bar"><div class="progress-fill" style="width:100%"></div></div>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+
+    <!-- ACTIVACION -->
+    <div id="activacion" class="section">
+      <div class="section-header">
+        <div class="section-tag">Setup · 20 min</div>
+        <div class="section-title">Activación y acceso al panel</div>
+        <div class="section-desc">El admin ya está incluido en Django. Solo hay que verificar la configuración y crear un superusuario para poder ingresar.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">1. Verificar que django.contrib.admin esté habilitado</div>
+        <div class="card-body" style="margin-bottom:10px">En <code>settings.py</code>, dentro de <code>INSTALLED_APPS</code>, estas tres líneas deben estar presentes. En un proyecto nuevo de Django ya vienen por defecto.</div>
+        <div class="code-block"><span class="comment"># sistema_turnos/settings.py</span>
+
+INSTALLED_APPS = [
+    <span class="string">'django.contrib.admin'</span>,       <span class="comment"># El panel en sí</span>
+    <span class="string">'django.contrib.auth'</span>,        <span class="comment"># Sistema de usuarios y permisos</span>
+    <span class="string">'django.contrib.contenttypes'</span>, <span class="comment"># Necesario para permisos</span>
+    <span class="string">'django.contrib.sessions'</span>,
+    <span class="string">'django.contrib.messages'</span>,
+    <span class="string">'django.contrib.staticfiles'</span>,
+    <span class="string">'turnos'</span>,                      <span class="comment"># Nuestra app</span>
+]</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">2. Verificar la ruta en urls.py</div>
+        <div class="card-body" style="margin-bottom:10px">La URL <code>/admin</code> se registra en el archivo de rutas principal del proyecto.</div>
+        <div class="code-block"><span class="comment"># sistema_turnos/urls.py</span>
+
+<span class="kw">from</span> django.contrib <span class="kw">import</span> admin
+<span class="kw">from</span> django.urls <span class="kw">import</span> path
+
+urlpatterns = [
+    path(<span class="string">'admin/'</span>, admin.site.urls),  <span class="comment"># Ya viene en el proyecto nuevo</span>
+    <span class="comment"># ... otras rutas de la app</span>
+]</div>
+        <div class="tip">Nada más es necesario en <code>urls.py</code>. Django registra automáticamente todas las URLs internas del admin con esa sola línea.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">3. Crear el superusuario</div>
+        <div class="card-body" style="margin-bottom:10px">El superusuario tiene acceso total al panel. Se crea una sola vez por proyecto desde la terminal.</div>
+        <div class="code-block">python3 manage.py createsuperuser</div>
+        <div class="code-block" style="margin-top:8px"><span class="output">Nombre de usuario: admin_turnos
+Dirección de correo electrónico: admin@organismo.gob.ar
+Password: ********
+Password (again): ********
+Superuser created successfully.</span></div>
+        <div class="warn">Elegir una contraseña segura aunque sea un entorno de desarrollo. Ese hábito evita problemas cuando el proyecto pasa a producción.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">4. Ejecutar el servidor y entrar al panel</div>
+        <div class="code-block">python3 manage.py runserver</div>
+        <div class="card-body" style="margin-top:10px">Abrir el navegador en <code>http://127.0.0.1:8000/admin</code>. Ingresar con el usuario y contraseña recién creados. El panel ya está funcionando — aunque por ahora solo muestra Usuarios y Grupos.</div>
+      </div>
+    </div>
+
+    <!-- REGISTRO -->
+    <div id="registro" class="section">
+      <div class="section-header">
+        <div class="section-tag">Práctica · 20 min</div>
+        <div class="section-title">Registrar modelos en el admin</div>
+        <div class="section-desc">Para que los datos del sistema de turnos aparezcan en el panel, hay que registrar cada modelo. Toda la configuración vive en <code>admin.py</code> dentro de la app.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Modelos del sistema de turnos (repaso de clase 13 en anticipo)</div>
+        <div class="card-body" style="margin-bottom:12px">Para practicar hoy vamos a usar modelos simples. En la Semana 4 los vamos a profundizar con migraciones y relaciones.</div>
+        <div class="code-block"><span class="comment"># turnos/models.py</span>
+
+<span class="kw">from</span> django.db <span class="kw">import</span> models
+
+<span class="kw">class</span> <span class="string">Ciudadano</span>(models.Model):
+    nombre       = models.CharField(max_length=<span class="string">100</span>)
+    apellido     = models.CharField(max_length=<span class="string">100</span>)
+    dni          = models.CharField(max_length=<span class="string">10</span>, unique=<span class="kw">True</span>)
+    email        = models.EmailField(blank=<span class="kw">True</span>)
+    fecha_alta   = models.DateTimeField(auto_now_add=<span class="kw">True</span>)
+
+    <span class="kw">def</span> __str__(self):
+        <span class="kw">return</span> <span class="string">f"{self.apellido}, {self.nombre} — DNI {self.dni}"</span>
+
+<span class="kw">class</span> <span class="string">Turno</span>(models.Model):
+    ESTADOS = [
+        (<span class="string">'pendiente'</span>,   <span class="string">'Pendiente'</span>),
+        (<span class="string">'confirmado'</span>,  <span class="string">'Confirmado'</span>),
+        (<span class="string">'cancelado'</span>,   <span class="string">'Cancelado'</span>),
+        (<span class="string">'atendido'</span>,    <span class="string">'Atendido'</span>),
+    ]
+    ciudadano    = models.ForeignKey(Ciudadano, on_delete=models.CASCADE)
+    fecha_hora   = models.DateTimeField()
+    tramite      = models.CharField(max_length=<span class="string">200</span>)
+    estado       = models.CharField(max_length=<span class="string">20</span>, choices=ESTADOS,
+                                    default=<span class="string">'pendiente'</span>)
+
+    <span class="kw">def</span> __str__(self):
+        <span class="kw">return</span> <span class="string">f"Turno {self.id} — {self.ciudadano} — {self.estado}"</span></div>
+        <div class="tip">El método <code>__str__</code> define cómo aparece cada registro en el panel. Sin él, Django muestra "Ciudadano object (1)" — no es útil para nadie.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Registro básico en admin.py</div>
+        <div class="card-body" style="margin-bottom:10px">El registro más simple: una línea por modelo. Es suficiente para empezar.</div>
+        <div class="code-block"><span class="comment"># turnos/admin.py</span>
+
+<span class="kw">from</span> django.contrib <span class="kw">import</span> admin
+<span class="kw">from</span> .models <span class="kw">import</span> Ciudadano, Turno
+
+admin.site.register(Ciudadano)
+admin.site.register(Turno)</div>
+        <div class="card-body" style="margin-top:10px">Con esto ya podemos entrar al panel y ver las secciones "Ciudadanos" y "Turnos". Podemos crear, editar y eliminar registros desde la interfaz.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Ejecutar migraciones antes de probar</div>
+        <div class="card-body" style="margin-bottom:10px">Los modelos que acabamos de escribir no existen aún en la base de datos. Hay que crear y aplicar las migraciones.</div>
+        <div class="code-block">python3 manage.py makemigrations
+python3 manage.py migrate</div>
+        <div class="code-block" style="margin-top:8px"><span class="output">Migrations for 'turnos':
+  turnos/migrations/0001_initial.py
+    - Create model Ciudadano
+    - Create model Turno
+
+Operations to perform:
+  Apply all migrations: admin, auth, contenttypes, sessions, turnos
+Running migrations:
+  Applying turnos.0001_initial... OK</span></div>
+      </div>
+    </div>
+
+    <!-- PERSONALIZACION -->
+    <div id="personalizacion" class="section">
+      <div class="section-header">
+        <div class="section-tag">Configuración · 25 min</div>
+        <div class="section-title">Personalización del panel</div>
+        <div class="section-desc">El registro básico funciona pero el panel por defecto es poco práctico para uso cotidiano. Con <code>ModelAdmin</code> lo adaptamos a las necesidades del organismo.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">ModelAdmin: la clase de configuración</div>
+        <div class="card-body" style="margin-bottom:10px">En lugar de pasar el modelo directamente a <code>register()</code>, creamos una clase que hereda de <code>ModelAdmin</code> y define cómo se muestra y comporta ese modelo en el panel.</div>
+        <div class="code-block"><span class="comment"># turnos/admin.py</span>
+
+<span class="kw">from</span> django.contrib <span class="kw">import</span> admin
+<span class="kw">from</span> .models <span class="kw">import</span> Ciudadano, Turno
+
+
+<span class="kw">class</span> <span class="string">CiudadanoAdmin</span>(admin.ModelAdmin):
+
+    <span class="comment"># Columnas visibles en la tabla listado</span>
+    list_display  = (<span class="string">'apellido'</span>, <span class="string">'nombre'</span>, <span class="string">'dni'</span>, <span class="string">'email'</span>, <span class="string">'fecha_alta'</span>)
+
+    <span class="comment"># Campos por los que se puede buscar</span>
+    search_fields = (<span class="string">'apellido'</span>, <span class="string">'nombre'</span>, <span class="string">'dni'</span>)
+
+    <span class="comment"># Orden por defecto</span>
+    ordering      = (<span class="string">'apellido'</span>, <span class="string">'nombre'</span>)
+
+    <span class="comment"># Campos de solo lectura (no editables)</span>
+    readonly_fields = (<span class="string">'fecha_alta'</span>,)
+
+
+admin.site.register(Ciudadano, CiudadanoAdmin)</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Personalización del modelo Turno</div>
+        <div class="code-block"><span class="kw">class</span> <span class="string">TurnoAdmin</span>(admin.ModelAdmin):
+
+    list_display        = (<span class="string">'id'</span>, <span class="string">'ciudadano'</span>, <span class="string">'tramite'</span>, <span class="string">'fecha_hora'</span>, <span class="string">'estado'</span>)
+    list_filter         = (<span class="string">'estado'</span>, <span class="string">'fecha_hora'</span>)    <span class="comment"># Panel lateral de filtros</span>
+    search_fields       = (<span class="string">'ciudadano__dni'</span>, <span class="string">'ciudadano__apellido'</span>, <span class="string">'tramite'</span>)
+    date_hierarchy      = <span class="string">'fecha_hora'</span>              <span class="comment"># Navegación por fecha</span>
+    list_per_page       = <span class="string">25</span>                        <span class="comment"># Paginación</span>
+    list_display_links  = (<span class="string">'id'</span>, <span class="string">'ciudadano'</span>)       <span class="comment"># Columnas con enlace al detalle</span>
+
+
+admin.site.register(Turno, TurnoAdmin)</div>
+        <div class="tip">La notación <code>ciudadano__dni</code> en <code>search_fields</code> permite buscar por un campo del modelo relacionado usando doble guión bajo. Es la misma sintaxis del ORM de Django.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Decorador alternativo: @admin.register</div>
+        <div class="card-body" style="margin-bottom:10px">Una forma más moderna y concisa de registrar modelos. El resultado es idéntico al uso de <code>admin.site.register()</code>.</div>
+        <div class="code-block"><span class="kw">@admin.register</span>(Ciudadano)
+<span class="kw">class</span> <span class="string">CiudadanoAdmin</span>(admin.ModelAdmin):
+    list_display  = (<span class="string">'apellido'</span>, <span class="string">'nombre'</span>, <span class="string">'dni'</span>, <span class="string">'email'</span>)
+    search_fields = (<span class="string">'apellido'</span>, <span class="string">'nombre'</span>, <span class="string">'dni'</span>)
+    ordering      = (<span class="string">'apellido'</span>,)
+
+<span class="kw">@admin.register</span>(Turno)
+<span class="kw">class</span> <span class="string">TurnoAdmin</span>(admin.ModelAdmin):
+    list_display  = (<span class="string">'ciudadano'</span>, <span class="string">'tramite'</span>, <span class="string">'fecha_hora'</span>, <span class="string">'estado'</span>)
+    list_filter   = (<span class="string">'estado'</span>,)
+    search_fields = (<span class="string">'ciudadano__apellido'</span>, <span class="string">'ciudadano__dni'</span>)</div>
+        <div class="card-body" style="margin-top:10px">Ambas formas son correctas. El decorador es el estilo preferido en proyectos modernos porque mantiene el registro junto a la clase de configuración.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Columnas calculadas con métodos</div>
+        <div class="card-body" style="margin-bottom:10px">Se pueden agregar columnas en <code>list_display</code> que no existen como campo en la base de datos, sino que calculan un valor.</div>
+        <div class="code-block"><span class="kw">@admin.register</span>(Turno)
+<span class="kw">class</span> <span class="string">TurnoAdmin</span>(admin.ModelAdmin):
+    list_display = (<span class="string">'ciudadano'</span>, <span class="string">'tramite'</span>, <span class="string">'fecha_hora'</span>,
+                    <span class="string">'estado'</span>, <span class="string">'esta_pendiente'</span>)
+
+    <span class="kw">def</span> esta_pendiente(self, obj):
+        <span class="kw">return</span> obj.estado == <span class="string">'pendiente'</span>
+
+    esta_pendiente.boolean      = <span class="kw">True</span>   <span class="comment"># Muestra ícono ✓ o ✗</span>
+    esta_pendiente.short_description = <span class="string">'¿Pendiente?'</span>  <span class="comment"># Título de columna</span></div>
+      </div>
+    </div>
+
+    <!-- ACCIONES Y FILTROS -->
+    <div id="acciones" class="section">
+      <div class="section-header">
+        <div class="section-tag">Funcionalidad avanzada · 20 min</div>
+        <div class="section-title">Acciones en lote y filtros</div>
+        <div class="section-desc">El panel permite ejecutar operaciones sobre múltiples registros seleccionados. Es útil para cambios masivos de estado, como confirmar o cancelar varios turnos a la vez.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Acciones personalizadas</div>
+        <div class="card-body" style="margin-bottom:10px">El panel ya tiene la acción "Eliminar" por defecto. Podemos agregar las nuestras para operaciones frecuentes del organismo.</div>
+        <div class="code-block"><span class="kw">@admin.register</span>(Turno)
+<span class="kw">class</span> <span class="string">TurnoAdmin</span>(admin.ModelAdmin):
+    list_display = (<span class="string">'ciudadano'</span>, <span class="string">'tramite'</span>, <span class="string">'fecha_hora'</span>, <span class="string">'estado'</span>)
+    list_filter  = (<span class="string">'estado'</span>,)
+    actions      = [<span class="string">'confirmar_turnos'</span>, <span class="string">'cancelar_turnos'</span>]
+
+    <span class="kw">def</span> confirmar_turnos(self, request, queryset):
+        <span class="comment">"""Confirma todos los turnos seleccionados."""</span>
+        actualizados = queryset.update(estado=<span class="string">'confirmado'</span>)
+        self.message_user(
+            request,
+            <span class="string">f"{actualizados} turno(s) confirmados correctamente."</span>
+        )
+    confirmar_turnos.short_description = <span class="string">"✓ Confirmar turnos seleccionados"</span>
+
+    <span class="kw">def</span> cancelar_turnos(self, request, queryset):
+        <span class="comment">"""Cancela todos los turnos seleccionados."""</span>
+        actualizados = queryset.update(estado=<span class="string">'cancelado'</span>)
+        self.message_user(
+            request,
+            <span class="string">f"{actualizados} turno(s) cancelados."</span>,
+            level=<span class="string">'WARNING'</span>
+        )
+    cancelar_turnos.short_description = <span class="string">"✗ Cancelar turnos seleccionados"</span></div>
+        <div class="tip">El parámetro <code>queryset</code> contiene exactamente los objetos seleccionados en la lista. Todo lo que se puede hacer con un queryset de Django es válido dentro de una acción.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Filtros en el panel lateral</div>
+        <div class="card-body" style="margin-bottom:10px"><code>list_filter</code> acepta campos del modelo y también clases de filtro personalizadas para lógica más compleja.</div>
+        <div class="code-block"><span class="kw">from</span> django.utils <span class="kw">import</span> timezone
+
+<span class="kw">class</span> <span class="string">TurnosPorFecha</span>(admin.SimpleListFilter):
+    title        = <span class="string">"período"</span>
+    parameter_name = <span class="string">"periodo"</span>
+
+    <span class="kw">def</span> lookups(self, request, model_admin):
+        <span class="kw">return</span> [
+            (<span class="string">'hoy'</span>,    <span class="string">'Hoy'</span>),
+            (<span class="string">'semana'</span>, <span class="string">'Esta semana'</span>),
+            (<span class="string">'mes'</span>,    <span class="string">'Este mes'</span>),
+        ]
+
+    <span class="kw">def</span> queryset(self, request, queryset):
+        hoy = timezone.now().date()
+        <span class="kw">if</span> self.value() == <span class="string">'hoy'</span>:
+            <span class="kw">return</span> queryset.filter(fecha_hora__date=hoy)
+        <span class="kw">if</span> self.value() == <span class="string">'semana'</span>:
+            <span class="kw">return</span> queryset.filter(fecha_hora__week=hoy.isocalendar().week)
+        <span class="kw">if</span> self.value() == <span class="string">'mes'</span>:
+            <span class="kw">return</span> queryset.filter(fecha_hora__month=hoy.month)
+
+
+<span class="kw">@admin.register</span>(Turno)
+<span class="kw">class</span> <span class="string">TurnoAdmin</span>(admin.ModelAdmin):
+    list_filter = (<span class="string">'estado'</span>, TurnosPorFecha)</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Personalizar el título del sitio</div>
+        <div class="card-body" style="margin-bottom:10px">Por defecto el panel muestra "Administración de Django". Se puede cambiar para reflejar el organismo.</div>
+        <div class="code-block"><span class="comment"># turnos/admin.py (al final del archivo)</span>
+
+admin.site.site_header  = <span class="string">"ANSES — Sistema de Gestión de Turnos"</span>
+admin.site.site_title   = <span class="string">"ANSES Admin"</span>
+admin.site.index_title  = <span class="string">"Panel de administración"</span></div>
+      </div>
+    </div>
+
+    <!-- PRACTICA -->
+    <div id="practica" class="section">
+      <div class="section-header">
+        <div class="section-tag">Práctica guiada · 20 min</div>
+        <div class="section-title">Construcción del admin completo del sistema de turnos</div>
+        <div class="section-desc">Integramos todo lo visto en una sola práctica. Al final, el panel va a estar listo para que un agente administrativo pueda operar el sistema sin conocimientos técnicos.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Paso 1 — admin.py completo</div>
+        <div class="tip">Tipear el código, no copiarlo. Es la forma más rápida de internalizar la sintaxis.</div>
+        <div class="code-block"><span class="comment"># turnos/admin.py</span>
+
+<span class="kw">from</span> django.contrib <span class="kw">import</span> admin
+<span class="kw">from</span> django.utils <span class="kw">import</span> timezone
+<span class="kw">from</span> .models <span class="kw">import</span> Ciudadano, Turno
+
+<span class="comment"># ── Ciudadano ──────────────────────────────────────────────</span>
+
+<span class="kw">@admin.register</span>(Ciudadano)
+<span class="kw">class</span> <span class="string">CiudadanoAdmin</span>(admin.ModelAdmin):
+    list_display    = (<span class="string">'apellido'</span>, <span class="string">'nombre'</span>, <span class="string">'dni'</span>, <span class="string">'email'</span>, <span class="string">'fecha_alta'</span>)
+    search_fields   = (<span class="string">'apellido'</span>, <span class="string">'nombre'</span>, <span class="string">'dni'</span>)
+    ordering        = (<span class="string">'apellido'</span>, <span class="string">'nombre'</span>)
+    readonly_fields = (<span class="string">'fecha_alta'</span>,)
+    list_per_page   = <span class="string">30</span>
+
+
+<span class="comment"># ── Turno ──────────────────────────────────────────────────</span>
+
+<span class="kw">class</span> <span class="string">FiltroPeríodo</span>(admin.SimpleListFilter):
+    title          = <span class="string">"período"</span>
+    parameter_name = <span class="string">"periodo"</span>
+
+    <span class="kw">def</span> lookups(self, request, model_admin):
+        <span class="kw">return</span> [(<span class="string">'hoy'</span>, <span class="string">'Hoy'</span>), (<span class="string">'semana'</span>, <span class="string">'Esta semana'</span>)]
+
+    <span class="kw">def</span> queryset(self, request, queryset):
+        hoy = timezone.now().date()
+        <span class="kw">if</span> self.value() == <span class="string">'hoy'</span>:
+            <span class="kw">return</span> queryset.filter(fecha_hora__date=hoy)
+        <span class="kw">if</span> self.value() == <span class="string">'semana'</span>:
+            inicio = hoy - timezone.timedelta(days=hoy.weekday())
+            <span class="kw">return</span> queryset.filter(fecha_hora__date__gte=inicio)
+
+
+<span class="kw">@admin.register</span>(Turno)
+<span class="kw">class</span> <span class="string">TurnoAdmin</span>(admin.ModelAdmin):
+    list_display         = (<span class="string">'id'</span>, <span class="string">'ciudadano'</span>, <span class="string">'tramite'</span>,
+                            <span class="string">'fecha_hora'</span>, <span class="string">'estado'</span>, <span class="string">'esta_pendiente'</span>)
+    list_filter          = (<span class="string">'estado'</span>, FiltroPeríodo)
+    search_fields        = (<span class="string">'ciudadano__apellido'</span>, <span class="string">'ciudadano__dni'</span>, <span class="string">'tramite'</span>)
+    date_hierarchy       = <span class="string">'fecha_hora'</span>
+    list_per_page        = <span class="string">25</span>
+    list_display_links   = (<span class="string">'id'</span>, <span class="string">'ciudadano'</span>)
+    actions              = [<span class="string">'confirmar_turnos'</span>, <span class="string">'cancelar_turnos'</span>]
+
+    <span class="kw">def</span> esta_pendiente(self, obj):
+        <span class="kw">return</span> obj.estado == <span class="string">'pendiente'</span>
+    esta_pendiente.boolean          = <span class="kw">True</span>
+    esta_pendiente.short_description = <span class="string">'Pendiente'</span>
+
+    <span class="kw">def</span> confirmar_turnos(self, request, queryset):
+        n = queryset.update(estado=<span class="string">'confirmado'</span>)
+        self.message_user(request, <span class="string">f"{n} turno(s) confirmados."</span>)
+    confirmar_turnos.short_description = <span class="string">"✓ Confirmar seleccionados"</span>
+
+    <span class="kw">def</span> cancelar_turnos(self, request, queryset):
+        n = queryset.update(estado=<span class="string">'cancelado'</span>)
+        self.message_user(request, <span class="string">f"{n} turno(s) cancelados."</span>, <span class="string">'WARNING'</span>)
+    cancelar_turnos.short_description = <span class="string">"✗ Cancelar seleccionados"</span>
+
+
+<span class="comment"># ── Identidad del sitio ────────────────────────────────────</span>
+admin.site.site_header = <span class="string">"ANSES — Gestión de Turnos"</span>
+admin.site.site_title  = <span class="string">"ANSES Admin"</span>
+admin.site.index_title = <span class="string">"Panel de administración"</span></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Paso 2 — Cargar datos de prueba desde el panel</div>
+        <div class="card-body">Entrar al panel en <code>/admin</code> y crear manualmente:</div>
+        <div class="flow" style="margin-top:12px">
+          <div class="flow-step">
+            <div class="flow-left"><div class="flow-num">1</div><div class="flow-line"></div></div>
+            <div class="flow-content"><div class="flow-title">Crear 3 ciudadanos</div><div class="flow-text">Ir a Ciudadanos → Agregar ciudadano. Completar nombre, apellido y DNI. Verificar que aparecen con el formato del <code>__str__</code> definido.</div></div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-left"><div class="flow-num">2</div><div class="flow-line"></div></div>
+            <div class="flow-content"><div class="flow-title">Crear 5 turnos</div><div class="flow-text">Ir a Turnos → Agregar turno. El campo ciudadano debería mostrar un desplegable con los ciudadanos creados. Asignar distintos estados.</div></div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-left"><div class="flow-num">3</div><div class="flow-line"></div></div>
+            <div class="flow-content"><div class="flow-title">Probar la acción en lote</div><div class="flow-text">Seleccionar 2 turnos pendientes con el checkbox, elegir "Confirmar seleccionados" en el desplegable de acciones y ejecutar. Verificar el mensaje de confirmación.</div></div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-left"><div class="flow-num">4</div></div>
+            <div class="flow-content"><div class="flow-title">Probar la búsqueda y los filtros</div><div class="flow-text">Buscar por DNI. Filtrar por estado. Verificar que el filtro de período "Hoy" funciona.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    
+
+    <!-- CHEATSHEET -->
+    <div id="cheatsheet" class="section">
+      <div class="section-header">
+        <div class="section-tag">Referencia rápida</div>
+        <div class="section-title">Cheatsheet del Admin de Django</div>
+        <div class="section-desc">Las opciones más usadas de <code>ModelAdmin</code> con su descripción en una sola vista.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Opciones de lista (vista de listado)</div>
+        <div class="code-block"><span class="kw">class</span> <span class="string">MiModelAdmin</span>(admin.ModelAdmin):
+
+    list_display        = (<span class="string">'campo1'</span>, <span class="string">'campo2'</span>)    <span class="comment"># Columnas visibles</span>
+    list_display_links  = (<span class="string">'campo1'</span>,)             <span class="comment"># Columnas con enlace</span>
+    list_filter         = (<span class="string">'campo_estado'</span>,)       <span class="comment"># Filtros laterales</span>
+    list_per_page       = 25                        <span class="comment"># Registros por página</span>
+    list_editable       = (<span class="string">'campo_editable'</span>,)     <span class="comment"># Editable inline en lista</span>
+    list_select_related = <span class="kw">True</span>                     <span class="comment"># Optimiza queries relacionadas</span>
+    search_fields       = (<span class="string">'campo'</span>, <span class="string">'rel__campo'</span>)  <span class="comment"># Campos de búsqueda</span>
+    ordering            = (<span class="string">'-fecha'</span>,)              <span class="comment"># Orden (- = descendente)</span>
+    date_hierarchy      = <span class="string">'campo_fecha'</span>            <span class="comment"># Navegación por fecha</span>
+    actions             = [<span class="string">'mi_accion'</span>]            <span class="comment"># Acciones en lote</span></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Opciones de formulario (vista de detalle)</div>
+        <div class="code-block">    fields          = (<span class="string">'campo1'</span>, <span class="string">'campo2'</span>)       <span class="comment"># Campos a mostrar</span>
+    exclude         = (<span class="string">'campo_oculto'</span>,)         <span class="comment"># Campos a ocultar</span>
+    readonly_fields = (<span class="string">'campo_solo_lectura'</span>,)    <span class="comment"># No editables</span>
+
+    fieldsets = [                                 <span class="comment"># Agrupar campos</span>
+        (<span class="string">'Datos personales'</span>, {
+            <span class="string">'fields'</span>: (<span class="string">'nombre'</span>, <span class="string">'apellido'</span>, <span class="string">'dni'</span>)
+        }),
+        (<span class="string">'Contacto'</span>, {
+            <span class="string">'fields'</span>: (<span class="string">'email'</span>,),
+            <span class="string">'classes'</span>: (<span class="string">'collapse'</span>,)   <span class="comment"># Sección colapsable</span>
+        }),
+    ]</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Estructura de una acción personalizada</div>
+        <div class="code-block">    <span class="kw">def</span> nombre_accion(self, request, queryset):
+        <span class="comment"># queryset contiene los objetos seleccionados</span>
+        n = queryset.update(estado=<span class="string">'nuevo_estado'</span>)
+        self.message_user(request, <span class="string">f"{n} registros actualizados."</span>)
+        <span class="comment"># Niveles: INFO (default), SUCCESS, WARNING, ERROR</span>
+
+    nombre_accion.short_description = <span class="string">"Descripción en el desplegable"</span></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Búsqueda con doble guión bajo (lookup)</div>
+        <div class="code-block">    <span class="comment"># Campo de un modelo relacionado:</span>
+    search_fields = (<span class="string">'ciudadano__apellido'</span>,)   <span class="comment"># JOIN implícito</span>
+
+    <span class="comment"># Modificadores de búsqueda:</span>
+    search_fields = (
+        <span class="string">'=dni'</span>,          <span class="comment"># Exacto</span>
+        <span class="string">'^apellido'</span>,     <span class="comment"># Comienza con</span>
+        <span class="string">'@tramite'</span>,      <span class="comment"># Búsqueda de texto completo (PostgreSQL)</span>
+        <span class="string">'nombre'</span>,        <span class="comment"># Contiene (default)</span>
+    )</div>
+      </div>
+    </div>
+
+    <!-- RECURSOS -->
+    <div id="recursos" class="section">
+      <div class="section-header">
+        <div class="section-tag">Referencia</div>
+        <div class="section-title">Recursos adicionales</div>
+        <div class="section-desc">Documentación y materiales para profundizar el panel de administración entre clases.</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Documentación oficial</div>
+        <div class="install-row">
+          <div style="flex:1">
+            <div class="install-name">Django Admin — Documentación completa</div>
+            <div class="install-desc">Todas las opciones de ModelAdmin con ejemplos. La referencia definitiva.</div>
+            <div class="install-cmd">docs.djangoproject.com/en/5.0/ref/contrib/admin/</div>
+          </div>
+        </div>
+        <div class="install-row">
+          <div style="flex:1">
+            <div class="install-name">Personalización del admin — Tutorial oficial</div>
+            <div class="install-desc">Guía paso a paso del tutorial oficial de Django dedicada al admin.</div>
+            <div class="install-cmd">docs.djangoproject.com/en/5.0/intro/tutorial07/</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Herramientas complementarias</div>
+        <div class="install-row">
+          <div style="flex:1">
+            <div class="install-name">django-import-export</div>
+            <div class="install-desc">Agrega al panel la capacidad de importar y exportar datos en Excel, CSV y otros formatos. Muy útil en organismos del Estado.</div>
+            <div class="install-cmd">pip install django-import-export</div>
+          </div>
+        </div>
+        <div class="install-row">
+          <div style="flex:1">
+            <div class="install-name">django-admin-interface</div>
+            <div class="install-desc">Permite personalizar colores, logo e identidad del panel desde el propio admin, sin tocar código.</div>
+            <div class="install-cmd">pip install django-admin-interface</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Para la próxima clase (Clase 13)</div>
+        <div class="card-body">Repasar los modelos de Django: tipos de campo (<code>CharField</code>, <code>IntegerField</code>, <code>DateTimeField</code>, <code>ForeignKey</code>). En la Clase 13 los vamos a ampliar y conectar con el ORM para hacer consultas directamente desde Python.</div>
+        <div style="margin-top:12px">
+          <span class="pill pill-success">admin.py terminado ✓</span>
+          <span class="pill pill-success">datos de prueba cargados ✓</span>
+          <span class="pill pill-success">acciones en lote probadas ✓</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+function show(id, el) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  el.classList.add('active');
+  document.querySelector('.main').scrollTop = 0;
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clase 4 — Bucles: for y while</title>
+<link rel="stylesheet" href="canvas_shared.css">
+</head>
+<body>
+
+<div class="canvas">
+  <div class="sidebar">
+    <div class="sidebar-top">
+      <div class="sidebar-badge">Semana 1</div>
+      <div class="sidebar-title">Clase 4 — Bucles: for y while</div>
+      <div class="sidebar-sub">1 horas · 10 clases en total</div>
+    </div>
+    <div class="nav">
+      <div class="nav-label">Contenido</div>
+      <div class="nav-item active" onclick="show('intro',this)"><div class="nav-dot"></div>Introducción<span class="time-badge">10 min</span></div>
+      <div class="nav-item" onclick="show('for',this)"><div class="nav-dot"></div>Bucle for<span class="time-badge">25 min</span></div>
+      <div class="nav-item" onclick="show('while',this)"><div class="nav-dot"></div>Bucle while<span class="time-badge">20 min</span></div>
+      <div class="nav-item" onclick="show('control',this)"><div class="nav-dot"></div>Control de flujo<span class="time-badge">15 min</span></div>
+      <div class="nav-item" onclick="show('practica',this)"><div class="nav-dot"></div>Práctica guiada<span class="time-badge">25 min</span></div>
+      <div class="nav-item" onclick="show('cierre',this)"><div class="nav-dot"></div>Actividad de cierre<span class="time-badge">20 min</span></div>
+      <div class="nav-label">Referencia</div>
+      <div class="nav-item" onclick="show('errores',this)"><div class="nav-dot"></div>Errores frecuentes</div>
+      <div class="nav-item" onclick="show('recursos',this)"><div class="nav-dot"></div>Recursos</div>
+    </div>
+    <div class="sidebar-home-link" style="margin-top:auto;padding:12px 16px;border-top:0.5px solid var(--color-border-tertiary);">
+      <a href="index.html" style="font-size:12px;color:var(--color-text-info);text-decoration:none;font-weight:500;">← Volver al índice</a>
+    </div>
+  </div>
+
+  <div class="main">
+
+    <!-- INTRODUCCIÓN -->
+    <div id="intro" class="section active">
+      <div class="section-header">
+        <div class="section-tag">Apertura · 10 min</div>
+        <div class="section-title">¿Para qué sirven los bucles?</div>
+        <div class="section-desc">En las clases anteriores aprendimos a tomar decisiones con <code>if/else</code>. Hoy aprendemos a repetir acciones automáticamente. Eso es exactamente lo que hacen los bucles.</div>
+      </div>
+      <div class="card">
+        <div class="card-title">El problema que resuelven</div>
+        <div class="card-body">Imaginá que tenés que procesar 500 solicitudes de turnos pendientes en ANSES. Sin bucles, habría que escribir 500 líneas casi iguales. Con un bucle, se escribe la lógica una sola vez y Python la repite las veces necesarias.<br><br>Los bucles son la herramienta que permite que las computadoras hagan lo que mejor saben hacer: ejecutar tareas repetitivas sin cansarse ni equivocarse.</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Los dos tipos de bucle que vamos a ver hoy</div>
+        <div class="grid-2" style="margin-top:12px;margin-bottom:0">
+          <div class="layer-card">
+            <div class="layer-icon" style="background:var(--color-background-info)">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 4h12M2 4l3-2M2 4l3 2" stroke="var(--color-text-info)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 8h9M2 8l3-2M2 8l3 2" stroke="var(--color-text-info)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 12h6M2 12l3-2M2 12l3 2" stroke="var(--color-text-info)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="layer-name">Bucle <code>for</code></div>
+            <div class="layer-tech">Iteración definida</div>
+            <div class="layer-desc">Se usa cuando se sabe de antemano cuántas veces hay que repetir algo, o cuando hay que recorrer una colección de elementos.</div>
+            <div class="layer-example">Ej: Procesar cada solicitud en una lista de 200 expedientes pendientes.</div>
+          </div>
+          <div class="layer-card">
+            <div class="layer-icon" style="background:var(--color-background-warning)">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2a6 6 0 1 0 6 6" stroke="var(--color-text-warning)" stroke-width="1.2" stroke-linecap="round"/><path d="M14 4V2h-2" stroke="var(--color-text-warning)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="layer-name">Bucle <code>while</code></div>
+            <div class="layer-tech">Iteración condicional</div>
+            <div class="layer-desc">Se usa cuando no se sabe cuántas repeticiones van a ser necesarias: el bucle continúa mientras se cumpla una condición.</div>
+            <div class="layer-example">Ej: Seguir pidiendo el número de DNI hasta que el usuario ingrese uno válido.</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Repaso: ¿en qué estamos?</div>
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-time">Clase 1</div>
+            <div class="tl-label">Introducción y herramientas</div>
+            <div class="progress-bar"><div class="progress-fill" style="width:100%"></div></div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-time">Clase 2</div>
+            <div class="tl-label">Variables y tipos de datos</div>
+            <div class="progress-bar"><div class="progress-fill" style="width:100%"></div></div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-time">Clase 3</div>
+            <div class="tl-label">Condicionales if/else</div>
+            <div class="progress-bar"><div class="progress-fill" style="width:100%"></div></div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-time">Clase 4</div>
+            <div class="tl-label">Bucles for y while ← Hoy</div>
+            <div class="progress-bar"><div class="progress-fill" style="width:20%"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FOR -->
+    <div id="for" class="section">
+      <div class="section-header">
+        <div class="section-tag">Concepto · 25 min</div>
+        <div class="section-title">El bucle <code>for</code></div>
+        <div class="section-desc">El bucle <code>for</code> recorre una secuencia de elementos, uno por uno, y ejecuta el mismo bloque de código para cada uno.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Estructura básica</div>
+        <div class="code-block"><span class="kw">for</span> elemento <span class="kw">in</span> secuencia:
+    <span class="comment"># este bloque se ejecuta una vez por cada elemento</span>
+    <span class="kw">print</span>(elemento)</div>
+        <div class="card-body" style="font-size:13px;margin-top:10px">Dos reglas que siempre se cumplen: los dos puntos (<code>:</code>) al final de la línea del <code>for</code>, y la indentación (4 espacios o 1 Tab) en el bloque interior.</div>
+        <div class="warn">La indentación no es decorativa en Python: define qué líneas pertenecen al bucle. Un error de indentación es un error de lógica.</div>
+      </div>
+
+      <div class="card">
+        <div class="ex-header"><div class="ex-num">1</div><div class="ex-title">Recorrer una lista de trámites</div></div>
+        <div class="code-block">tramites = [<span class="string">"Jubilación"</span>, <span class="string">"Asignación Universal"</span>, <span class="string">"Desempleo"</span>, <span class="string">"Pensión"</span>]
+
+<span class="kw">for</span> tramite <span class="kw">in</span> tramites:
+    <span class="kw">print</span>(<span class="string">f"Procesando trámite: {tramite}"</span>)
+<span class="output">Procesando trámite: Jubilación
+Procesando trámite: Asignación Universal
+Procesando trámite: Desempleo
+Procesando trámite: Pensión</span></div>
+        <div class="card-body" style="font-size:13px;margin-top:10px">La variable <code>tramite</code> toma un valor diferente en cada vuelta. Nosotros elegimos su nombre: podría llamarse <code>t</code>, <code>item</code> o cualquier cosa, pero un nombre descriptivo hace el código más legible.</div>
+      </div>
+
+      <div class="card">
+        <div class="ex-header"><div class="ex-num">2</div><div class="ex-title">Iterar con <code>range()</code></div></div>
+        <div class="card-body" style="font-size:13px;margin-bottom:10px"><code>range(n)</code> genera la secuencia de números enteros del 0 al n-1. Es la forma más común de repetir algo una cantidad fija de veces.</div>
+        <div class="code-block"><span class="comment"># Generar 5 números de expediente</span>
+<span class="kw">for</span> i <span class="kw">in</span> range(5):
+    <span class="kw">print</span>(<span class="string">f"EXP-2024-{i:04d}"</span>)
+<span class="output">EXP-2024-0000
+EXP-2024-0001
+EXP-2024-0002
+EXP-2024-0003
+EXP-2024-0004</span></div>
+        <div class="tip"><code>range()</code> acepta hasta 3 argumentos: <code>range(inicio, fin, paso)</code>. Por ejemplo, <code>range(1, 11)</code> da del 1 al 10; <code>range(0, 100, 10)</code> da 0, 10, 20 ... 90.</div>
+      </div>
+
+      <div class="card">
+        <div class="ex-header"><div class="ex-num">3</div><div class="ex-title">Acumular resultados dentro del bucle</div></div>
+        <div class="card-body" style="font-size:13px;margin-bottom:10px">Una variable definida <strong>antes</strong> del bucle puede actualizarse en cada vuelta para acumular un total.</div>
+        <div class="code-block">montos = [15000, 42300, 8700, 31200, 19500]
+total = 0
+
+<span class="kw">for</span> monto <span class="kw">in</span> montos:
+    total = total + monto
+    <span class="kw">print</span>(<span class="string">f"  Sumando ${monto}... subtotal: ${total}"</span>)
+
+<span class="kw">print</span>(<span class="string">f"\nTotal de subsidios a liquidar: ${total}"</span>)
+<span class="output">  Sumando $15000... subtotal: $15000
+  Sumando $42300... subtotal: $57300
+  Sumando $8700... subtotal: $66000
+  Sumando $31200... subtotal: $97200
+  Sumando $19500... subtotal: $116700
+
+Total de subsidios a liquidar: $116700</span></div>
+        <div class="card-body" style="font-size:13px;margin-top:10px">Este patrón —inicializar una variable en 0 antes del bucle y sumarle valores adentro— es uno de los más usados en procesamiento de datos.</div>
+      </div>
+
+      <div class="card">
+        <div class="ex-header"><div class="ex-num">4</div><div class="ex-title">Combinar <code>for</code> con <code>if</code></div></div>
+        <div class="card-body" style="font-size:13px;margin-bottom:10px">Los bucles y los condicionales funcionan juntos. La indentación define qué pertenece a qué.</div>
+        <div class="code-block">solicitudes = [
+    {<span class="string">"nombre"</span>: <span class="string">"Ana García"</span>, <span class="string">"estado"</span>: <span class="string">"pendiente"</span>},
+    {<span class="string">"nombre"</span>: <span class="string">"Luis Romero"</span>, <span class="string">"estado"</span>: <span class="string">"aprobada"</span>},
+    {<span class="string">"nombre"</span>: <span class="string">"María López"</span>, <span class="string">"estado"</span>: <span class="string">"pendiente"</span>},
+    {<span class="string">"nombre"</span>: <span class="string">"Carlos Díaz"</span>, <span class="string">"estado"</span>: <span class="string">"rechazada"</span>},
+]
+
+<span class="kw">for</span> solicitud <span class="kw">in</span> solicitudes:
+    <span class="kw">if</span> solicitud[<span class="string">"estado"</span>] == <span class="string">"pendiente"</span>:
+        <span class="kw">print</span>(<span class="string">f"⚠ ATENCIÓN REQUERIDA: {solicitud['nombre']}"</span>)
+    <span class="kw">else</span>:
+        <span class="kw">print</span>(<span class="string">f"  OK: {solicitud['nombre']} — {solicitud['estado']}"</span>)
+<span class="output">⚠ ATENCIÓN REQUERIDA: Ana García
+  OK: Luis Romero — aprobada
+⚠ ATENCIÓN REQUERIDA: María López
+  OK: Carlos Díaz — rechazada</span></div>
+      </div>
+    </div>
+
+    <!-- WHILE -->
+    <div id="while" class="section">
+      <div class="section-header">
+        <div class="section-tag">Concepto · 20 min</div>
+        <div class="section-title">El bucle <code>while</code></div>
+        <div class="section-desc">El bucle <code>while</code> repite un bloque de código <strong>mientras</strong> una condición sea verdadera. A diferencia del <code>for</code>, no sabe de antemano cuántas veces va a iterar.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Estructura básica</div>
+        <div class="code-block"><span class="kw">while</span> condicion:
+    <span class="comment"># este bloque se repite mientras condicion sea True</span>
+    <span class="comment"># en algún momento, algo dentro del bloque debe cambiar</span>
+    <span class="comment"># el valor de condicion para que el bucle termine</span></div>
+        <div class="warn"><strong>Bucle infinito</strong>: si la condición nunca se vuelve False, el programa nunca termina. Es el error más común con <code>while</code>. Siempre hay que asegurarse de que algo dentro del bucle modifique la condición. Para interrumpirlo: <code>Ctrl + C</code> en la terminal.</div>
+      </div>
+
+      <div class="card">
+        <div class="ex-header"><div class="ex-num">1</div><div class="ex-title">Contador simple</div></div>
+        <div class="code-block">turnos_disponibles = 5
+
+<span class="kw">while</span> turnos_disponibles > 0:
+    <span class="kw">print</span>(<span class="string">f"Turno asignado. Quedan {turnos_disponibles - 1} disponibles."</span>)
+    turnos_disponibles = turnos_disponibles - 1
+
+<span class="kw">print</span>(<span class="string">"No hay más turnos disponibles para hoy."</span>)
+<span class="output">Turno asignado. Quedan 4 disponibles.
+Turno asignado. Quedan 3 disponibles.
+Turno asignado. Quedan 2 disponibles.
+Turno asignado. Quedan 1 disponibles.
+Turno asignado. Quedan 0 disponibles.
+No hay más turnos disponibles para hoy.</span></div>
+        <div class="card-body" style="font-size:13px;margin-top:10px">La línea <code>turnos_disponibles = turnos_disponibles - 1</code> (o equivalentemente <code>turnos_disponibles -= 1</code>) es la que hace que el bucle eventualmente termine.</div>
+      </div>
+
+      <div class="card">
+        <div class="ex-header"><div class="ex-num">2</div><div class="ex-title">Validación de entrada de usuario</div></div>
+        <div class="card-body" style="font-size:13px;margin-bottom:10px">Uno de los usos más frecuentes de <code>while</code>: seguir preguntando hasta que el usuario ingrese un valor válido.</div>
+        <div class="code-block">dni_ingresado = <span class="string">""</span>
+
+<span class="kw">while</span> <span class="kw">len</span>(dni_ingresado) != 8:
+    dni_ingresado = <span class="kw">input</span>(<span class="string">"Ingrese su DNI (8 dígitos): "</span>)
+    <span class="kw">if</span> <span class="kw">len</span>(dni_ingresado) != 8:
+        <span class="kw">print</span>(<span class="string">"❌ DNI inválido. Debe tener exactamente 8 dígitos."</span>)
+
+<span class="kw">print</span>(<span class="string">f"✓ DNI registrado: {dni_ingresado}"</span>)</div>
+        <div class="tip">En la terminal, <code>input()</code> pausa el programa y espera que el usuario escriba algo y presione Enter. Lo que escribe vuelve como texto (string).</div>
+      </div>
+
+      <div class="card">
+        <div class="ex-header"><div class="ex-num">3</div><div class="ex-title">Menú interactivo</div></div>
+        <div class="card-body" style="font-size:13px;margin-bottom:10px">El <code>while True</code> con <code>break</code> es un patrón muy usado para menús: el bucle corre indefinidamente hasta que el usuario elige salir.</div>
+        <div class="code-block"><span class="kw">while True</span>:
+    <span class="kw">print</span>(<span class="string">"\n=== SISTEMA DE TURNOS ==="</span>)
+    <span class="kw">print</span>(<span class="string">"1. Solicitar turno"</span>)
+    <span class="kw">print</span>(<span class="string">"2. Consultar estado"</span>)
+    <span class="kw">print</span>(<span class="string">"3. Cancelar turno"</span>)
+    <span class="kw">print</span>(<span class="string">"4. Salir"</span>)
+
+    opcion = <span class="kw">input</span>(<span class="string">"Seleccione una opción: "</span>)
+
+    <span class="kw">if</span> opcion == <span class="string">"1"</span>:
+        <span class="kw">print</span>(<span class="string">"→ Iniciando solicitud de turno..."</span>)
+    <span class="kw">elif</span> opcion == <span class="string">"2"</span>:
+        <span class="kw">print</span>(<span class="string">"→ Consultando estado del turno..."</span>)
+    <span class="kw">elif</span> opcion == <span class="string">"3"</span>:
+        <span class="kw">print</span>(<span class="string">"→ Cancelando turno..."</span>)
+    <span class="kw">elif</span> opcion == <span class="string">"4"</span>:
+        <span class="kw">print</span>(<span class="string">"Hasta luego."</span>)
+        <span class="kw">break</span>
+    <span class="kw">else</span>:
+        <span class="kw">print</span>(<span class="string">"Opción inválida. Intente nuevamente."</span>)</div>
+      </div>
+    </div>
+
+    <!-- CONTROL DE FLUJO -->
+    <div id="control" class="section">
+      <div class="section-header">
+        <div class="section-tag">Concepto · 15 min</div>
+        <div class="section-title">Control de flujo: <code>break</code>, <code>continue</code> y <code>else</code></div>
+        <div class="section-desc">Python ofrece herramientas para controlar el comportamiento de los bucles con más precisión que simplemente dejarlos terminar solos.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><code>break</code> — Salir del bucle inmediatamente</div>
+        <div class="card-body" style="margin-bottom:10px">Cuando Python encuentra un <code>break</code>, abandona el bucle en ese instante, sin importar si quedan elementos por recorrer.</div>
+        <div class="code-block">expedientes = [<span class="string">"EXP-001"</span>, <span class="string">"EXP-002"</span>, <span class="string">"EXP-003 URGENTE"</span>, <span class="string">"EXP-004"</span>, <span class="string">"EXP-005"</span>]
+
+<span class="kw">for</span> exp <span class="kw">in</span> expedientes:
+    <span class="kw">print</span>(<span class="string">f"Revisando {exp}..."</span>)
+    <span class="kw">if</span> <span class="string">"URGENTE"</span> <span class="kw">in</span> exp:
+        <span class="kw">print</span>(<span class="string">f"¡Expediente urgente encontrado! Deteniendo revisión."</span>)
+        <span class="kw">break</span>
+<span class="output">Revisando EXP-001...
+Revisando EXP-002...
+Revisando EXP-003 URGENTE...
+¡Expediente urgente encontrado! Deteniendo revisión.</span></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><code>continue</code> — Saltar al siguiente elemento</div>
+        <div class="card-body" style="margin-bottom:10px"><code>continue</code> no termina el bucle: salta el resto del bloque para el elemento actual y pasa al siguiente.</div>
+        <div class="code-block">solicitudes = [
+    {<span class="string">"id"</span>: <span class="string">"SOL-001"</span>, <span class="string">"estado"</span>: <span class="string">"aprobada"</span>},
+    {<span class="string">"id"</span>: <span class="string">"SOL-002"</span>, <span class="string">"estado"</span>: <span class="string">"pendiente"</span>},
+    {<span class="string">"id"</span>: <span class="string">"SOL-003"</span>, <span class="string">"estado"</span>: <span class="string">"aprobada"</span>},
+    {<span class="string">"id"</span>: <span class="string">"SOL-004"</span>, <span class="string">"estado"</span>: <span class="string">"pendiente"</span>},
+]
+
+<span class="kw">print</span>(<span class="string">"Liquidando solicitudes aprobadas:"</span>)
+<span class="kw">for</span> sol <span class="kw">in</span> solicitudes:
+    <span class="kw">if</span> sol[<span class="string">"estado"</span>] != <span class="string">"aprobada"</span>:
+        <span class="kw">continue</span>  <span class="comment"># omitir las no aprobadas</span>
+    <span class="kw">print</span>(<span class="string">f"  ✓ Liquidando {sol['id']}"</span>)
+<span class="output">Liquidando solicitudes aprobadas:
+  ✓ Liquidando SOL-001
+  ✓ Liquidando SOL-003</span></div>
+        <div class="tip"><strong>Cuándo usar <code>continue</code> vs <code>if/else</code>:</strong> <code>continue</code> es útil para filtrar casos que no necesitan procesamiento. Hace el código más plano y fácil de leer que anidar todo dentro de un <code>if</code>.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><code>else</code> en bucles — Bloque post-iteración</div>
+        <div class="card-body" style="margin-bottom:10px">Python permite agregar un <code>else</code> a un bucle. Ese bloque se ejecuta solo si el bucle terminó normalmente, es decir, <strong>sin un <code>break</code></strong>.</div>
+        <div class="code-block">dni_buscado = <span class="string">"28456789"</span>
+ciudadanos = [<span class="string">"31200450"</span>, <span class="string">"20987654"</span>, <span class="string">"28456789"</span>, <span class="string">"40123456"</span>]
+
+<span class="kw">for</span> dni <span class="kw">in</span> ciudadanos:
+    <span class="kw">if</span> dni == dni_buscado:
+        <span class="kw">print</span>(<span class="string">f"Ciudadano encontrado: DNI {dni}"</span>)
+        <span class="kw">break</span>
+<span class="kw">else</span>:
+    <span class="kw">print</span>(<span class="string">"DNI no registrado en el sistema."</span>)
+<span class="output">Ciudadano encontrado: DNI 28456789</span></div>
+        <div class="card-body" style="font-size:13px;margin-top:10px">Si el DNI no hubiera estado en la lista, el bucle habría terminado sin <code>break</code> y se habría ejecutado el <code>else</code>.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">¿Cuándo usar <code>for</code> y cuándo <code>while</code>?</div>
+        <div class="grid-2" style="margin-top:10px;margin-bottom:0">
+          <div style="background:var(--color-background-info);border-radius:var(--border-radius-md);padding:14px">
+            <div style="font-size:12px;font-weight:500;color:var(--color-text-info);margin-bottom:8px">Usar FOR cuando...</div>
+            <div style="font-size:13px;color:var(--color-text-secondary);line-height:1.7">
+              ✓ Recorrer una lista, tupla o string<br>
+              ✓ Repetir N veces exactas con <code>range()</code><br>
+              ✓ Procesar todos los elementos de una colección
+            </div>
+          </div>
+          <div style="background:var(--color-background-warning);border-radius:var(--border-radius-md);padding:14px">
+            <div style="font-size:12px;font-weight:500;color:var(--color-text-warning);margin-bottom:8px">Usar WHILE cuando...</div>
+            <div style="font-size:13px;color:var(--color-text-secondary);line-height:1.7">
+              ✓ No se sabe cuántas repeticiones habrá<br>
+              ✓ Esperar una condición externa (input del usuario)<br>
+              ✓ Implementar un menú o loop de aplicación
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRÁCTICA -->
+    <div id="practica" class="section">
+      <div class="section-header">
+        <div class="section-tag">Práctica guiada · 25 min</div>
+        <div class="section-title">Ejercicios con contexto real</div>
+        <div class="section-desc">Resolver los siguientes ejercicios en un archivo <code>bucles.py</code>. Tipear el código, no copiar y pegar.</div>
+      </div>
+
+      <div class="card">
+        <div class="ex-header"><div class="ex-num">1</div><div class="ex-title">Reporte de turnos del día</div></div>
+        <div class="card-body" style="font-size:13px;margin-bottom:10px">Dado el siguiente conjunto de datos, imprimir un reporte que muestre cada turno numerado, el nombre del ciudadano y el trámite solicitado.</div>
+        <div class="code-block">turnos_del_dia = [
+    (<span class="string">"María Fernández"</span>, <span class="string">"Jubilación"</span>),
+    (<span class="string">"Carlos Montoya"</span>, <span class="string">"Asignación Universal"</span>),
+    (<span class="string">"Ana Ruiz"</span>, <span class="string">"Subsidio de desempleo"</span>),
+    (<span class="string">"Pedro Sosa"</span>, <span class="string">"Pensión por discapacidad"</span>),
+    (<span class="string">"Lucía Torres"</span>, <span class="string">"Jubilación"</span>),
+]
+
+<span class="kw">print</span>(<span class="string">"=== TURNOS DEL DÍA ==="</span>)
+<span class="kw">for</span> numero, turno <span class="kw">in</span> <span class="kw">enumerate</span>(turnos_del_dia, start=1):
+    nombre, tramite = turno
+    <span class="kw">print</span>(<span class="string">f"Turno {numero:02d} | {nombre:<20} | {tramite}"</span>)
+<span class="kw">print</span>(<span class="string">f"\nTotal de turnos: {len(turnos_del_dia)}"</span>)
+<span class="output">=== TURNOS DEL DÍA ===
+Turno 01 | María Fernández      | Jubilación
+Turno 02 | Carlos Montoya       | Asignación Universal
+Turno 03 | Ana Ruiz             | Subsidio de desempleo
+Turno 04 | Pedro Sosa           | Pensión por discapacidad
+Turno 05 | Lucía Torres         | Jubilación
+
+Total de turnos: 5</span></div>
+        <div class="tip"><code>enumerate()</code> es una función de Python que, al iterar una lista, entrega también el índice de cada elemento. El argumento <code>start=1</code> hace que empiece desde 1 en lugar de 0.</div>
+      </div>
+
+      <div class="card">
+        <div class="ex-header"><div class="ex-num">2</div><div class="ex-title">Estadísticas de trámites</div></div>
+        <div class="card-body" style="font-size:13px;margin-bottom:10px">A partir de una lista de montos, calcular el total, el promedio, el mínimo y el máximo.</div>
+        <div class="code-block">montos_liquidados = [45200, 12800, 38500, 67100, 23400, 91000, 15600]
+
+total = 0
+minimo = montos_liquidados[0]
+maximo = montos_liquidados[0]
+
+<span class="kw">for</span> monto <span class="kw">in</span> montos_liquidados:
+    total += monto
+    <span class="kw">if</span> monto < minimo:
+        minimo = monto
+    <span class="kw">if</span> monto > maximo:
+        maximo = monto
+
+promedio = total / <span class="kw">len</span>(montos_liquidados)
+
+<span class="kw">print</span>(<span class="string">f"Total liquidado:  ${total:,.0f}"</span>)
+<span class="kw">print</span>(<span class="string">f"Promedio:         ${promedio:,.0f}"</span>)
+<span class="kw">print</span>(<span class="string">f"Mínimo:           ${minimo:,.0f}"</span>)
+<span class="kw">print</span>(<span class="string">f"Máximo:           ${maximo:,.0f}"</span>)
+<span class="output">Total liquidado:  $293,600
+Promedio:         $41,943
+Mínimo:           $12,800
+Máximo:           $91,000</span></div>
+      </div>
+
+      <div class="card">
+        <div class="ex-header"><div class="ex-num">3</div><div class="ex-title">Registro interactivo de ciudadanos</div></div>
+        <div class="card-body" style="font-size:13px;margin-bottom:10px">Un sistema que registra nombres de ciudadanos hasta que el usuario escribe "fin". Al terminar, muestra el listado completo.</div>
+        <div class="code-block">ciudadanos_registrados = []
+
+<span class="kw">print</span>(<span class="string">"=== REGISTRO DE CIUDADANOS ==="</span>)
+<span class="kw">print</span>(<span class="string">'Ingrese nombres. Escriba "fin" para terminar.\n'</span>)
+
+<span class="kw">while True</span>:
+    nombre = <span class="kw">input</span>(<span class="string">"Nombre del ciudadano: "</span>)
+    <span class="kw">if</span> nombre.lower() == <span class="string">"fin"</span>:
+        <span class="kw">break</span>
+    <span class="kw">if</span> nombre.strip() == <span class="string">""</span>:
+        <span class="kw">print</span>(<span class="string">"El nombre no puede estar vacío."</span>)
+        <span class="kw">continue</span>
+    ciudadanos_registrados.append(nombre)
+    <span class="kw">print</span>(<span class="string">f"  ✓ Registrado ({len(ciudadanos_registrados)} en total)\n"</span>)
+
+<span class="kw">print</span>(<span class="string">f"\n=== {len(ciudadanos_registrados)} CIUDADANOS REGISTRADOS ==="</span>)
+<span class="kw">for</span> i, nombre <span class="kw">in</span> <span class="kw">enumerate</span>(ciudadanos_registrados, 1):
+    <span class="kw">print</span>(<span class="string">f"  {i}. {nombre}"</span>)</div>
+        <div class="card-body" style="font-size:13px;margin-top:10px"><code>.append()</code> agrega un elemento al final de una lista. Lo vamos a ver en detalle en la Semana 2, pero acá ya aparece en contexto.</div>
+      </div>
+    </div>
+
+    <!-- CIERRE -->
+    <div id="cierre" class="section">
+      <div class="section-header">
+        <div class="section-tag">Actividad de cierre · 20 min</div>
+        <div class="section-title">Integrador: generador de reporte de gestión</div>
+        <div class="section-desc">Crear el archivo <code>reporte_gestion.py</code>. Este programa integra todo lo visto en la Semana 1: variables, tipos de datos, condicionales y bucles.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">El programa completo</div>
+        <div class="tip">Tipear todo el código. No importa equivocarse: leer el error, identificar la línea, corregir. Eso es programar.</div>
+        <div class="code-block"><span class="comment"># reporte_gestion.py
+# Sistema de Gestión de Turnos - Módulo de Reportes
+# Proyecto del curso de Desarrollo Web - Semana 1</span>
+
+organismo = <span class="string">"ANSES"</span>
+mes = <span class="string">"Noviembre 2024"</span>
+
+expedientes = [
+    {<span class="string">"id"</span>: <span class="string">"EXP-001"</span>, <span class="string">"tramite"</span>: <span class="string">"Jubilación"</span>,        <span class="string">"estado"</span>: <span class="string">"aprobado"</span>,  <span class="string">"monto"</span>: 85000},
+    {<span class="string">"id"</span>: <span class="string">"EXP-002"</span>, <span class="string">"tramite"</span>: <span class="string">"AUH"</span>,               <span class="string">"estado"</span>: <span class="string">"pendiente"</span>, <span class="string">"monto"</span>: 0},
+    {<span class="string">"id"</span>: <span class="string">"EXP-003"</span>, <span class="string">"tramite"</span>: <span class="string">"Desempleo"</span>,          <span class="string">"estado"</span>: <span class="string">"aprobado"</span>,  <span class="string">"monto"</span>: 42300},
+    {<span class="string">"id"</span>: <span class="string">"EXP-004"</span>, <span class="string">"tramite"</span>: <span class="string">"Pensión"</span>,            <span class="string">"estado"</span>: <span class="string">"rechazado"</span>, <span class="string">"monto"</span>: 0},
+    {<span class="string">"id"</span>: <span class="string">"EXP-005"</span>, <span class="string">"tramite"</span>: <span class="string">"Jubilación"</span>,        <span class="string">"estado"</span>: <span class="string">"aprobado"</span>,  <span class="string">"monto"</span>: 91000},
+    {<span class="string">"id"</span>: <span class="string">"EXP-006"</span>, <span class="string">"tramite"</span>: <span class="string">"AUH"</span>,               <span class="string">"estado"</span>: <span class="string">"pendiente"</span>, <span class="string">"monto"</span>: 0},
+    {<span class="string">"id"</span>: <span class="string">"EXP-007"</span>, <span class="string">"tramite"</span>: <span class="string">"Pensión"</span>,            <span class="string">"estado"</span>: <span class="string">"aprobado"</span>,  <span class="string">"monto"</span>: 38500},
+]
+
+<span class="comment"># Contadores y acumuladores</span>
+total_aprobados = 0
+total_pendientes = 0
+total_rechazados = 0
+monto_total = 0
+
+<span class="comment"># Cabecera del reporte</span>
+<span class="kw">print</span>(<span class="string">"=" * 55</span>)
+<span class="kw">print</span>(<span class="string">f"  REPORTE DE GESTIÓN — {organismo} — {mes}"</span>)
+<span class="kw">print</span>(<span class="string">"=" * 55</span>)
+
+<span class="comment"># Procesar cada expediente</span>
+<span class="kw">for</span> exp <span class="kw">in</span> expedientes:
+    estado = exp[<span class="string">"estado"</span>]
+
+    <span class="kw">if</span> estado == <span class="string">"aprobado"</span>:
+        total_aprobados += 1
+        monto_total += exp[<span class="string">"monto"</span>]
+        icono = <span class="string">"✓"</span>
+    <span class="kw">elif</span> estado == <span class="string">"pendiente"</span>:
+        total_pendientes += 1
+        icono = <span class="string">"⏳"</span>
+    <span class="kw">else</span>:
+        total_rechazados += 1
+        icono = <span class="string">"✗"</span>
+
+    <span class="kw">print</span>(<span class="string">f"  {icono} {exp['id']} | {exp['tramite']:<20} | {estado.upper()}"</span>)
+
+<span class="comment"># Resumen final</span>
+<span class="kw">print</span>(<span class="string">"=" * 55</span>)
+<span class="kw">print</span>(<span class="string">f"  Aprobados:   {total_aprobados}"</span>)
+<span class="kw">print</span>(<span class="string">f"  Pendientes:  {total_pendientes}"</span>)
+<span class="kw">print</span>(<span class="string">f"  Rechazados:  {total_rechazados}"</span>)
+<span class="kw">print</span>(<span class="string">f"  Total liquidado: ${monto_total:,}"</span>)
+<span class="kw">print</span>(<span class="string">"=" * 55</span>)
+<span class="output">  ✓ EXP-001 | Jubilación           | APROBADO
+  ⏳ EXP-002 | AUH                  | PENDIENTE
+  ✓ EXP-003 | Desempleo            | APROBADO
+  ✗ EXP-004 | Pensión              | RECHAZADO
+  ✓ EXP-005 | Jubilación           | APROBADO
+  ⏳ EXP-006 | AUH                  | PENDIENTE
+  ✓ EXP-007 | Pensión              | APROBADO
+=======================================================
+  Aprobados:   4
+  Pendientes:  2
+  Rechazados:  1
+  Total liquidado: $256,800
+=======================================================</span></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Desafío para el hogar</div>
+        <div class="card-body">Modificar el programa para agregar al menos una de estas mejoras:</div>
+        <div style="margin-top:12px">
+          <span class="pill pill-info">Calcular el promedio de montos aprobados</span>
+          <span class="pill pill-success">Agregar un expediente "URGENTE" que se detecte con <code>break</code></span>
+          <span class="pill pill-warn">Pedir al usuario cuántos expedientes quiere agregar con <code>while</code></span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Lo que aprendimos hoy</div>
+        <div class="flow">
+          <div class="flow-step">
+            <div class="flow-left"><div class="flow-num">✓</div><div class="flow-line"></div></div>
+            <div class="flow-content"><div class="flow-title">Bucle <code>for</code></div><div class="flow-text">Para recorrer listas y repetir bloques una cantidad definida de veces con <code>range()</code>.</div></div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-left"><div class="flow-num">✓</div><div class="flow-line"></div></div>
+            <div class="flow-content"><div class="flow-title">Bucle <code>while</code></div><div class="flow-text">Para repetir mientras una condición se cumpla: validación de inputs y menús interactivos.</div></div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-left"><div class="flow-num">✓</div><div class="flow-line"></div></div>
+            <div class="flow-content"><div class="flow-title"><code>break</code> y <code>continue</code></div><div class="flow-text">Para controlar el flujo dentro del bucle con precisión quirúrgica.</div></div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-left"><div class="flow-num">✓</div></div>
+            <div class="flow-content"><div class="flow-title">Integración con condicionales</div><div class="flow-text"><code>for</code> + <code>if/else</code> es la combinación base de cualquier procesamiento de datos real.</div></div>
+          </div>
+        </div>
+        <div class="tip">Próxima clase — Semana 2, Clase 5: <strong>Estructuras de datos</strong>. Listas y diccionarios en profundidad: cómo crearlos, modificarlos y recorrerlos para modelar datos reales.</div>
+      </div>
+    </div>
+
+    <!-- ERRORES FRECUENTES -->
+    <div id="errores" class="section">
+      <div class="section-header">
+        <div class="section-tag">Referencia</div>
+        <div class="section-title">Errores frecuentes con bucles</div>
+        <div class="section-desc">Los errores más comunes en esta clase y cómo resolverlos.</div>
+      </div>
+      <div class="card">
+        <div class="trouble-item">
+          <div class="trouble-q">IndentationError: expected an indented block</div>
+          <div class="trouble-a">Falta el bloque indentado después de <code>for ... :</code> o <code>while ... :</code>. Todo bucle necesita al menos una línea indentada debajo. Verificar que se usó Tab o 4 espacios consistentemente.</div>
+        </div>
+        <div class="divider"></div>
+        <div class="trouble-item">
+          <div class="trouble-q">El programa no termina / se cuelga (bucle infinito)</div>
+          <div class="trouble-a">El <code>while</code> tiene una condición que nunca se vuelve False. Revisar que dentro del bucle haya algo que cambie el valor de esa condición. Interrumpir con <strong>Ctrl + C</strong> en la terminal.</div>
+        </div>
+        <div class="divider"></div>
+        <div class="trouble-item">
+          <div class="trouble-q">TypeError: 'int' object is not iterable</div>
+          <div class="trouble-a">Se intentó usar <code>for x in 5</code> en lugar de <code>for x in range(5)</code>. El <code>for</code> necesita una secuencia o iterable, no un número suelto.</div>
+        </div>
+        <div class="divider"></div>
+        <div class="trouble-item">
+          <div class="trouble-q">IndexError: list index out of range</div>
+          <div class="trouble-a">Se accedió a una posición de lista que no existe. Las listas en Python empiezan en 0. Si la lista tiene 5 elementos, el último índice es 4, no 5. Con <code>for x in lista</code> esto no pasa: Python maneja los índices automáticamente.</div>
+        </div>
+        <div class="divider"></div>
+        <div class="trouble-item">
+          <div class="trouble-q">El <code>break</code> no funciona "desde afuera"</div>
+          <div class="trouble-a"><code>break</code> sale solo del bucle más cercano que lo contiene. Si hay bucles anidados (un <code>for</code> dentro de otro <code>for</code>), el <code>break</code> sale del interno, no del externo.</div>
+        </div>
+        <div class="divider"></div>
+        <div class="trouble-item">
+          <div class="trouble-q">La variable acumuladora no da el resultado esperado</div>
+          <div class="trouble-a">Asegurarse de inicializar la variable <strong>antes</strong> del bucle (por ejemplo <code>total = 0</code>). Si se inicializa dentro, se resetea en cada vuelta y el acumulador no funciona.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RECURSOS -->
+    <div id="recursos" class="section">
+      <div class="section-header">
+        <div class="section-tag">Referencia</div>
+        <div class="section-title">Recursos adicionales</div>
+        <div class="section-desc">Documentación y materiales para profundizar antes de la Semana 2.</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Para esta semana</div>
+        <div class="install-row">
+          <div style="flex:1">
+            <div class="install-name">Documentación oficial — Estructuras de control</div>
+            <div class="install-desc">Tutorial en español sobre <code>for</code>, <code>while</code>, <code>break</code> y <code>continue</code>.</div>
+            <div class="install-cmd">docs.python.org/es/3/tutorial/controlflow.html</div>
+          </div>
+        </div>
+        <div class="install-row">
+          <div style="flex:1">
+            <div class="install-name">Documentación oficial — range()</div>
+            <div class="install-desc">Todos los usos de <code>range()</code> con ejemplos: inicio, fin, paso, valores negativos.</div>
+            <div class="install-cmd">docs.python.org/es/3/library/stdtypes.html#range</div>
+          </div>
+        </div>
+        <div class="install-row">
+          <div style="flex:1">
+            <div class="install-name">Portal de datos abiertos — Dataset del Estado</div>
+            <div class="install-desc">Explorar datasets reales que se podrían procesar con bucles: nóminas, trámites, turnos.</div>
+            <div class="install-cmd">datos.gob.ar</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Para la próxima clase</div>
+        <div class="card-body">La Clase 5 arranca con listas y diccionarios en profundidad. Para llegar preparado, repasar los ejercicios de hoy donde aparecen listas (<code>[]</code>) y diccionarios (<code>{}</code>).</div>
+        <div style="margin-top:12px">
+          <span class="pill pill-success">bucles.py ejecutando sin errores ✓</span>
+          <span class="pill pill-success">reporte_gestion.py completado ✓</span>
+          <span class="pill pill-warn">Desafío del hogar intentado ✓</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Fin de Semana 1</div>
+        <div class="card-body">Con esta clase completamos la base de programación procedimental en Python: variables, tipos de datos, condicionales y bucles. A partir de la Semana 2 empezamos a organizar datos de forma más sofisticada y a escribir código más modular.</div>
+        <div class="timeline" style="margin-top:16px">
+          <div class="tl-item">
+            <div class="tl-time">Clase 1</div>
+            <div class="tl-label">Intro y herramientas</div>
+            <div class="progress-bar"><div class="progress-fill" style="width:100%"></div></div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-time">Clase 2</div>
+            <div class="tl-label">Variables y tipos</div>
+            <div class="progress-bar"><div class="progress-fill" style="width:100%"></div></div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-time">Clase 3</div>
+            <div class="tl-label">Condicionales</div>
+            <div class="progress-bar"><div class="progress-fill" style="width:100%"></div></div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-time">Clase 4</div>
+            <div class="tl-label">Bucles ← Completado</div>
+            <div class="progress-bar"><div class="progress-fill" style="width:100%"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+function show(id, el) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  el.classList.add('active');
+  document.querySelector('.main').scrollTop = 0;
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clase 9 — Templates y renderizado dinámico en Django</title>
+<link rel="stylesheet" href="canvas_shared.css">
+</head>
+<body>
+
+<div class="canvas">
+  <div class="sidebar">
+    <div class="sidebar-top">
+      <div class="sidebar-badge">Semana 2 · Clase 9</div>
+      <div class="sidebar-title">Templates y renderizado de contenido dinámico</div>
+      <div class="sidebar-sub">2 horas · Django Template Language</div>
+    </div>
+    <div class="nav">
+      <div class="nav-label">Contenido</div>
+      <div class="nav-item active" onclick="show('intro',this)"><div class="nav-dot"></div>¿Qué es un template?<span class="time-badge">10 min</span></div>
+      <div class="nav-item" onclick="show('estructura',this)"><div class="nav-dot"></div>Estructura del sistema<span class="time-badge">15 min</span></div>
+      <div class="nav-item" onclick="show('dtl',this)"><div class="nav-dot"></div>Django Template Language<span class="time-badge">25 min</span></div>
+      <div class="nav-item" onclick="show('herencia',this)"><div class="nav-dot"></div>Herencia de templates<span class="time-badge">20 min</span></div>
+      <div class="nav-item" onclick="show('practica',this)"><div class="nav-dot"></div>Práctica guiada<span class="time-badge">30 min</span></div>
+      <div class="nav-item" onclick="show('cierre',this)"><div class="nav-dot"></div>Actividad de cierre<span class="time-badge">20 min</span></div>
+      <div class="nav-label">Referencia</div>
+      <div class="nav-item" onclick="show('referencia',this)"><div class="nav-dot"></div>Tags y filtros</div>
+      <div class="nav-item" onclick="show('recursos',this)"><div class="nav-dot"></div>Recursos</div>
+    </div>
+    <div class="sidebar-home-link" style="margin-top:auto;padding:12px 16px;border-top:0.5px solid var(--color-border-tertiary);">
+      <a href="index.html" style="font-size:12px;color:var(--color-text-info);text-decoration:none;font-weight:500;">← Volver al índice</a>
+    </div>
+  </div>
+
+  <div class="main">
+
+    <!-- INTRO -->
+    <div id="intro" class="section active">
+      <div class="section-header">
+        <div class="section-tag">Apertura · 10 min</div>
+        <div class="section-title">¿Qué es un template?</div>
+        <div class="section-desc">Hasta ahora, las vistas devolvían texto plano o HTML escrito directamente en Python. Hoy separamos la lógica del diseño visual: ese es el rol de los templates.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">El problema que resuelven los templates</div>
+        <div class="card-body">En la Clase 8 construimos vistas que devolvían respuestas así:</div>
+        <div class="code-block"><span class="comment"># ❌ HTML incrustado en Python — difícil de mantener</span>
+<span class="kw">def</span> lista_turnos(request):
+    <span class="kw">return</span> HttpResponse(<span class="string">"&lt;h1&gt;Turnos del día&lt;/h1&gt;&lt;p&gt;Turno 1: Juan Pérez&lt;/p&gt;"</span>)</div>
+        <div class="card-body" style="margin-top:12px">Esto funciona para dos líneas. Pero una pantalla real del sistema de ANSES tiene encabezado, menú, tabla de turnos, paginación, pie de página… Mezclarlo todo en Python es inmanejable.<br><br>Los <strong>templates</strong> son archivos HTML con marcadores especiales. Django los lee, reemplaza los marcadores con datos reales y devuelve HTML listo para el navegador.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">La metáfora: el formulario de trámite</div>
+        <div class="card-body">Pensalo como un formulario oficial en blanco: tiene estructura fija (nombre, DNI, organismo, fecha) pero los datos cambian con cada ciudadano. El template es el formulario en blanco. El contexto son los datos del ciudadano. Django los une y produce el documento final.</div>
+        <div class="flow" style="margin-top:14px">
+          <div class="flow-step">
+            <div class="flow-left"><div class="flow-num">1</div><div class="flow-line"></div></div>
+            <div class="flow-content"><div class="flow-title">Vista obtiene datos</div><div class="flow-text">La función de vista consulta la base de datos o prepara los datos necesarios.</div></div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-left"><div class="flow-num">2</div><div class="flow-line"></div></div>
+            <div class="flow-content"><div class="flow-title">Vista llama al template con contexto</div><div class="flow-text">Le pasa un diccionario con todos los datos que el template necesita mostrar.</div></div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-left"><div class="flow-num">3</div><div class="flow-line"></div></div>
+            <div class="flow-content"><div class="flow-title">Django renderiza el template</div><div class="flow-text">Reemplaza cada <code>&#123;&#123; variable &#125;&#125;</code> con su valor real y evalúa los <code>&#123;% tags %&#125;</code>.</div></div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-left"><div class="flow-num">4</div></div>
+            <div class="flow-content"><div class="flow-title">Navegador recibe HTML completo</div><div class="flow-text">El ciudadano ve la pantalla con sus datos reales, como si fuera un documento personalizado.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">¿Dónde encaja en lo que ya sabemos?</div>
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-time">Clase 7</div>
+            <div class="tl-label">Proyecto Django, estructura general</div>
+            <div class="progress-bar"><div class="progress-fill" style="width:100%"></div></div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-time">Clase 8</div>
+            <div class="tl-label">URLs, vistas y flujo HTTP</div>
+            <div class="progress-bar"><div class="progress-fill" style="width:100%"></div></div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-time">Clase 9</div>
+            <div class="tl-label">Templates y renderizado dinámico</div>
+            <div class="progress-bar"><div class="progress-fill" style="width:100%"></div></div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-time">Clase 10</div>
+            <div class="tl-label">Panel de administración</div>
+            <div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ESTRUCTURA -->
+    <div id="estructura" class="section">
+      <div class="section-header">
+        <div class="section-tag">Configuración · 15 min</div>
+        <div class="section-title">Estructura de carpetas y configuración</div>
+        <div class="section-desc">Antes de escribir el primer template hay que indicarle a Django dónde encontrarlos.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Ubicación de los templates en el proyecto</div>
+        <div class="card-body" style="margin-bottom:12px">Hay dos convenciones. En este curso usamos la que escala mejor para proyectos reales: una carpeta <code>templates/</code> en la raíz del proyecto.</div>
+        <div class="code-block">sistema-turnos/
+├── sistema_turnos/       <span class="comment"># configuración del proyecto</span>
+│   ├── settings.py
+│   ├── urls.py
+│   └── wsgi.py
+├── turnos/               <span class="comment"># nuestra app</span>
+│   ├── views.py
+│   ├── urls.py
+│   └── models.py
+├── templates/            <span class="comment"># ← carpeta que vamos a crear hoy</span>
+│   ├── base.html         <span class="comment"># template base del que heredan todos</span>
+│   └── turnos/
+│       ├── lista.html
+│       └── detalle.html
+└── manage.py</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Registrar la carpeta en settings.py</div>
+        <div class="card-body" style="margin-bottom:10px">Django no busca templates en ningún lado por defecto. Hay que decirle explícitamente dónde mirar:</div>
+        <div class="code-block"><span class="comment"># sistema_turnos/settings.py</span>
+<span class="kw">import</span> os
+
+TEMPLATES = [
+    {
+        <span class="string">'BACKEND'</span>: <span class="string">'django.template.backends.django.DjangoTemplates'</span>,
+        <span class="string">'DIRS'</span>: [os.path.join(BASE_DIR, <span class="string">'templates'</span>)],  <span class="comment"># ← agregar esta línea</span>
+        <span class="string">'APP_DIRS'</span>: True,
+        <span class="string">'OPTIONS'</span>: {
+            <span class="string">'context_processors'</span>: [
+                <span class="string">'django.template.context_processors.debug'</span>,
+                <span class="string">'django.template.context_processors.request'</span>,
+                <span class="string">'django.contrib.auth.context_processors.auth'</span>,
+            ],
+        },
+    },
+]</div>
+        <div class="tip"><strong>¿Qué hace APP_DIRS: True?</strong> También busca templates dentro de la carpeta <code>templates/</code> de cada app instalada. Ambos mecanismos coexisten.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Crear las carpetas</div>
+        <div class="code-block"><span class="comment"># Desde la raíz del proyecto</span>
+mkdir -p templates/turnos</div>
+        <div class="warn">La carpeta <code>templates/turnos/</code> usa el nombre de la app como sub-carpeta para evitar conflictos de nombres cuando el proyecto crece y tiene múltiples apps.</div>
+      </div>
+    </div>
+
+    <!-- DTL -->
+    <div id="dtl" class="section">
+      <div class="section-header">
+        <div class="section-tag">Conceptos · 25 min</div>
+        <div class="section-title">Django Template Language (DTL)</div>
+        <div class="section-desc">El lenguaje de templates de Django tiene tres elementos: variables, tags y filtros. Con esos tres bloques se construye cualquier pantalla.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">1. Variables — <code>&#123;&#123; variable &#125;&#125;</code></div>
+        <div class="card-body" style="margin-bottom:10px">Se reemplazan por el valor real que viene del contexto de la vista. Usan notación de punto para acceder a propiedades anidadas.</div>
+        <div class="code-block"><span class="comment">&lt;!-- templates/turnos/detalle.html --&gt;</span>
+&lt;h1&gt;Turno N° &#123;&#123; turno.numero &#125;&#125;&lt;/h1&gt;
+
+&lt;p&gt;Ciudadano: &#123;&#123; turno.ciudadano.nombre_completo &#125;&#125;&lt;/p&gt;
+&lt;p&gt;DNI: &#123;&#123; turno.ciudadano.dni &#125;&#125;&lt;/p&gt;
+&lt;p&gt;Fecha: &#123;&#123; turno.fecha &#125;&#125;&lt;/p&gt;
+&lt;p&gt;Estado: &#123;&#123; turno.estado &#125;&#125;&lt;/p&gt;</div>
+        <div class="card-body" style="margin-top:10px">La notación <code>turno.ciudadano.nombre_completo</code> funciona con diccionarios, objetos de modelo, y listas. Django lo resuelve automáticamente.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">2. Tags — <code>&#123;% tag %&#125;</code></div>
+        <div class="card-body" style="margin-bottom:10px">Lógica de control: condicionales, bucles, carga de archivos estáticos. A diferencia de las variables, algunos tags necesitan un tag de cierre.</div>
+
+        <div class="ex-header" style="margin-top:14px"><div class="ex-num">A</div><div class="ex-title">Condicional — <code>if / elif / else</code></div></div>
+        <div class="code-block">&#123;% if turno.estado == <span class="string">"confirmado"</span> %&#125;
+  &lt;span class=<span class="string">"badge badge-success"</span>&gt;Confirmado&lt;/span&gt;
+&#123;% elif turno.estado == <span class="string">"pendiente"</span> %&#125;
+  &lt;span class=<span class="string">"badge badge-warning"</span>&gt;Pendiente&lt;/span&gt;
+&#123;% else %&#125;
+  &lt;span class=<span class="string">"badge badge-danger"</span>&gt;Cancelado&lt;/span&gt;
+&#123;% endif %&#125;</div>
+
+        <div class="ex-header" style="margin-top:14px"><div class="ex-num">B</div><div class="ex-title">Bucle — <code>for / empty</code></div></div>
+        <div class="code-block">&lt;table&gt;
+  &lt;tbody&gt;
+    &#123;% for turno in turnos %&#125;
+      &lt;tr&gt;
+        &lt;td&gt;&#123;&#123; forloop.counter &#125;&#125;&lt;/td&gt;  <span class="comment">&lt;!-- número de iteración --&gt;</span>
+        &lt;td&gt;&#123;&#123; turno.ciudadano.nombre_completo &#125;&#125;&lt;/td&gt;
+        &lt;td&gt;&#123;&#123; turno.hora &#125;&#125;&lt;/td&gt;
+        &lt;td&gt;&#123;&#123; turno.estado &#125;&#125;&lt;/td&gt;
+      &lt;/tr&gt;
+    &#123;% empty %&#125;
+      &lt;tr&gt;&lt;td colspan=<span class="string">"4"</span>&gt;No hay turnos registrados para hoy.&lt;/td&gt;&lt;/tr&gt;
+    &#123;% endfor %&#125;
+  &lt;/tbody&gt;
+&lt;/table&gt;</div>
+        <div class="tip"><code>&#123;% empty %&#125;</code> es un bloque especial del <code>for</code> que se ejecuta cuando la lista está vacía. Evita el anti-patrón de <code>if lista|length > 0</code>.</div>
+
+        <div class="ex-header" style="margin-top:14px"><div class="ex-num">C</div><div class="ex-title">Variables especiales del bucle</div></div>
+        <div class="code-block"><span class="comment">&lt;!-- Variables disponibles dentro de todo bloque {% for %} --&gt;</span>
+&#123;&#123; forloop.counter &#125;&#125;      <span class="comment">&lt;!-- 1, 2, 3... --&gt;</span>
+&#123;&#123; forloop.counter0 &#125;&#125;     <span class="comment">&lt;!-- 0, 1, 2... --&gt;</span>
+&#123;&#123; forloop.revcounter &#125;&#125;    <span class="comment">&lt;!-- cuenta regresiva --&gt;</span>
+&#123;&#123; forloop.first &#125;&#125;         <span class="comment">&lt;!-- True en la primera iteración --&gt;</span>
+&#123;&#123; forloop.last &#125;&#125;          <span class="comment">&lt;!-- True en la última iteración --&gt;</span></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">3. Filtros — <code>&#123;&#123; variable|filtro &#125;&#125;</code></div>
+        <div class="card-body" style="margin-bottom:10px">Transforman el valor antes de mostrarlo. Se encadenan con el carácter <code>|</code>.</div>
+        <div class="code-block"><span class="comment">&lt;!-- Formatear fecha --&gt;</span>
+&#123;&#123; turno.fecha|date:<span class="string">"d/m/Y"</span> &#125;&#125;           <span class="comment">&lt;!-- 15/07/2025 --&gt;</span>
+&#123;&#123; turno.fecha|date:<span class="string">"l j \d\e F"</span> &#125;&#125;   <span class="comment">&lt;!-- martes 15 de julio --&gt;</span>
+
+<span class="comment">&lt;!-- Texto --&gt;</span>
+&#123;&#123; ciudadano.nombre|upper &#125;&#125;           <span class="comment">&lt;!-- JUAN PÉREZ --&gt;</span>
+&#123;&#123; ciudadano.nombre|title &#125;&#125;           <span class="comment">&lt;!-- Juan Pérez --&gt;</span>
+&#123;&#123; descripcion|truncatewords:20 &#125;&#125;    <span class="comment">&lt;!-- corta después de 20 palabras --&gt;</span>
+&#123;&#123; descripcion|default:<span class="string">"Sin datos"</span> &#125;&#125; <span class="comment">&lt;!-- valor por defecto si es vacío --&gt;</span>
+
+<span class="comment">&lt;!-- Listas --&gt;</span>
+&#123;&#123; turnos|length &#125;&#125;                    <span class="comment">&lt;!-- cantidad de elementos --&gt;</span>
+&#123;&#123; turnos|first &#125;&#125;                     <span class="comment">&lt;!-- primer elemento --&gt;</span>
+
+<span class="comment">&lt;!-- Encadenado --&gt;</span>
+&#123;&#123; ciudadano.nombre|default:<span class="string">"Anónimo"</span>|upper &#125;&#125;</div>
+        <div class="warn"><strong>Seguridad importante:</strong> Django escapa el HTML automáticamente. Si una variable contiene <code>&lt;script&gt;</code>, lo convierte en texto inofensivo. Solo usar <code>|safe</code> con contenido que vos mismo controlás.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Vista que pasa datos al template</div>
+        <div class="card-body" style="margin-bottom:10px">El <strong>contexto</strong> es el diccionario que une la vista con el template. Las claves del diccionario son los nombres de las variables en el template.</div>
+        <div class="code-block"><span class="comment"># turnos/views.py</span>
+<span class="kw">from</span> django.shortcuts <span class="kw">import</span> render
+
+<span class="kw">def</span> lista_turnos(request):
+    <span class="comment"># Por ahora usamos datos de ejemplo (Semana 4 agregamos la BD)</span>
+    turnos = [
+        {<span class="string">"numero"</span>: 1, <span class="string">"nombre"</span>: <span class="string">"Juan Pérez"</span>, <span class="string">"hora"</span>: <span class="string">"09:00"</span>, <span class="string">"estado"</span>: <span class="string">"confirmado"</span>},
+        {<span class="string">"numero"</span>: 2, <span class="string">"nombre"</span>: <span class="string">"María López"</span>, <span class="string">"hora"</span>: <span class="string">"09:30"</span>, <span class="string">"estado"</span>: <span class="string">"pendiente"</span>},
+        {<span class="string">"numero"</span>: 3, <span class="string">"nombre"</span>: <span class="string">"Carlos Gómez"</span>, <span class="string">"hora"</span>: <span class="string">"10:00"</span>, <span class="string">"estado"</span>: <span class="string">"cancelado"</span>},
+    ]
+
+    contexto = {
+        <span class="string">"turnos"</span>: turnos,              <span class="comment"># → accesible como {{ turnos }} en el template</span>
+        <span class="string">"organismo"</span>: <span class="string">"ANSES"</span>,          <span class="comment"># → {{ organismo }}</span>
+        <span class="string">"total"</span>: len(turnos),          <span class="comment"># → {{ total }}</span>
+    }
+
+    <span class="kw">return</span> render(request, <span class="string">"turnos/lista.html"</span>, contexto)</div>
+        <div class="tip"><code>render(request, template, contexto)</code> es el shortcut más usado en Django. Internamente llama al motor de templates y devuelve un <code>HttpResponse</code>.</div>
+      </div>
+    </div>
+
+    <!-- HERENCIA -->
+    <div id="herencia" class="section">
+      <div class="section-header">
+        <div class="section-tag">Conceptos · 20 min</div>
+        <div class="section-title">Herencia de templates</div>
+        <div class="section-desc">El mecanismo más poderoso de Django para evitar repetición. Define la estructura general una sola vez y todas las páginas la heredan.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">El problema sin herencia</div>
+        <div class="card-body">Imaginá tener 10 páginas en el sistema de turnos: lista, detalle, nuevo turno, historial, perfil, reportes… Sin herencia, cada una repetiría el mismo encabezado, menú de navegación y pie de página. Un cambio en el logo implica editar 10 archivos.</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px">
+          <div style="background:var(--color-background-danger);border-radius:var(--border-radius-md);padding:12px;font-size:12px;color:var(--color-text-danger)">
+            <div style="font-weight:500;margin-bottom:6px">❌ Sin herencia</div>
+            lista.html → encabezado + contenido<br>
+            detalle.html → encabezado + contenido<br>
+            nuevo.html → encabezado + contenido<br>
+            <div style="margin-top:8px;font-style:italic">Cambiar el menú = editar N archivos</div>
+          </div>
+          <div style="background:var(--color-background-success);border-radius:var(--border-radius-md);padding:12px;font-size:12px;color:var(--color-text-success)">
+            <div style="font-weight:500;margin-bottom:6px">✓ Con herencia</div>
+            base.html → encabezado + bloques<br>
+            lista.html → solo el contenido<br>
+            detalle.html → solo el contenido<br>
+            <div style="margin-top:8px;font-style:italic">Cambiar el menú = editar 1 archivo</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">El template base — <code>templates/base.html</code></div>
+        <div class="card-body" style="margin-bottom:10px">Define la estructura HTML completa. Los <code>&#123;% block %&#125;</code> son los huecos que cada página hija puede rellenar.</div>
+        <div class="code-block">&lt;!DOCTYPE html&gt;
+&lt;html lang=<span class="string">"es"</span>&gt;
+&lt;head&gt;
+  &lt;meta charset=<span class="string">"UTF-8"</span>&gt;
+  &lt;title&gt;&#123;% block titulo %&#125;Sistema de Turnos&#123;% endblock %&#125; — ANSES&lt;/title&gt;
+  &lt;link rel=<span class="string">"stylesheet"</span> href=<span class="string">"&#123;% static 'css/estilos.css' %&#125;"</span>&gt;
+  &#123;% block css_extra %&#125;&#123;% endblock %&#125;
+&lt;/head&gt;
+&lt;body&gt;
+
+  &lt;nav&gt;
+    &lt;div class=<span class="string">"nav-brand"</span>&gt;ANSES — Sistema de Turnos&lt;/div&gt;
+    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=<span class="string">"&#123;% url 'turnos:lista' %&#125;"</span>&gt;Turnos&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=<span class="string">"&#123;% url 'turnos:nuevo' %&#125;"</span>&gt;Nuevo turno&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/nav&gt;
+
+  &lt;main&gt;
+    &#123;% block contenido %&#125;
+    <span class="comment">&lt;!-- Cada página hija pone su contenido aquí --&gt;</span>
+    &#123;% endblock %&#125;
+  &lt;/main&gt;
+
+  &lt;footer&gt;
+    &lt;p&gt;República Argentina · &#123;&#123; fecha_actual|date:<span class="string">"Y"</span> &#125;&#125;&lt;/p&gt;
+  &lt;/footer&gt;
+
+  &#123;% block js_extra %&#125;&#123;% endblock %&#125;
+&lt;/body&gt;
+&lt;/html&gt;</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Template hijo — <code>templates/turnos/lista.html</code></div>
+        <div class="card-body" style="margin-bottom:10px">Solo declara de quién hereda y rellena los bloques. Nada más.</div>
+        <div class="code-block">&#123;% extends <span class="string">"base.html"</span> %&#125;
+
+&#123;% block titulo %&#125;Lista de Turnos&#123;% endblock %&#125;
+
+&#123;% block contenido %&#125;
+  &lt;h1&gt;Turnos del día — &#123;&#123; organismo &#125;&#125;&lt;/h1&gt;
+  &lt;p&gt;Total: &#123;&#123; total &#125;&#125; turnos registrados&lt;/p&gt;
+
+  &lt;table&gt;
+    &lt;thead&gt;
+      &lt;tr&gt;
+        &lt;th&gt;N°&lt;/th&gt;
+        &lt;th&gt;Ciudadano&lt;/th&gt;
+        &lt;th&gt;Hora&lt;/th&gt;
+        &lt;th&gt;Estado&lt;/th&gt;
+      &lt;/tr&gt;
+    &lt;/thead&gt;
+    &lt;tbody&gt;
+      &#123;% for turno in turnos %&#125;
+        &lt;tr&gt;
+          &lt;td&gt;&#123;&#123; turno.numero &#125;&#125;&lt;/td&gt;
+          &lt;td&gt;&#123;&#123; turno.nombre &#125;&#125;&lt;/td&gt;
+          &lt;td&gt;&#123;&#123; turno.hora &#125;&#125;&lt;/td&gt;
+          &lt;td&gt;&#123;&#123; turno.estado &#125;&#125;&lt;/td&gt;
+        &lt;/tr&gt;
+      &#123;% empty %&#125;
+        &lt;tr&gt;&lt;td colspan=<span class="string">"4"</span>&gt;Sin turnos para hoy.&lt;/td&gt;&lt;/tr&gt;
+      &#123;% endfor %&#125;
+    &lt;/tbody&gt;
+  &lt;/table&gt;
+&#123;% endblock %&#125;</div>
+        <div class="tip"><strong>Regla clave:</strong> <code>&#123;% extends %&#125;</code> debe ser siempre la primera línea del template hijo. Si hay cualquier texto antes, Django lanza un error.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Tag <code>include</code> — componentes reutilizables</div>
+        <div class="card-body" style="margin-bottom:10px">Para fragmentos repetidos que no son páginas completas: un badge de estado, una tabla de acciones, un mensaje de alerta.</div>
+        <div class="code-block"><span class="comment">&lt;!-- templates/componentes/badge_estado.html --&gt;</span>
+&#123;% if estado == <span class="string">"confirmado"</span> %&#125;
+  &lt;span class=<span class="string">"badge success"</span>&gt;✓ Confirmado&lt;/span&gt;
+&#123;% elif estado == <span class="string">"pendiente"</span> %&#125;
+  &lt;span class=<span class="string">"badge warning"</span>&gt;⏳ Pendiente&lt;/span&gt;
+&#123;% else %&#125;
+  &lt;span class=<span class="string">"badge danger"</span>&gt;✗ Cancelado&lt;/span&gt;
+&#123;% endif %&#125;
+
+<span class="comment">&lt;!-- Uso en otro template --&gt;</span>
+&#123;% include <span class="string">"componentes/badge_estado.html"</span> with estado=turno.estado %&#125;</div>
+      </div>
+    </div>
+
+    <!-- PRACTICA -->
+    <div id="practica" class="section">
+      <div class="section-header">
+        <div class="section-tag">Práctica guiada · 30 min</div>
+        <div class="section-title">Construcción del sistema de templates</div>
+        <div class="section-desc">Vamos a construir el primer conjunto de templates del sistema de turnos. Todos los pasos se hacen en vivo.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Paso 1 — Crear el template base</div>
+        <div class="card-body" style="margin-bottom:10px">Crear el archivo <code>templates/base.html</code> y tipear el siguiente código:</div>
+        <div class="code-block"><span class="comment">&lt;!-- templates/base.html --&gt;</span>
+&lt;!DOCTYPE html&gt;
+&lt;html lang=<span class="string">"es"</span>&gt;
+&lt;head&gt;
+  &lt;meta charset=<span class="string">"UTF-8"</span>&gt;
+  &lt;meta name=<span class="string">"viewport"</span> content=<span class="string">"width=device-width, initial-scale=1"</span>&gt;
+  &lt;title&gt;&#123;% block titulo %&#125;Turnos&#123;% endblock %&#125; | ANSES&lt;/title&gt;
+  &lt;style&gt;
+    body &#123; font-family: Arial, sans-serif; margin: 0; background: #f5f5f5; &#125;
+    nav  &#123; background: #003876; color: white; padding: 12px 24px;
+            display: flex; justify-content: space-between; align-items: center; &#125;
+    nav a &#123; color: white; text-decoration: none; margin-left: 16px; &#125;
+    main &#123; max-width: 900px; margin: 32px auto; background: white;
+            padding: 24px; border-radius: 8px; &#125;
+    table &#123; width: 100%; border-collapse: collapse; &#125;
+    th, td &#123; padding: 10px 14px; border-bottom: 1px solid #eee; text-align: left; &#125;
+    th &#123; background: #f8f8f8; font-size: 12px; color: #666; text-transform: uppercase; &#125;
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;nav&gt;
+    &lt;span&gt;🏛 ANSES — Sistema de Turnos&lt;/span&gt;
+    &lt;div&gt;
+      &lt;a href=<span class="string">"/"</span>&gt;Inicio&lt;/a&gt;
+      &lt;a href=<span class="string">"/turnos/"</span>&gt;Turnos&lt;/a&gt;
+    &lt;/div&gt;
+  &lt;/nav&gt;
+  &lt;main&gt;
+    &#123;% block contenido %&#125;&#123;% endblock %&#125;
+  &lt;/main&gt;
+  &lt;footer style=<span class="string">"text-align:center;padding:20px;font-size:12px;color:#999"</span>&gt;
+    República Argentina · Sistema de Gestión de Turnos
+  &lt;/footer&gt;
+&lt;/body&gt;
+&lt;/html&gt;</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Paso 2 — Template de lista de turnos</div>
+        <div class="card-body" style="margin-bottom:10px">Crear <code>templates/turnos/lista.html</code>:</div>
+        <div class="code-block">&#123;% extends <span class="string">"base.html"</span> %&#125;
+
+&#123;% block titulo %&#125;Lista de Turnos&#123;% endblock %&#125;
+
+&#123;% block contenido %&#125;
+&lt;h2&gt;Turnos del día&lt;/h2&gt;
+&lt;p style=<span class="string">"color:#666;margin-bottom:20px"</span>&gt;
+  Mostrando &#123;&#123; total &#125;&#125; turno&#123;&#123; total|pluralize &#125;&#125; registrado&#123;&#123; total|pluralize &#125;&#125;.
+&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;N°&lt;/th&gt;&lt;th&gt;Ciudadano&lt;/th&gt;&lt;th&gt;Hora&lt;/th&gt;&lt;th&gt;Estado&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &#123;% for turno in turnos %&#125;
+      &lt;tr&gt;
+        &lt;td&gt;&#123;&#123; forloop.counter &#125;&#125;&lt;/td&gt;
+        &lt;td&gt;&#123;&#123; turno.nombre|title &#125;&#125;&lt;/td&gt;
+        &lt;td&gt;&#123;&#123; turno.hora &#125;&#125;&lt;/td&gt;
+        &lt;td&gt;
+          &#123;% if turno.estado == <span class="string">"confirmado"</span> %&#125;
+            &lt;span style=<span class="string">"color:green"</span>&gt;✓ Confirmado&lt;/span&gt;
+          &#123;% elif turno.estado == <span class="string">"pendiente"</span> %&#125;
+            &lt;span style=<span class="string">"color:orange"</span>&gt;⏳ Pendiente&lt;/span&gt;
+          &#123;% else %&#125;
+            &lt;span style=<span class="string">"color:red"</span>&gt;✗ Cancelado&lt;/span&gt;
+          &#123;% endif %&#125;
+        &lt;/td&gt;
+      &lt;/tr&gt;
+    &#123;% empty %&#125;
+      &lt;tr&gt;&lt;td colspan=<span class="string">"4"</span> style=<span class="string">"text-align:center;color:#999;padding:24px"</span>&gt;
+        No hay turnos registrados para hoy.
+      &lt;/td&gt;&lt;/tr&gt;
+    &#123;% endfor %&#125;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&#123;% endblock %&#125;</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Paso 3 — Actualizar la vista</div>
+        <div class="card-body" style="margin-bottom:10px">Modificar <code>turnos/views.py</code> para usar el template:</div>
+        <div class="code-block"><span class="kw">from</span> django.shortcuts <span class="kw">import</span> render
+
+<span class="kw">def</span> lista_turnos(request):
+    turnos = [
+        {<span class="string">"numero"</span>: 1, <span class="string">"nombre"</span>: <span class="string">"juan pérez"</span>,    <span class="string">"hora"</span>: <span class="string">"09:00"</span>, <span class="string">"estado"</span>: <span class="string">"confirmado"</span>},
+        {<span class="string">"numero"</span>: 2, <span class="string">"nombre"</span>: <span class="string">"MARÍA LÓPEZ"</span>,   <span class="string">"hora"</span>: <span class="string">"09:30"</span>, <span class="string">"estado"</span>: <span class="string">"pendiente"</span>},
+        {<span class="string">"numero"</span>: 3, <span class="string">"nombre"</span>: <span class="string">"carlos gómez"</span>, <span class="string">"hora"</span>: <span class="string">"10:00"</span>, <span class="string">"estado"</span>: <span class="string">"cancelado"</span>},
+    ]
+    <span class="kw">return</span> render(request, <span class="string">"turnos/lista.html"</span>, {
+        <span class="string">"turnos"</span>: turnos,
+        <span class="string">"total"</span>: len(turnos),
+        <span class="string">"organismo"</span>: <span class="string">"ANSES"</span>,
+    })</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Paso 4 — Verificar</div>
+        <div class="code-block">python3 manage.py runserver</div>
+        <div class="card-body" style="margin-top:8px">Abrir <code>http://localhost:8000/turnos/</code> y verificar:</div>
+        <div style="margin-top:8px">
+          <span class="pill pill-success">Tabla con 3 turnos visibles</span>
+          <span class="pill pill-success">Nombres con Title Case (filtro aplicado)</span>
+          <span class="pill pill-success">Estados con color según valor</span>
+          <span class="pill pill-info">Encabezado y nav del base.html</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CIERRE -->
+    <div id="cierre" class="section">
+      <div class="section-header">
+        <div class="section-tag">Actividad · 20 min</div>
+        <div class="section-title">Actividad de cierre — Pantalla de detalle</div>
+        <div class="section-desc">Ahora lo hacen solos. Agregar una segunda pantalla al sistema: el detalle de un turno individual.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Tarea</div>
+        <div class="card-body">Crear el template <code>templates/turnos/detalle.html</code> que muestre toda la información de un solo turno. La vista ya está esbozada abajo.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Vista de arranque — <code>turnos/views.py</code></div>
+        <div class="code-block"><span class="kw">def</span> detalle_turno(request, numero):
+    <span class="comment"># Por ahora usamos datos de ejemplo</span>
+    turno = {
+        <span class="string">"numero"</span>: numero,
+        <span class="string">"nombre"</span>: <span class="string">"María López"</span>,
+        <span class="string">"dni"</span>: <span class="string">"28.456.789"</span>,
+        <span class="string">"tramite"</span>: <span class="string">"Asignación Universal por Hijo"</span>,
+        <span class="string">"hora"</span>: <span class="string">"09:30"</span>,
+        <span class="string">"estado"</span>: <span class="string">"pendiente"</span>,
+        <span class="string">"ventanilla"</span>: 4,
+        <span class="string">"observaciones"</span>: <span class="string">"Traer libreta de matrimonio o partida de nacimiento."</span>,
+    }
+    <span class="kw">return</span> render(request, <span class="string">"turnos/detalle.html"</span>, {<span class="string">"turno"</span>: turno})</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Agregar la URL</div>
+        <div class="code-block"><span class="comment"># turnos/urls.py</span>
+<span class="kw">from</span> django.urls <span class="kw">import</span> path
+<span class="kw">from</span> . <span class="kw">import</span> views
+
+urlpatterns = [
+    path(<span class="string">""</span>, views.lista_turnos, name=<span class="string">"lista"</span>),
+    path(<span class="string">"&lt;int:numero&gt;/"</span>, views.detalle_turno, name=<span class="string">"detalle"</span>),  <span class="comment"># ← nueva</span>
+]</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">El template que tienen que construir</div>
+        <div class="card-body" style="margin-bottom:12px">El template <code>detalle.html</code> debe heredar de <code>base.html</code> y mostrar todos los campos del diccionario. Puntos extra si:</div>
+        <div>
+          <span class="pill pill-info">Usan if/else para el estado</span>
+          <span class="pill pill-info">Usan el filtro |upper en el nombre</span>
+          <span class="pill pill-success">Agregan un link "← Volver a la lista"</span>
+          <span class="pill pill-warn">Ocultan "Observaciones" si el campo está vacío</span>
+        </div>
+        <div class="tip" style="margin-top:14px">Para probar: ir a <code>http://localhost:8000/turnos/1/</code>. Si ven el detalle renderizado, funciona.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Para la próxima clase</div>
+        <div class="card-body">En la Clase 10 vamos a explorar el panel de administración de Django — una de las características más potentes del framework. Van a ver cómo gestionar los datos del sistema sin escribir una sola línea de SQL.<br><br>Para que funcione bien, conviene tener el proyecto con los templates de hoy funcionando.</div>
+        <div style="margin-top:12px">
+          <span class="pill pill-success">base.html creado ✓</span>
+          <span class="pill pill-success">lista.html funcionando ✓</span>
+          <span class="pill pill-success">detalle.html completado ✓</span>
+          <span class="pill pill-warn">Clase 10: Panel Admin</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- REFERENCIA -->
+    <div id="referencia" class="section">
+      <div class="section-header">
+        <div class="section-tag">Referencia</div>
+        <div class="section-title">Tags y filtros más usados</div>
+        <div class="section-desc">Guía de consulta rápida para usar durante la práctica y entre clases.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Tags de control</div>
+        <div class="code-block"><span class="comment">&lt;!-- Condicional --&gt;</span>
+&#123;% if condicion %&#125; ... &#123;% elif otra %&#125; ... &#123;% else %&#125; ... &#123;% endif %&#125;
+
+<span class="comment">&lt;!-- Bucle --&gt;</span>
+&#123;% for item in lista %&#125; ... &#123;% empty %&#125; ... &#123;% endfor %&#125;
+
+<span class="comment">&lt;!-- Herencia --&gt;</span>
+&#123;% extends "base.html" %&#125;
+&#123;% block nombre %&#125; ... &#123;% endblock %&#125;
+
+<span class="comment">&lt;!-- Inclusión --&gt;</span>
+&#123;% include "componente.html" with variable=valor %&#125;
+
+<span class="comment">&lt;!-- URLs inversas --&gt;</span>
+&#123;% url 'nombre_de_la_url' argumento %&#125;
+
+<span class="comment">&lt;!-- Archivos estáticos --&gt;</span>
+&#123;% load static %&#125;
+&#123;% static 'css/estilos.css' %&#125;
+
+<span class="comment">&lt;!-- Comentarios (no se renderizan) --&gt;</span>
+&#123;# Este texto no aparece en el HTML final #&#125;</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Filtros de texto</div>
+        <div class="code-block">&#123;&#123; texto|upper &#125;&#125;                    <span class="comment">&lt;!-- MAYÚSCULAS --&gt;</span>
+&#123;&#123; texto|lower &#125;&#125;                    <span class="comment">&lt;!-- minúsculas --&gt;</span>
+&#123;&#123; texto|title &#125;&#125;                    <span class="comment">&lt;!-- Primer Letra En Mayúscula --&gt;</span>
+&#123;&#123; texto|capfirst &#125;&#125;                 <span class="comment">&lt;!-- Solo primera letra --&gt;</span>
+&#123;&#123; texto|truncatewords:15 &#125;&#125;        <span class="comment">&lt;!-- Corta en 15 palabras... --&gt;</span>
+&#123;&#123; texto|truncatechars:50 &#125;&#125;        <span class="comment">&lt;!-- Corta en 50 caracteres --&gt;</span>
+&#123;&#123; texto|default:"Sin datos" &#125;&#125;     <span class="comment">&lt;!-- Valor por defecto si vacío --&gt;</span>
+&#123;&#123; texto|length &#125;&#125;                   <span class="comment">&lt;!-- Longitud --&gt;</span>
+&#123;&#123; texto|linebreaks &#125;&#125;               <span class="comment">&lt;!-- Convierte \n en &lt;br&gt; --&gt;</span>
+&#123;&#123; texto|pluralize &#125;&#125;               <span class="comment">&lt;!-- "s" si > 1: "turno" / "turnos" --&gt;</span></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Filtros de fecha</div>
+        <div class="code-block">&#123;&#123; fecha|date:<span class="string">"d/m/Y"</span> &#125;&#125;             <span class="comment">&lt;!-- 15/07/2025 --&gt;</span>
+&#123;&#123; fecha|date:<span class="string">"D d M Y"</span> &#125;&#125;           <span class="comment">&lt;!-- Tue 15 Jul 2025 --&gt;</span>
+&#123;&#123; fecha|date:<span class="string">"l j \d\e F \d\e Y"</span> &#125;&#125;<span class="comment">&lt;!-- martes 15 de julio de 2025 --&gt;</span>
+&#123;&#123; fecha|time:<span class="string">"H:i"</span> &#125;&#125;              <span class="comment">&lt;!-- 09:30 --&gt;</span>
+&#123;&#123; fecha|timesince &#125;&#125;               <span class="comment">&lt;!-- "hace 3 horas" --&gt;</span></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Filtros de listas y números</div>
+        <div class="code-block">&#123;&#123; lista|length &#125;&#125;                   <span class="comment">&lt;!-- cantidad de elementos --&gt;</span>
+&#123;&#123; lista|first &#125;&#125;                    <span class="comment">&lt;!-- primer elemento --&gt;</span>
+&#123;&#123; lista|last &#125;&#125;                     <span class="comment">&lt;!-- último elemento --&gt;</span>
+&#123;&#123; lista|join:", " &#125;&#125;               <span class="comment">&lt;!-- une con separador --&gt;</span>
+&#123;&#123; numero|floatformat:2 &#125;&#125;          <span class="comment">&lt;!-- 2 decimales: 1234.56 --&gt;</span></div>
+      </div>
+    </div>
+
+    <!-- RECURSOS -->
+    <div id="recursos" class="section">
+      <div class="section-header">
+        <div class="section-tag">Referencia</div>
+        <div class="section-title">Recursos adicionales</div>
+        <div class="section-desc">Documentación oficial y materiales de consulta para profundizar entre clases.</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Para esta semana</div>
+        <div class="install-row">
+          <div style="flex:1">
+            <div class="install-name">Referencia completa del Django Template Language</div>
+            <div class="install-desc">Todos los tags y filtros built-in con ejemplos. El recurso más útil para la práctica diaria.</div>
+            <div class="install-cmd">docs.djangoproject.com/en/stable/ref/templates/builtins/</div>
+          </div>
+        </div>
+        <div class="install-row">
+          <div style="flex:1">
+            <div class="install-name">Guía de herencia de templates</div>
+            <div class="install-desc">Cómo estructurar templates en proyectos grandes con múltiples apps.</div>
+            <div class="install-cmd">docs.djangoproject.com/en/stable/ref/templates/language/</div>
+          </div>
+        </div>
+        <div class="install-row">
+          <div style="flex:1">
+            <div class="install-name">Django Jinja2 (alternativa)</div>
+            <div class="install-desc">Motor de templates alternativo, más potente pero con más curva de aprendizaje. Para explorar después del curso.</div>
+            <div class="install-cmd">docs.djangoproject.com/en/stable/topics/templates/#django.template.backends.jinja2.Jinja2</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Para la próxima clase</div>
+        <div class="card-body">La Clase 12 trabaja con el panel de administración de Django. No requiere preparación especial, pero si todavía no configuraron un modelo en la app <code>turnos</code>, es un buen momento para leer la introducción a modelos en la documentación oficial.</div>
+        <div style="margin-top:12px">
+          <span class="pill pill-success">templates/ configurados ✓</span>
+          <span class="pill pill-success">base.html con bloques ✓</span>
+          <span class="pill pill-success">herencia funcionando ✓</span>
+          <span class="pill pill-warn">Próxima: Panel Admin</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+function show(id, el) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  el.classList.add('active');
+  document.querySelector('.main').scrollTop = 0;
+}
+</script>
+</body>
+</html>

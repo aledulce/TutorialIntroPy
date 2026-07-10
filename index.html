@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Índice del Curso — Python + Django</title>
+<link rel="stylesheet" href="canvas_shared.css">
+<style>
+.lesson-list { display:grid; grid-template-columns:repeat(4, minmax(0, 1fr)); gap:12px; margin-top:12px; }
+.lesson-item {
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+  padding:12px;
+  border:0.5px solid var(--color-border-tertiary);
+  border-radius:var(--border-radius-md);
+  background:var(--color-background-primary);
+}
+.lesson-main { flex:1; min-width:0; }
+.lesson-title { font-size:13px; font-weight:500; color:var(--color-text-primary); margin-bottom:4px; }
+.lesson-desc { font-size:12px; color:var(--color-text-secondary); line-height:1.45; }
+.lesson-link {
+  white-space:nowrap;
+  align-self:flex-start;
+  font-size:12px;
+  text-decoration:none;
+  color:var(--color-text-info);
+  font-weight:500;
+  border:0.5px solid var(--color-border-info);
+  padding:4px 8px;
+  border-radius:999px;
+  background:var(--color-background-info);
+}
+.lesson-link:hover { opacity:0.9; }
+.lesson-pending {
+  white-space:nowrap;
+  font-size:11px;
+  color:var(--color-text-tertiary);
+  border:0.5px dashed var(--color-border-tertiary);
+  padding:4px 8px;
+  border-radius:999px;
+}
+
+.main { scroll-behavior: smooth; }
+.section { display:block; scroll-margin-top:18px; }
+.section + .section { margin-top:28px; }
+.section .card { border:0.5px solid var(--color-border-secondary); }
+.sidebar .nav a.nav-item { text-decoration:none; }
+
+@media (max-width: 1080px) {
+  .lesson-list { grid-template-columns:repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 760px) {
+  .lesson-list { grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="canvas">
+  <div class="sidebar">
+    <div class="sidebar-top">
+      <div class="sidebar-badge">Curso completo · 2 semanas</div>
+      <div class="sidebar-title">Índice de clases</div>
+      <div class="sidebar-sub">Navegación general del curso</div>
+    </div>
+    <div class="nav">
+      <div class="nav-label">Semanas</div>
+      <a class="nav-item active" href="#semana1" data-target="semana1"><div class="nav-dot"></div>Semana 1</a>
+      <a class="nav-item" href="#semana2" data-target="semana2"><div class="nav-dot"></div>Semana 2</a>
+      
+    </div>
+  </div>
+
+  <div class="main">
+    <div id="semana1" class="section active">
+      <div class="section-header">
+        <div class="section-tag">Semana 1</div>
+        <div class="section-title">Introducción y fundamentos de programación, Python</div>
+        <div class="section-desc">Objetivo: comprender los conceptos básicos de programación y el funcionamiento general de una aplicación web.</div>
+      </div>
+      <div class="card">
+        <div class="lesson-list">
+          <div class="lesson-item"><div class="lesson-main"><div class="lesson-title">Clase 1</div><div class="lesson-desc">Presentación del curso, introducción al desarrollo web (frontend, backend, base de datos), instalación de herramientas.</div></div><a class="lesson-link" href="clase1_desarrollo_web_canvas.html">Abrir clase</a></div>
+          <div class="lesson-item"><div class="lesson-main"><div class="lesson-title">Clase 2</div><div class="lesson-desc">Variables, tipos de datos y operaciones básicas en Python. Ejercicios prácticos guiados.</div></div><a class="lesson-link" href="clase2_variables_tipos_datos.html">Abrir clase</a></div>
+          <div class="lesson-item"><div class="lesson-main"><div class="lesson-title">Clase 3</div><div class="lesson-desc">Estructuras condicionales (if/else), lógica de decisiones, resolución de problemas simples.</div></div><a class="lesson-link" href="clase3_condicionales_canvas.html">Abrir clase</a></div>
+          <div class="lesson-item"><div class="lesson-main"><div class="lesson-title">Clase 4</div><div class="lesson-desc">Bucles (for, while), iteración sobre datos, ejercicios prácticos orientados a lógica.</div></div><a class="lesson-link" href="clase4_bucles_canvas.html">Abrir clase</a></div>
+	  <div class="lesson-item"><div class="lesson-main"><div class="lesson-title">Clase 5</div><div class="lesson-desc">Estructuras de datos (listas, diccionarios) y su uso práctico.</div></div><a class="lesson-link" href="clase5_estructuras_datos_canvas.html">Abrir clase</a></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="semana2" class="section">
+      <div class="section-header">
+        <div class="section-tag">Semana 2</div>
+        <div class="section-title">Python aplicado, Introducción a Django</div>
+        <div class="section-desc">Objetivo: consolidar bases de programación para utilizarlas en desarrollo backend. Comprender la estructura de un proyecto web y construir la primera aplicación funcional.</div>
+      </div>
+      <div class="card">
+        <div class="lesson-list">
+          
+          <div class="lesson-item"><div class="lesson-main"><div class="lesson-title">Clase 6</div><div class="lesson-desc">Funciones, modularización del código y reutilización de lógica.</div></div><a class="lesson-link" href="clase6_funciones_canvas.html">Abrir clase</a></div>
+          <div class="lesson-item"><div class="lesson-main"><div class="lesson-title">Clase 7</div><div class="lesson-desc">Manejo de errores, Introducción a Django, creación de proyecto, estructura general.</div></div><a class="lesson-link" href="clase7_manejo_errores_archivos_json_canvas.html">Abrir clase</a></div>
+          <div class="lesson-item"><div class="lesson-main"><div class="lesson-title">Clase 8</div><div class="lesson-desc">Aplicaciones, rutas y vistas. Flujo de una petición web.</div></div><a class="lesson-link" href="clase10_rutas_vistas_canvas.html">Abrir clase</a></div>
+          <div class="lesson-item"><div class="lesson-main"><div class="lesson-title">Clase 9</div><div class="lesson-desc">Templates y renderizado de contenido dinámico.</div></div><a class="lesson-link" href="clase11_templates_django_canvas.html">Abrir clase</a></div>
+          <div class="lesson-item"><div class="lesson-main"><div class="lesson-title">Clase 10</div><div class="lesson-desc">Uso del panel administrativo de Django para gestión de datos.</div></div><a class="lesson-link" href="clase12_panel_admin_django.html">Abrir clase</a></div>
+        </div>
+      </div>
+    </div>
+
+        
+    
+    </div>
+
+    
+
+  </div>
+</div>
+
+<script>
+const main = document.querySelector(".main");
+const navItems = [...document.querySelectorAll(".nav-item[data-target]")];
+const sections = [...document.querySelectorAll(".section[id]")];
+
+function setActive(targetId) {
+  navItems.forEach((item) => item.classList.toggle("active", item.dataset.target === targetId));
+}
+
+navItems.forEach((item) => {
+  item.addEventListener("click", (event) => {
+    event.preventDefault();
+    const section = document.getElementById(item.dataset.target);
+    if (section) {
+      section.scrollIntoView({ behavior: "smooth", block: "start" });
+      setActive(item.dataset.target);
+    }
+  });
+});
+
+const observer = new IntersectionObserver((entries) => {
+  const visible = entries
+    .filter((entry) => entry.isIntersecting)
+    .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+
+  if (visible?.target?.id) setActive(visible.target.id);
+}, { root: main, threshold: [0.2, 0.4, 0.6] });
+
+sections.forEach((section) => observer.observe(section));
+</script>
+</body>
+</html>

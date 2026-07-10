@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clase 7 — Errores, Introducción a Django</title>
+<link rel="stylesheet" href="canvas_shared.css">
+</head>
+<body>
+
+<div class="canvas">
+  <div class="sidebar">
+    <div class="sidebar-top">
+      <div class="sidebar-badge">Semana 2</div>
+      <div class="sidebar-title">Clase 7 — Errores, Introducción a Django</div>
+      <div class="sidebar-sub">1 horas · Clase 7 de 10</div>
+    </div>
+    <div class="nav">
+      <div class="nav-label">Contenido</div>
+      
+      <div class="nav-item active" onclick="show('errores',this)"><div class="nav-dot"></div>Manejo de errores<span class="time-badge">25 min</span></div>
+      <div class="nav-item" onclick="show('que_es_django',this)"><div class="nav-dot"></div>¿Qué es Django?<span class="time-badge">20 min</span></div>
+      <div class="nav-item" onclick="show('instalacion',this)"><div class="nav-dot"></div>Instalación<span class="time-badge">15 min</span></div>
+      <div class="nav-item" onclick="show('primer_proyecto',this)"><div class="nav-dot"></div>Primer proyecto<span class="time-badge">20 min</span></div>
+      <div class="nav-item" onclick="show('estructura',this)"><div class="nav-dot"></div>Estructura del proyecto<span class="time-badge">20 min</span></div>
+      <div class="nav-item" onclick="show('servidor',this)"><div class="nav-dot"></div>Servidor de desarrollo<span class="time-badge">15 min</span></div>
+      <div class="nav-item" onclick="show('cierre',this)"><div class="nav-dot"></div>Actividad de cierre<span class="time-badge">20 min</span></div>
+      <div class="nav-label">Referencia</div>
+      <div class="nav-item" onclick="show('troubleshooting',this)"><div class="nav-dot"></div>Troubleshooting</div>
+      <div class="nav-item" onclick="show('recursos',this)"><div class="nav-dot"></div>Recursos</div>
+      
+    </div>
+    <div class="sidebar-home-link" style="margin-top:auto;padding:12px 16px;border-top:0.5px solid var(--color-border-tertiary);">
+      <a href="index.html" style="font-size:12px;color:var(--color-text-info);text-decoration:none;font-weight:500;">← Volver al índice</a>
+    </div>
+  </div>
+
+  <div class="main">
+
+    
+
+    <!-- MANEJO DE ERRORES -->
+    <div id="errores" class="section active">
+      <div class="section-header">
+        <div class="section-tag">Concepto + práctica · 25 min</div>
+        <div class="section-title">Manejo de errores con try/except</div>
+        <div class="section-desc">Los errores en Python son objetos llamados <strong>excepciones</strong>. Cuando un error ocurre, Python lo "lanza" (<code>raise</code>). Podemos "atraparlo" (<code>except</code>) para decidir qué hacer en lugar de dejar que el programa se detenga.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">El problema: un programa frágil</div>
+        <div class="card-body" style="margin-bottom:10px">Este código funciona perfectamente... hasta que el usuario ingresa algo inesperado:</div>
+        <div class="code-block"><span class="comment"># Sistema sin manejo de errores</span>
+cantidad = <span class="kw">int</span>(<span class="kw">input</span>(<span class="string">"Ingrese cantidad de turnos disponibles: "</span>))
+<span class="kw">print</span>(<span class="string">f"Hay {cantidad} turnos disponibles"</span>)
+
+<span class="output"># Si el usuario escribe "muchos" en lugar de un número:
+ValueError: invalid literal for int() with base 10: 'muchos'
+# El programa se cae. El sistema de atención queda fuera de servicio.</span></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">La solución: try/except</div>
+        <div class="code-block"><span class="kw">try</span>:
+    cantidad = <span class="kw">int</span>(<span class="kw">input</span>(<span class="string">"Ingrese cantidad de turnos: "</span>))
+    <span class="kw">print</span>(<span class="string">f"Hay {cantidad} turnos disponibles"</span>)
+<span class="kw">except</span> ValueError:
+    <span class="kw">print</span>(<span class="string">"Error: debe ingresar un número entero."</span>)
+    <span class="kw">print</span>(<span class="string">"El sistema continuará con el valor por defecto: 0"</span>)</div>
+        <div class="tip"><strong>Regla:</strong> el bloque <code>try</code> contiene el código que puede fallar. El bloque <code>except</code> contiene qué hacer si falla. El programa sigue ejecutándose en ambos casos.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Estructura completa: try / except / else / finally</div>
+        <div class="code-block"><span class="kw">try</span>:
+    <span class="comment"># Código que puede lanzar una excepción</span>
+    resultado = 100 / divisor
+<span class="kw">except</span> ZeroDivisionError:
+    <span class="comment"># Se ejecuta SOLO si ocurrió ese error específico</span>
+    <span class="kw">print</span>(<span class="string">"Error: no se puede dividir por cero"</span>)
+<span class="kw">except</span> TypeError <span class="kw">as</span> e:
+    <span class="comment"># "as e" captura el objeto de error para inspeccionarlo</span>
+    <span class="kw">print</span>(<span class="string">f"Tipo de dato incorrecto: {e}"</span>)
+<span class="kw">else</span>:
+    <span class="comment"># Se ejecuta SOLO si NO hubo errores</span>
+    <span class="kw">print</span>(<span class="string">f"Resultado: {resultado}"</span>)
+<span class="kw">finally</span>:
+    <span class="comment"># Se ejecuta SIEMPRE, haya error o no</span>
+    <span class="kw">print</span>(<span class="string">"Operación finalizada"</span>)</div>
+        <div class="card-body" style="font-size:13px;margin-top:8px"><code>else</code> y <code>finally</code> son opcionales pero muy útiles. <code>finally</code> se usa típicamente para cerrar archivos, conexiones de base de datos o liberar recursos —independientemente de si hubo error o no.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Ejemplo real: validar ingreso de DNI</div>
+        <div class="code-block"><span class="kw">def</span> validar_dni(texto):
+    <span class="string">"""
+    Valida que el DNI ingresado sea un número de 7 u 8 dígitos.
+    Retorna el DNI como entero si es válido, None si no lo es.
+    """</span>
+    <span class="kw">try</span>:
+        dni = <span class="kw">int</span>(texto.strip())
+        <span class="kw">if not</span> (1_000_000 <= dni <= 99_999_999):
+            <span class="kw">raise</span> ValueError(<span class="string">"DNI fuera de rango válido"</span>)
+        <span class="kw">return</span> dni
+    <span class="kw">except</span> ValueError <span class="kw">as</span> e:
+        <span class="kw">print</span>(<span class="string">f"DNI inválido: {e}"</span>)
+        <span class="kw">return</span> <span class="kw">None</span>
+
+<span class="comment"># Uso</span>
+dni = validar_dni(<span class="string">"28456789"</span>)   <span class="comment"># → 28456789</span>
+dni = validar_dni(<span class="string">"abc"</span>)         <span class="comment"># → None (e imprime error)</span>
+dni = validar_dni(<span class="string">"123"</span>)         <span class="comment"># → None (fuera de rango)</span></div>
+        <div class="tip"><code>raise ValueError("mensaje")</code> permite lanzar errores propios cuando los datos no cumplen nuestras reglas de negocio, aunque Python no hubiera detectado nada malo.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Ejercicio guiado</div>
+        <div class="card-body">Escribir una función <code>calcular_promedio_tramites(lista)</code> que:</div>
+        <ul style="margin:8px 0 12px 20px; color:var(--color-text-secondary); font-size:13px; line-height:1.6">
+          <li>Reciba una lista de números de trámites procesados por día.</li>
+          <li>Retorne el promedio.</li>
+          <li>Maneje correctamente el caso de lista vacía (evitar <code>ZeroDivisionError</code>).</li>
+          <li>Maneje el caso de que algún elemento no sea un número.</li>
+        </ul>
+        <div class="code-block"><span class="comment"># Completar esta función</span>
+<span class="kw">def</span> calcular_promedio_tramites(lista):
+    <span class="kw">try</span>:
+        <span class="comment"># ¿Qué pasa si lista está vacía?</span>
+        <span class="comment"># ¿Qué pasa si lista tiene strings?</span>
+        <span class="kw">pass</span>
+    <span class="kw">except</span> ___:
+        <span class="kw">pass</span></div>
+      </div>
+    </div>
+
+        <!-- QUÉ ES DJANGO -->
+    <div id="que_es_django" class="section">
+      <div class="section-header">
+        <div class="section-tag">Conceptos · 20 min</div>
+        <div class="section-title">¿Qué es Django y para qué sirve?</div>
+        <div class="section-desc">Django es un framework web escrito en Python que permite construir aplicaciones web completas sin tener que programar desde cero cada componente.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Framework vs. librería: la diferencia clave</div>
+        <div class="card-body">Una <strong>librería</strong> es una herramienta que se llama cuando se la necesita. Un <strong>framework</strong> es una estructura que organiza cómo se escribe el código. Con Django, la aplicación sigue las reglas del framework; el framework llama al código del desarrollador.</div>
+        <div class="tip">Analogía: una librería es como comprar ladrillos. Un framework es una casa prefabricada donde se decoran los cuartos. Django viene con paredes, techo y cañerías. Nosotros decoramos.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">¿Qué incluye Django "de fábrica"?</div>
+        <div class="card-body">Django sigue la filosofía <em>batteries included</em>: viene con todo lo necesario para construir una aplicación web de producción sin depender de librerías externas para las funciones básicas.</div>
+        <div class="grid-2" style="margin-top:14px">
+          <div class="layer-card">
+            <div class="layer-icon" style="background:var(--color-background-info)">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 4h12M2 8h8M2 12h10" stroke="var(--color-text-info)" stroke-width="1.3" stroke-linecap="round"/></svg>
+            </div>
+            <div class="layer-name">ORM</div>
+            <div class="layer-desc">Interactuar con la base de datos usando Python en vez de SQL. Definís modelos como clases, Django traduce a consultas.</div>
+          </div>
+          <div class="layer-card">
+            <div class="layer-icon" style="background:var(--color-background-success)">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="2" stroke="var(--color-text-success)" stroke-width="1.3"/><path d="M5 8h6M8 5v6" stroke="var(--color-text-success)" stroke-width="1.3" stroke-linecap="round"/></svg>
+            </div>
+            <div class="layer-name">Panel de administración</div>
+            <div class="layer-desc">Interfaz visual para gestionar datos sin escribir código. Lista, crea, edita y elimina registros automáticamente.</div>
+          </div>
+          <div class="layer-card">
+            <div class="layer-icon" style="background:var(--color-background-warning)">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2l1.5 3.5L13 6l-2.5 2.5.5 3.5L8 10.5 5 12l.5-3.5L3 6l3.5-.5z" stroke="var(--color-text-warning)" stroke-width="1.2"/></svg>
+            </div>
+            <div class="layer-name">Sistema de autenticación</div>
+            <div class="layer-desc">Usuarios, contraseñas, permisos y sesiones incluidos. No hay que programar login desde cero.</div>
+          </div>
+          <div class="layer-card">
+            <div class="layer-icon" style="background:var(--color-background-danger)">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2v4M8 10v4M2 8h4M10 8h4" stroke="var(--color-text-danger)" stroke-width="1.3" stroke-linecap="round"/></svg>
+            </div>
+            <div class="layer-name">Motor de templates</div>
+            <div class="layer-desc">Sistema para generar HTML dinámico mezclando plantillas con datos del backend.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">El patrón MVT — Model, View, Template</div>
+        <div class="card-body" style="margin-bottom:14px">Django organiza el código en tres responsabilidades separadas. Este patrón garantiza que el proyecto sea mantenible aunque crezca.</div>
+        <div class="flow">
+          <div class="flow-step">
+            <div class="flow-left"><div class="flow-num">M</div><div class="flow-line"></div></div>
+            <div class="flow-content">
+              <div class="flow-title">Model — Los datos</div>
+              <div class="flow-text">Define la estructura de la información: qué campos tiene un turno, un ciudadano, un trámite. Se mapea directamente a tablas en la base de datos.</div>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-left"><div class="flow-num">V</div><div class="flow-line"></div></div>
+            <div class="flow-content">
+              <div class="flow-title">View — La lógica</div>
+              <div class="flow-text">Funciones Python que reciben una solicitud HTTP, consultan los modelos, y devuelven una respuesta. Es el "cerebro" que conecta datos con presentación.</div>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-left"><div class="flow-num">T</div></div>
+            <div class="flow-content">
+              <div class="flow-title">Template — La presentación</div>
+              <div class="flow-text">Archivos HTML con marcadores especiales que Django reemplaza con datos reales. El ciudadano ve el resultado final en el navegador.</div>
+            </div>
+          </div>
+        </div>
+        <div class="tip">En el sistema de turnos: el <strong>Model</strong> es el turno con fecha y estado, la <strong>View</strong> busca los turnos disponibles de mañana, y el <strong>Template</strong> los muestra como una lista en la página web.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Django en el Estado y en la industria</div>
+        <div class="card-body">Django no es un framework experimental. Es uno de los más maduros del ecosistema Python, con más de 18 años de desarrollo continuo. Es usado por el Estado Nacional argentino en sistemas de gestión interna, por Instagram (que lo escala a millones de usuarios), y por plataformas de gobierno electrónico en toda la región hispanohablante. Aprender Django es aprender una habilidad directamente transferible al mercado laboral público y privado.</div>
+      </div>
+    </div>
+
+    <!-- INSTALACIÓN -->
+    <div id="instalacion" class="section">
+      <div class="section-header">
+        <div class="section-tag">Setup · 15 min</div>
+        <div class="section-title">Entorno virtual e instalación de Django</div>
+        <div class="section-desc">Antes de instalar Django, vamos a crear un entorno virtual. Esto aísla las dependencias del proyecto del resto del sistema.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">¿Por qué un entorno virtual?</div>
+        <div class="card-body">Si instalamos Django directamente en el sistema, todas las versiones de todos los proyectos van a competir entre sí. Un entorno virtual es una carpeta aislada con su propio Python y sus propias librerías. Es la práctica estándar en cualquier proyecto profesional.</div>
+        <div class="warn">Nunca instalar librerías con <code>pip install</code> sin activar antes el entorno virtual. Es uno de los errores más comunes en las primeras semanas.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Paso a paso: entorno virtual + Django</div>
+
+        <div class="install-row">
+          <div class="install-icon" style="font-size:10px">1</div>
+          <div style="flex:1">
+            <div class="install-name">Ir a la carpeta del proyecto</div>
+            <div class="install-desc">Usar la misma carpeta <code>sistema-turnos</code> que creamos en la Clase 1.</div>
+            <div class="install-cmds">
+              <div class="os-row"><span class="os-label">Terminal</span><span class="install-cmd">cd sistema-turnos</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="install-row">
+          <div class="install-icon" style="font-size:10px">2</div>
+          <div style="flex:1">
+            <div class="install-name">Crear el entorno virtual</div>
+            <div class="install-desc">El nombre <code>venv</code> es convención. Se crea dentro de la carpeta del proyecto.</div>
+            <div class="install-cmds">
+              <div class="os-row"><span class="os-label">Mac/Linux</span><span class="install-cmd">python3 -m venv venv</span></div>
+              <div class="os-row"><span class="os-label">Windows</span><span class="install-cmd">python -m venv venv</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="install-row">
+          <div class="install-icon" style="font-size:10px">3</div>
+          <div style="flex:1">
+            <div class="install-name">Activar el entorno virtual</div>
+            <div class="install-desc">El prompt de la terminal cambia para indicar que el entorno está activo: aparece <code>(venv)</code> al inicio.</div>
+            <div class="install-cmds">
+              <div class="os-row"><span class="os-label">Mac/Linux</span><span class="install-cmd">source venv/bin/activate</span></div>
+              <div class="os-row"><span class="os-label">Windows</span><span class="install-cmd">venv\Scripts\activate</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="install-row">
+          <div class="install-icon" style="font-size:10px">4</div>
+          <div style="flex:1">
+            <div class="install-name">Instalar Django</div>
+            <div class="install-desc">Con el entorno activo, pip instala Django solo dentro de ese entorno.</div>
+            <div class="install-cmds">
+              <div class="os-row"><span class="os-label">Instalar</span><span class="install-cmd">pip install django</span></div>
+              <div class="os-row"><span class="os-label">Verificar</span><span class="install-cmd">python -m django --version</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Verificación exitosa</div>
+        <div class="code-block">(venv) $ python -m django --version
+<span class="output">5.x.x</span></div>
+        <div class="card-body" style="font-size:13px">Si aparece un número de versión que empieza con 4 o 5, la instalación fue correcta. Si aparece un error, revisar que el entorno esté activado (<code>(venv)</code> en el prompt).</div>
+      </div>
+    </div>
+
+    <!-- PRIMER PROYECTO -->
+    <div id="primer_proyecto" class="section">
+      <div class="section-header">
+        <div class="section-tag">Práctica guiada · 20 min</div>
+        <div class="section-title">Crear el primer proyecto Django</div>
+        <div class="section-desc">Un proyecto Django es la unidad principal. Todo el sistema de turnos va a vivir dentro de este proyecto.</div>
+      </div>
+
+      <div class="card">
+        <div class="ex-header"><div class="ex-num">1</div><div class="ex-title">Crear el proyecto con django-admin</div></div>
+        <div class="card-body" style="font-size:13px;margin-bottom:10px">Django trae la herramienta <code>django-admin</code> que genera la estructura inicial del proyecto automáticamente.</div>
+        <div class="code-block">(venv) $ django-admin startproject sistema_turnos .
+<span class="comment"># El punto al final indica "crear el proyecto en esta carpeta"
+# sin crear una subcarpeta adicional — es importante</span></div>
+        <div class="warn">El punto (<code>.</code>) al final del comando es parte del comando. Sin él, Django crea una subcarpeta adicional que complica la estructura.</div>
+      </div>
+
+      <div class="card">
+        <div class="ex-header"><div class="ex-num">2</div><div class="ex-title">¿Qué se generó?</div></div>
+        <div class="card-body" style="font-size:13px;margin-bottom:10px">Después de ejecutar el comando, la carpeta tiene esta estructura:</div>
+        <div class="code-block">sistema-turnos/
+├── venv/                  <span class="comment"># entorno virtual (no tocar)</span>
+├── sistema_turnos/        <span class="comment"># configuración del proyecto</span>
+│   ├── __init__.py
+│   ├── settings.py        <span class="comment"># ← toda la configuración</span>
+│   ├── urls.py            <span class="comment"># ← rutas principales</span>
+│   ├── asgi.py
+│   └── wsgi.py
+├── manage.py              <span class="comment"># ← herramienta de comandos</span>
+└── bienvenida.py          <span class="comment"># de la clase 1</span></div>
+      </div>
+
+      <div class="card">
+        <div class="ex-header"><div class="ex-num">3</div><div class="ex-title">El archivo manage.py</div></div>
+        <div class="card-body" style="font-size:13px;margin-bottom:10px"><code>manage.py</code> es el centro de operaciones del proyecto. Desde acá se ejecutan todos los comandos de Django durante el desarrollo.</div>
+        <div class="code-block"><span class="comment"># Comandos que vamos a usar a lo largo del curso:</span>
+python manage.py runserver      <span class="comment"># iniciar servidor de desarrollo</span>
+python manage.py startapp       <span class="comment"># crear una nueva aplicación</span>
+python manage.py makemigrations <span class="comment"># preparar cambios en la base de datos</span>
+python manage.py migrate        <span class="comment"># aplicar cambios en la base de datos</span>
+python manage.py createsuperuser <span class="comment"># crear usuario administrador</span></div>
+        <div class="tip">Memorizar <code>runserver</code> y <code>migrate</code>: son los dos comandos que se usan en todas las sesiones de desarrollo.</div>
+      </div>
+    </div>
+
+    <!-- ESTRUCTURA -->
+    <div id="estructura" class="section">
+      <div class="section-header">
+        <div class="section-tag">Conceptos · 20 min</div>
+        <div class="section-title">Estructura interna del proyecto</div>
+        <div class="section-desc">Entender qué hace cada archivo generado por Django. No hay que modificar nada todavía — primero leer, después escribir.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">settings.py — El archivo de configuración</div>
+        <div class="card-body" style="margin-bottom:12px">Contiene toda la configuración del proyecto. Hoy vamos a ver tres secciones clave.</div>
+        <div class="code-block"><span class="comment"># sistema_turnos/settings.py (fragmento)</span>
+
+<span class="comment"># 1. Aplicaciones instaladas</span>
+INSTALLED_APPS = [
+    <span class="string">'django.contrib.admin'</span>,       <span class="comment"># panel de administración</span>
+    <span class="string">'django.contrib.auth'</span>,        <span class="comment"># sistema de usuarios</span>
+    <span class="string">'django.contrib.contenttypes'</span>,
+    <span class="string">'django.contrib.sessions'</span>,
+    <span class="string">'django.contrib.messages'</span>,
+    <span class="string">'django.contrib.staticfiles'</span>,
+]
+
+<span class="comment"># 2. Base de datos (SQLite por defecto, cambiamos a PostgreSQL más adelante)</span>
+DATABASES = {
+    <span class="string">'default'</span>: {
+        <span class="string">'ENGINE'</span>: <span class="string">'django.db.backends.sqlite3'</span>,
+        <span class="string">'NAME'</span>: BASE_DIR / <span class="string">'db.sqlite3'</span>,
+    }
+}
+
+<span class="comment"># 3. Idioma y zona horaria</span>
+LANGUAGE_CODE = <span class="string">'es-ar'</span>
+TIME_ZONE = <span class="string">'America/Argentina/Buenos_Aires'</span></div>
+        <div class="tip">Cambiar <code>LANGUAGE_CODE</code> a <code>'es-ar'</code> y <code>TIME_ZONE</code> a <code>'America/Argentina/Buenos_Aires'</code>. El panel de administración va a aparecer en español y las fechas van a estar en hora local.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">urls.py — El enrutador principal</div>
+        <div class="card-body" style="margin-bottom:12px">Asocia URLs con vistas. Cuando el ciudadano escribe una dirección en el navegador, Django busca en este archivo qué código ejecutar.</div>
+        <div class="code-block"><span class="comment"># sistema_turnos/urls.py</span>
+<span class="kw">from</span> django.contrib <span class="kw">import</span> admin
+<span class="kw">from</span> django.urls <span class="kw">import</span> path
+
+urlpatterns = [
+    path(<span class="string">'admin/'</span>, admin.site.urls),
+    <span class="comment"># Acá vamos a agregar nuestras rutas en la Clase 10</span>
+]</div>
+        <div class="card-body" style="font-size:13px;margin-top:8px">Por ahora solo tiene la ruta del panel de administración. En la Clase 10 vamos a agregar las rutas del sistema de turnos.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Proyectos vs. Aplicaciones en Django</div>
+        <div class="card-body" style="margin-bottom:12px">Este es uno de los conceptos que más confunde al principio. En Django hay una distinción importante:</div>
+        <div class="grid-2">
+          <div class="layer-card">
+            <div class="layer-name">Proyecto</div>
+            <div class="layer-tech">sistema_turnos/</div>
+            <div class="layer-desc">El contenedor global. Tiene la configuración, las rutas principales y conecta todo. Hay uno por sistema.</div>
+            <div class="layer-example">Ej: Todo el sistema de gestión de ANSES es un proyecto.</div>
+          </div>
+          <div class="layer-card">
+            <div class="layer-name">Aplicación</div>
+            <div class="layer-tech">turnos/ ciudadanos/ tramites/</div>
+            <div class="layer-desc">Un módulo con responsabilidad específica dentro del proyecto. Un proyecto tiene muchas aplicaciones.</div>
+            <div class="layer-example">Ej: El módulo de turnos, el módulo de ciudadanos y el módulo de trámites son tres aplicaciones dentro del mismo proyecto.</div>
+          </div>
+        </div>
+        <div class="tip">Esta semana trabajamos en el nivel de <strong>proyecto</strong>. En la Clase 10 vamos a crear la primera <strong>aplicación</strong>: <code>turnos</code>.</div>
+      </div>
+    </div>
+
+    <!-- SERVIDOR -->
+    <div id="servidor" class="section">
+      <div class="section-header">
+        <div class="section-tag">Práctica · 15 min</div>
+        <div class="section-title">Servidor de desarrollo</div>
+        <div class="section-desc">Django incluye un servidor web liviano para trabajar en local. No necesitamos configurar Apache ni Nginx para desarrollar.</div>
+      </div>
+
+      <div class="card">
+        <div class="ex-header"><div class="ex-num">1</div><div class="ex-title">Ejecutar las migraciones iniciales</div></div>
+        <div class="card-body" style="font-size:13px;margin-bottom:10px">Antes de iniciar el servidor, aplicamos las migraciones que Django trae por defecto. Esto crea las tablas necesarias para el sistema de usuarios y el panel de administración.</div>
+        <div class="code-block">(venv) $ python manage.py migrate
+
+<span class="output">Operations to perform:
+  Apply all migrations: admin, auth, contenttypes, sessions
+Running migrations:
+  Applying contenttypes.0001_initial... OK
+  Applying auth.0001_initial... OK
+  Applying admin.0001_initial... OK
+  Applying sessions.0001_session... OK</span></div>
+        <div class="card-body" style="font-size:13px;margin-top:8px">Cada línea "OK" confirma que una tabla se creó correctamente en la base de datos SQLite. En la Semana 4 vamos a profundizar en qué son exactamente las migraciones.</div>
+      </div>
+
+      <div class="card">
+        <div class="ex-header"><div class="ex-num">2</div><div class="ex-title">Iniciar el servidor</div></div>
+        <div class="code-block">(venv) $ python manage.py runserver
+
+<span class="output">Watching for file changes with StatReloader
+Performing system checks...
+
+System check identified no issues (0 silenced).
+September 15, 2024 - 09:30:00
+Django version 5.x, using settings 'sistema_turnos.settings'
+Starting development server at http://127.0.0.1:8000/
+Quit the server with CONTROL-C.</span></div>
+        <div class="tip">Abrir el navegador y entrar a <strong>http://127.0.0.1:8000/</strong>. Aparece la página de bienvenida de Django. El proyecto está corriendo.</div>
+      </div>
+
+      <div class="card">
+        <div class="ex-header"><div class="ex-num">3</div><div class="ex-title">Crear el superusuario</div></div>
+        <div class="card-body" style="font-size:13px;margin-bottom:10px">Para acceder al panel de administración necesitamos un usuario con permisos totales. Abrir una segunda terminal (con el servidor corriendo en la primera).</div>
+        <div class="code-block">(venv) $ python manage.py createsuperuser
+
+<span class="output">Username: admin
+Email address: admin@sistema-turnos.gob.ar
+Password: ••••••••
+Password (again): ••••••••
+Superuser created successfully.</span></div>
+        <div class="card-body" style="font-size:13px;margin-top:8px">Ingresar a <strong>http://127.0.0.1:8000/admin/</strong> con el usuario creado. El panel de administración de Django es funcional desde el primer momento, sin escribir una sola línea de HTML.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Lo que acaban de lograr</div>
+        <div class="card-body">En menos de 30 minutos, sin escribir HTML ni configurar servidores, tienen un sistema web corriendo con base de datos, autenticación y panel de administración. Eso es lo que significa usar un framework maduro.</div>
+        <div style="margin-top:12px">
+          <span class="pill pill-success">Entorno virtual ✓</span>
+          <span class="pill pill-success">Django instalado ✓</span>
+          <span class="pill pill-success">Proyecto creado ✓</span>
+          <span class="pill pill-success">Servidor corriendo ✓</span>
+          <span class="pill pill-success">Panel admin funcional ✓</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CIERRE -->
+    <div id="cierre" class="section">
+      <div class="section-header">
+        <div class="section-tag">Actividad · 20 min</div>
+        <div class="section-title">Exploración del panel de administración</div>
+        <div class="section-desc">La actividad de cierre es exploratoria. El objetivo es entender qué ofrece Django antes de empezar a personalizar.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Tarea guiada: explorar el admin</div>
+        <div class="flow">
+          <div class="flow-step">
+            <div class="flow-left"><div class="flow-num">1</div><div class="flow-line"></div></div>
+            <div class="flow-content">
+              <div class="flow-title">Ingresar al panel</div>
+              <div class="flow-text">Abrir <code>http://127.0.0.1:8000/admin/</code> e ingresar con el superusuario creado.</div>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-left"><div class="flow-num">2</div><div class="flow-line"></div></div>
+            <div class="flow-content">
+              <div class="flow-title">Crear un usuario de prueba</div>
+              <div class="flow-text">Ir a "Usuarios" → "Añadir usuario". Crear un usuario ficticio que represente a un agente del organismo. Explorar los campos disponibles: nombre, permisos, grupos.</div>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-left"><div class="flow-num">3</div><div class="flow-line"></div></div>
+            <div class="flow-content">
+              <div class="flow-title">Observar las secciones disponibles</div>
+              <div class="flow-text">El panel tiene Usuarios y Grupos por defecto. En las próximas clases, al crear modelos propios (Turno, Ciudadano), van a aparecer nuevas secciones automáticamente.</div>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-left"><div class="flow-num">4</div></div>
+            <div class="flow-content">
+              <div class="flow-title">Cambiar el idioma en settings.py</div>
+              <div class="flow-text">En <code>sistema_turnos/settings.py</code>, cambiar <code>LANGUAGE_CODE = 'es-ar'</code> y <code>TIME_ZONE = 'America/Argentina/Buenos_Aires'</code>. Guardar y recargar el panel. El cambio es inmediato.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Desafío: primera vista propia</div>
+        <div class="card-body" style="margin-bottom:12px">Para los que terminaron antes. Crear la primera vista del sistema de turnos. Abrir <code>sistema_turnos/urls.py</code> y agregar:</div>
+        <div class="code-block"><span class="kw">from</span> django.contrib <span class="kw">import</span> admin
+<span class="kw">from</span> django.urls <span class="kw">import</span> path
+<span class="kw">from</span> django.http <span class="kw">import</span> HttpResponse
+
+<span class="kw">def</span> inicio(request):
+    <span class="kw">return</span> HttpResponse(<span class="string">"Sistema de Turnos — ANSES · En construcción"</span>)
+
+urlpatterns = [
+    path(<span class="string">'admin/'</span>, admin.site.urls),
+    path(<span class="string">''</span>, inicio),  <span class="comment"># ruta raíz</span>
+]</div>
+        <div class="card-body" style="font-size:13px;margin-top:8px">Guardar, volver al navegador y recargar <code>http://127.0.0.1:8000/</code>. El mensaje aparece en pantalla. Esa función Python acaba de convertirse en una página web. En la Clase 8 vamos a desarrollar esto en profundidad.</div>
+        <div class="tip">El servidor de desarrollo recarga automáticamente al detectar cambios en los archivos. No hace falta reiniciarlo manualmente.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Para la próxima clase</div>
+        <div class="card-body">La Clase 8 cubre aplicaciones, rutas y vistas. Vamos a crear la aplicación <code>turnos</code>, configurar sus URLs propias y construir las primeras vistas reales del sistema.</div>
+        <div style="margin-top:12px">
+          <span class="pill pill-success">Servidor corriendo ✓</span>
+          <span class="pill pill-success">Admin funcionando ✓</span>
+          <span class="pill pill-info">Clase 10: Apps y vistas →</span>
+        </div>
+      </div>
+    </div>
+
+<!-- TROUBLESHOOTING -->
+    <div id="troubleshooting" class="section">
+      <div class="section-header">
+        <div class="section-tag">Referencia</div>
+        <div class="section-title">Troubleshooting</div>
+        <div class="section-desc">Errores frecuentes en la primera configuración de Django y cómo resolverlos.</div>
+      </div>
+      <div class="card">
+        <div class="trouble-item">
+          <div class="trouble-q">"No module named django" al ejecutar manage.py</div>
+          <div class="trouble-a">El entorno virtual no está activado. Verificar que el prompt tenga <code>(venv)</code> al inicio. Si no: <code>source venv/bin/activate</code> (Mac/Linux) o <code>venv\Scripts\activate</code> (Windows).</div>
+        </div>
+        <div class="divider"></div>
+        <div class="trouble-item">
+          <div class="trouble-q">"That port is already in use" al ejecutar runserver</div>
+          <div class="trouble-a">Ya hay una instancia del servidor corriendo en la terminal. Cerrar la terminal anterior o usar un puerto alternativo: <code>python manage.py runserver 8001</code>.</div>
+        </div>
+        <div class="divider"></div>
+        <div class="trouble-item">
+          <div class="trouble-q">"You have 18 unapplied migration(s)" en la consola</div>
+          <div class="trouble-a">El proyecto fue creado pero no se ejecutó <code>migrate</code>. Ejecutar <code>python manage.py migrate</code> con el entorno activo.</div>
+        </div>
+        <div class="divider"></div>
+        <div class="trouble-item">
+          <div class="trouble-q">El panel de administración aparece en inglés</div>
+          <div class="trouble-a">Verificar que en <code>settings.py</code> esté <code>LANGUAGE_CODE = 'es-ar'</code> (con comillas simples y guión). Guardar el archivo y recargar el navegador.</div>
+        </div>
+        <div class="divider"></div>
+        <div class="trouble-item">
+          <div class="trouble-q">"django-admin: command not found"</div>
+          <div class="trouble-a">El entorno virtual no está activado, o Django no se instaló dentro del entorno. Activar el entorno y ejecutar nuevamente <code>pip install django</code>.</div>
+        </div>
+        <div class="divider"></div>
+        <div class="trouble-item">
+          <div class="trouble-q">El punto <code>.</code> en <code>startproject</code> generó una carpeta extra</div>
+          <div class="trouble-a">Si la estructura quedó como <code>sistema_turnos/sistema_turnos/</code> (dos niveles), se omitió el punto. La solución más limpia es eliminar la carpeta generada y ejecutar el comando de nuevo desde la carpeta correcta con el punto al final.</div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- RECURSOS -->
+    
+    <div id="recursos" class="section">
+      <div class="section-header">
+        <div class="section-tag">Referencia</div>
+        <div class="section-title">Recursos adicionales</div>
+        <div class="section-desc">Documentación y materiales de apoyo para profundizar entre la Clase 9 y la Clase 10.</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Para esta semana</div>
+        <div class="install-row">
+          <div style="flex:1">
+            <div class="install-name">Documentación oficial de Django</div>
+            <div class="install-desc">El tutorial oficial ("Writing your first Django app") es el mejor punto de entrada. Complementa directamente lo que hacemos en clase.</div>
+            <div class="install-cmd">docs.djangoproject.com/es/5.0/intro/tutorial01/</div>
+          </div>
+        </div>
+        <div class="install-row">
+          <div style="flex:1">
+            <div class="install-name">Django Girls Tutorial (español)</div>
+            <div class="install-desc">Tutorial completo paso a paso con explicaciones muy claras de los conceptos fundamentales. Recomendado para repasar los pasos de esta clase.</div>
+            <div class="install-cmd">tutorial.djangogirls.org/es/</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Para cuando lleguemos a modelos y base de datos</div>
+        <div class="install-row">
+          <div style="flex:1">
+            <div class="install-name">Documentación del ORM de Django</div>
+            <div class="install-desc">Referencia completa de cómo definir modelos y hacer consultas. </div>
+            <div class="install-cmd">docs.djangoproject.com/es/5.0/topics/db/models/</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Checklist para la Clase 8</div>
+        <div class="card-body">Al inicio de la próxima clase deberían poder ejecutar el servidor y acceder al panel de administración sin ayuda.</div>
+        <div style="margin-top:12px">
+          <span class="pill pill-success">python manage.py runserver → OK ✓</span>
+          <span class="pill pill-success">http://127.0.0.1:8000/ → responde ✓</span>
+          <span class="pill pill-success">http://127.0.0.1:8000/admin/ → panel visible ✓</span>
+          <span class="pill pill-success">settings.py con idioma es-ar ✓</span>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+</div>
+
+<script>
+function show(id, el) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  el.classList.add('active');
+  document.querySelector('.main').scrollTop = 0;
+}
+</script>
+</body>
+</html>

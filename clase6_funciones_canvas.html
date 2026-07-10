@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clase 6 — Funciones y Modularización</title>
+<link rel="stylesheet" href="canvas_shared.css">
+</head>
+<body>
+
+<div class="canvas">
+  <div class="sidebar">
+    <div class="sidebar-top">
+      <div class="sidebar-badge">Semana 2</div>
+      <div class="sidebar-title">Clase 6 — Funciones y modularización</div>
+      <div class="sidebar-sub">1 horas · Clase 6 de 10</div>
+    </div>
+    <div class="nav">
+      <div class="nav-label">Contenido</div>
+      <div class="nav-item active" onclick="show('intro',this)"><div class="nav-dot"></div>¿Por qué funciones?<span class="time-badge">10 min</span></div>
+      <div class="nav-item" onclick="show('definicion',this)"><div class="nav-dot"></div>Definir funciones<span class="time-badge">20 min</span></div>
+      <div class="nav-item" onclick="show('parametros',this)"><div class="nav-dot"></div>Parámetros y retorno<span class="time-badge">25 min</span></div>
+      <div class="nav-item" onclick="show('scope',this)"><div class="nav-dot"></div>Scope y buenas prácticas<span class="time-badge">15 min</span></div>
+      <div class="nav-item" onclick="show('modulos',this)"><div class="nav-dot"></div>Módulos y archivos<span class="time-badge">20 min</span></div>
+      <div class="nav-item" onclick="show('practica',this)"><div class="nav-dot"></div>Práctica integradora<span class="time-badge">25 min</span></div>
+      <div class="nav-item" onclick="show('cierre',this)"><div class="nav-dot"></div>Cierre y tarea<span class="time-badge">5 min</span></div>
+      <div class="nav-label">Referencia</div>
+      <div class="nav-item" onclick="show('errores',this)"><div class="nav-dot"></div>Errores frecuentes</div>
+      <div class="nav-item" onclick="show('recursos',this)"><div class="nav-dot"></div>Recursos</div>
+    </div>
+    <div class="sidebar-home-link" style="margin-top:auto;padding:12px 16px;border-top:0.5px solid var(--color-border-tertiary);">
+      <a href="index.html" style="font-size:12px;color:var(--color-text-info);text-decoration:none;font-weight:500;">← Volver al índice</a>
+    </div>
+  </div>
+
+  <div class="main">
+
+    <!-- INTRO -->
+    <div id="intro" class="section active">
+      <div class="section-header">
+        <div class="section-tag">Apertura · 10 min</div>
+        <div class="section-title">¿Por qué necesitamos funciones?</div>
+        <div class="section-desc">En las clases anteriores escribimos código que funciona. Hoy vamos a aprender a organizarlo para que funcione <em>a escala</em>.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">El problema: código repetido es deuda</div>
+        <div class="card-body">Imaginen que el sistema de ANSES tiene que calcular multas en tres lugares distintos: al crear un turno vencido, al generar un reporte mensual y al enviar notificaciones. Sin funciones, el cálculo se copia tres veces. Si cambia la tasa de recargo, hay que encontrar y editar los tres lugares. Y siempre hay uno que se olvida.</div>
+        <div class="code-block"><span class="comment"># ❌ Sin funciones: lógica duplicada en tres partes del sistema</span>
+
+<span class="comment"># En la vista de turnos vencidos:</span>
+recargo_turno = deuda * 0.15
+total_turno = deuda + recargo_turno
+
+<span class="comment"># En el módulo de reportes:</span>
+recargo_reporte = monto * 0.15
+total_reporte = monto + recargo_reporte
+
+<span class="comment"># En las notificaciones:</span>
+recargo_notif = importe * 0.15
+total_notif = importe + recargo_notif
+
+<span class="comment"># Si cambia la tasa al 18%... hay que editar 3 lugares.</span>
+<span class="comment"># En un sistema real son 30 lugares. Y alguien siempre olvida uno.</span></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">La solución: una sola fuente de verdad</div>
+        <div class="card-body">Una función es un bloque de código con nombre. Se define una vez y se usa todas las veces que se necesite. Si la lógica cambia, se edita en un solo lugar y todo el sistema se actualiza.</div>
+        <div class="code-block"><span class="comment"># ✅ Con función: definir una vez, usar en todas partes</span>
+
+<span class="kw">def</span> calcular_total_con_recargo(deuda, tasa=0.15):
+    recargo = deuda * tasa
+    <span class="kw">return</span> deuda + recargo
+
+<span class="comment"># En la vista de turnos:</span>
+total_turno = calcular_total_con_recargo(deuda_turno)
+
+<span class="comment"># En el módulo de reportes:</span>
+total_reporte = calcular_total_con_recargo(monto_reporte)
+
+<span class="comment"># Si cambia la tasa, se edita solo la definición. Todo lo demás funciona.</span></div>
+        <div class="tip"><strong>Principio DRY:</strong> Don't Repeat Yourself. En sistemas de gestión del Estado, donde la normativa cambia con frecuencia, este principio es crítico. Una tasa que cambia por decreto debería editarse en exactamente un lugar del código.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Qué vamos a construir hoy</div>
+        <div class="card-body">Al final de la clase vamos a tener un módulo <code>tramites.py</code> con funciones reutilizables que cualquier parte del sistema puede importar. Es el primer componente real del sistema de turnos que van a seguir construyendo en las próximas semanas.</div>
+        <div style="margin-top:12px">
+          <span class="pill pill-info">def y return</span>
+          <span class="pill pill-info">parámetros y defaults</span>
+          <span class="pill pill-success">scope de variables</span>
+          <span class="pill pill-success">módulos e imports</span>
+          <span class="pill pill-warn">docstrings</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- DEFINICION -->
+    <div id="definicion" class="section">
+      <div class="section-header">
+        <div class="section-tag">Conceptos · 20 min</div>
+        <div class="section-title">Definir y llamar funciones</div>
+        <div class="section-desc">La sintaxis es simple. Lo importante es entender qué pasa en cada paso.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Anatomía de una función</div>
+        <div class="code-block"><span class="kw">def</span> saludar_ciudadano():
+    <span class="comment"># Todo lo que está indentado pertenece a la función</span>
+    <span class="kw">print</span>(<span class="string">"Bienvenido al sistema de atención al ciudadano."</span>)
+    <span class="kw">print</span>(<span class="string">"Por favor, tenga su DNI a mano."</span>)
+
+<span class="comment"># Definir la función no la ejecuta. Solo la registra.</span>
+<span class="comment"># Para ejecutarla hay que llamarla:</span>
+saludar_ciudadano()
+<span class="output">Bienvenido al sistema de atención al ciudadano.
+Por favor, tenga su DNI a mano.</span>
+
+<span class="comment"># Se puede llamar todas las veces que se necesite:</span>
+saludar_ciudadano()
+saludar_ciudadano()
+<span class="output">Bienvenido al sistema de atención al ciudadano.
+Por favor, tenga su DNI a mano.
+Bienvenido al sistema de atención al ciudadano.
+Por favor, tenga su DNI a mano.</span></div>
+        <div class="card-body" style="font-size:13px;margin-top:10px">La palabra clave es <code>def</code>, seguida del nombre, paréntesis y dos puntos. El cuerpo va indentado (4 espacios o Tab). Una función sin <code>return</code> ejecuta acciones pero no produce un valor.</div>
+      </div>
+
+      <div class="card">
+        <div class="ex-header"><div class="ex-num">1</div><div class="ex-title">Ejercicio guiado — Función de bienvenida por organismo</div></div>
+        <div class="card-body" style="font-size:13px;margin-bottom:10px">Crear una función que imprima el encabezado del sistema. Comparar con el código que escribimos en la Clase 1: es exactamente eso, pero ahora reutilizable.</div>
+        <div class="code-block"><span class="kw">def</span> mostrar_encabezado():
+    <span class="kw">print</span>(<span class="string">"=" * 50</span>)
+    <span class="kw">print</span>(<span class="string">"  ANSES - Sistema de Atención al Ciudadano"</span>)
+    <span class="kw">print</span>(<span class="string">"=" * 50</span>)
+
+<span class="kw">def</span> mostrar_estado_sistema():
+    <span class="kw">print</span>(<span class="string">"Estado: operativo"</span>)
+    <span class="kw">print</span>(<span class="string">"Turnos disponibles hoy: 48"</span>)
+
+<span class="comment"># Ahora puedo componer comportamiento combinando funciones:</span>
+mostrar_encabezado()
+mostrar_estado_sistema()
+<span class="output">==================================================
+  ANSES - Sistema de Atención al Ciudadano
+==================================================
+Estado: operativo
+Turnos disponibles hoy: 48</span></div>
+        <div class="tip">Una función bien nombrada hace que el código se lea casi como lenguaje humano. <code>mostrar_encabezado()</code> y <code>mostrar_estado_sistema()</code> son autoexplicativas. No hace falta un comentario que diga "este código muestra el encabezado".</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Convenciones de nombre</div>
+        <div class="card-body" style="margin-bottom:10px">Python usa <strong>snake_case</strong> para funciones: palabras en minúscula separadas por guión bajo. El nombre debe describir <em>qué hace</em> la función, no cómo lo hace.</div>
+        <div class="code-block"><span class="comment"># ✅ Nombres claros y descriptivos</span>
+<span class="kw">def</span> calcular_recargo(monto):        ...
+<span class="kw">def</span> validar_dni(dni):               ...
+<span class="kw">def</span> registrar_turno(ciudadano):     ...
+<span class="kw">def</span> enviar_confirmacion(email):     ...
+
+<span class="comment"># ❌ Nombres que no dicen nada</span>
+<span class="kw">def</span> f(x):                           ...
+<span class="kw">def</span> procesar(dato):                 ...
+<span class="kw">def</span> hacer_cosa():                   ...</div>
+      </div>
+    </div>
+
+    <!-- PARAMETROS -->
+    <div id="parametros" class="section">
+      <div class="section-header">
+        <div class="section-tag">Conceptos · 25 min</div>
+        <div class="section-title">Parámetros, argumentos y retorno de valores</div>
+        <div class="section-desc">Una función sin parámetros siempre hace lo mismo. Los parámetros son lo que permite que sea flexible y reutilizable.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Parámetros básicos</div>
+        <div class="code-block"><span class="comment"># Parámetro: la variable que espera la función (en la definición)</span>
+<span class="comment"># Argumento: el valor que le pasamos (cuando la llamamos)</span>
+
+<span class="kw">def</span> saludar_por_nombre(nombre):          <span class="comment"># 'nombre' es el parámetro</span>
+    <span class="kw">print</span>(<span class="string">f"Bienvenido/a, {nombre}."</span>)
+    <span class="kw">print</span>(<span class="string">"Su turno fue registrado."</span>)
+
+saludar_por_nombre(<span class="string">"María González"</span>)   <span class="comment"># "María González" es el argumento</span>
+<span class="output">Bienvenido/a, María González.
+Su turno fue registrado.</span>
+
+saludar_por_nombre(<span class="string">"Carlos Rodríguez"</span>)
+<span class="output">Bienvenido/a, Carlos Rodríguez.
+Su turno fue registrado.</span></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">La instrucción <code>return</code></div>
+        <div class="card-body" style="margin-bottom:10px">Muchas funciones tienen que <em>producir un resultado</em>, no solo hacer algo. <code>return</code> devuelve ese valor para que quien llamó la función pueda usarlo.</div>
+        <div class="code-block"><span class="kw">def</span> calcular_recargo(deuda, tasa):
+    recargo = deuda * tasa
+    <span class="kw">return</span> recargo           <span class="comment"># devuelve el valor calculado</span>
+
+<span class="comment"># El valor retornado puede guardarse en una variable:</span>
+monto_extra = calcular_recargo(85000, 0.15)
+<span class="kw">print</span>(<span class="string">f"Recargo: ${monto_extra}"</span>)
+<span class="output">Recargo: $12750.0</span>
+
+<span class="comment"># O usarse directamente en una expresión:</span>
+total = 85000 + calcular_recargo(85000, 0.15)
+<span class="kw">print</span>(<span class="string">f"Total a pagar: ${total}"</span>)
+<span class="output">Total a pagar: $97750.0</span></div>
+        <div class="warn"><code>print()</code> y <code>return</code> no son lo mismo. <code>print()</code> muestra algo en pantalla pero la función no devuelve nada utilizable. <code>return</code> produce un valor que el resto del programa puede usar, guardar o transformar.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Parámetros con valor por defecto</div>
+        <div class="card-body" style="margin-bottom:10px">Cuando un parámetro casi siempre tiene el mismo valor, se puede establecer un default. Así la función es más cómoda de usar en el caso común pero sigue siendo flexible.</div>
+        <div class="code-block"><span class="kw">def</span> calcular_total(deuda, tasa=0.15):   <span class="comment"># tasa tiene valor por defecto</span>
+    recargo = deuda * tasa
+    <span class="kw">return</span> deuda + recargo
+
+<span class="comment"># Caso común: usa la tasa por defecto (15%)</span>
+<span class="kw">print</span>(calcular_total(100000))
+<span class="output">115000.0</span>
+
+<span class="comment"># Caso especial: se sobrescribe el default</span>
+<span class="kw">print</span>(calcular_total(100000, tasa=0.20))
+<span class="output">120000.0</span>
+
+<span class="comment"># Útil cuando hay categorías diferentes de mora:</span>
+<span class="kw">print</span>(calcular_total(50000, tasa=0.05))   <span class="comment"># mora leve</span>
+<span class="kw">print</span>(calcular_total(50000, tasa=0.30))   <span class="comment"># mora grave</span>
+<span class="output">52500.0
+65000.0</span></div>
+      </div>
+
+      <div class="card">
+        <div class="ex-header"><div class="ex-num">2</div><div class="ex-title">Ejercicio guiado — Función de validación de DNI</div></div>
+        <div class="card-body" style="font-size:13px;margin-bottom:10px">Los sistemas del Estado necesitan validar DNIs constantemente. Vamos a escribir una función que verifique si un DNI tiene formato válido y retorne un booleano.</div>
+        <div class="code-block"><span class="kw">def</span> es_dni_valido(dni):
+    <span class="comment"># Un DNI argentino tiene entre 7 y 8 dígitos numéricos</span>
+    dni_str = str(dni)
+    <span class="kw">if not</span> dni_str.isdigit():
+        <span class="kw">return False</span>
+    <span class="kw">if</span> len(dni_str) < 7 <span class="kw">or</span> len(dni_str) > 8:
+        <span class="kw">return False</span>
+    <span class="kw">return True</span>
+
+<span class="comment"># Probar con distintos casos:</span>
+<span class="kw">print</span>(es_dni_valido(28456789))    <span class="comment"># válido: 8 dígitos</span>
+<span class="output">True</span>
+<span class="kw">print</span>(es_dni_valido(1234567))     <span class="comment"># válido: 7 dígitos</span>
+<span class="output">True</span>
+<span class="kw">print</span>(es_dni_valido(123456))      <span class="comment"># inválido: 6 dígitos</span>
+<span class="output">False</span>
+<span class="kw">print</span>(es_dni_valido(<span class="string">"AB-123456"</span>)) <span class="comment"># inválido: no es numérico</span>
+<span class="output">False</span>
+
+<span class="comment"># Usar la función en un flujo real:</span>
+dni_ingresado = 28456789
+<span class="kw">if</span> es_dni_valido(dni_ingresado):
+    <span class="kw">print</span>(<span class="string">"DNI verificado. Procediendo con el trámite."</span>)
+<span class="kw">else</span>:
+    <span class="kw">print</span>(<span class="string">"DNI inválido. Verificar el número ingresado."</span>)</div>
+        <div class="tip">Funciones que retornan <code>True</code> o <code>False</code> se llaman <strong>predicados</strong>. Por convención, su nombre empieza con <code>es_</code>, <code>tiene_</code> o <code>puede_</code>. Hacen el código muy legible: <code>if es_dni_valido(dni)</code> se lee casi en castellano.</div>
+      </div>
+
+      <div class="card">
+        <div class="ex-header"><div class="ex-num">3</div><div class="ex-title">Funciones que retornan múltiples valores</div></div>
+        <div class="card-body" style="font-size:13px;margin-bottom:10px">Python permite retornar varios valores a la vez. Es útil cuando la función calcula varias cosas relacionadas.</div>
+        <div class="code-block"><span class="kw">def</span> calcular_desglose(deuda, tasa=0.15):
+    recargo = deuda * tasa
+    total = deuda + recargo
+    <span class="kw">return</span> deuda, recargo, total   <span class="comment"># retorna una tupla</span>
+
+<span class="comment"># Desempaquetar los tres valores:</span>
+capital, mora, importe_final = calcular_desglose(85000)
+
+<span class="kw">print</span>(<span class="string">f"Capital original: ${capital:,.0f}"</span>)
+<span class="kw">print</span>(<span class="string">f"Mora (15%):       ${mora:,.0f}"</span>)
+<span class="kw">print</span>(<span class="string">f"Total a pagar:    ${importe_final:,.0f}"</span>)
+<span class="output">Capital original: $85,000
+Mora (15%):       $12,750
+Total a pagar:    $97,750</span></div>
+      </div>
+    </div>
+
+    <!-- SCOPE -->
+    <div id="scope" class="section">
+      <div class="section-header">
+        <div class="section-tag">Conceptos · 15 min</div>
+        <div class="section-title">Scope de variables y buenas prácticas</div>
+        <div class="section-desc">Una de las fuentes de errores más comunes para quienes empiezan: confundir variables que existen dentro y fuera de una función.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Variables locales vs. globales</div>
+        <div class="code-block"><span class="comment"># Las variables creadas DENTRO de una función son locales.</span>
+<span class="comment"># No existen fuera de ella.</span>
+
+<span class="kw">def</span> procesar_turno():
+    numero = 42             <span class="comment"># variable local: solo existe aquí</span>
+    <span class="kw">print</span>(<span class="string">f"Turno número: {numero}"</span>)
+
+procesar_turno()
+<span class="output">Turno número: 42</span>
+
+<span class="kw">print</span>(numero)              <span class="comment"># ❌ NameError: 'numero' no existe acá</span>
+<span class="output">NameError: name 'numero' is not defined</span></div>
+        <div class="card-body" style="margin-top:10px;font-size:13px">Esto es una <em>feature</em>, no un bug. Las variables locales protegen al resto del programa de cambios accidentales. Cada función es un espacio aislado.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Pasar datos correctamente: parámetros y return</div>
+        <div class="card-body" style="margin-bottom:10px">La forma correcta de comunicar datos entre funciones es a través de parámetros (entrada) y <code>return</code> (salida). Evitar depender de variables globales.</div>
+        <div class="code-block"><span class="comment"># ❌ Mal patrón: función que depende de una variable global</span>
+tasa_mora = 0.15
+
+<span class="kw">def</span> calcular_mal(deuda):
+    <span class="kw">return</span> deuda * tasa_mora     <span class="comment"># usa la global: frágil</span>
+
+<span class="comment"># ✅ Buen patrón: todo entra por parámetros</span>
+<span class="kw">def</span> calcular_bien(deuda, tasa):
+    <span class="kw">return</span> deuda * tasa          <span class="comment"># sin dependencias externas: robusto</span>
+
+<span class="comment"># ¿Por qué importa? Si alguien cambia tasa_mora en otro lado del</span>
+<span class="comment"># programa, calcular_mal() cambia de comportamiento sin aviso.</span>
+<span class="comment"># calcular_bien() siempre hace exactamente lo que dice.</span></div>
+        <div class="warn">Excepción válida para globales: constantes de configuración del sistema (nombre del organismo, versión del sistema, URL de la base de datos). Ésas sí pueden ser globales, pero solo de lectura y con nombres en MAYÚSCULAS por convención.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Docstrings: documentar funciones</div>
+        <div class="card-body" style="margin-bottom:10px">En sistemas del Estado que van a ser mantenidos por otras personas (y por uno mismo en seis meses), documentar es parte del trabajo.</div>
+        <div class="code-block"><span class="kw">def</span> calcular_total(deuda, tasa=0.15):
+    <span class="string">"""
+    Calcula el total a pagar aplicando un recargo sobre la deuda.
+
+    Args:
+        deuda (float): Monto original de la deuda en pesos.
+        tasa (float): Tasa de recargo como decimal (ej: 0.15 = 15%).
+                      Por defecto: 0.15.
+
+    Returns:
+        float: Suma de deuda original más el recargo calculado.
+
+    Ejemplo:
+        >>> calcular_total(100000)
+        115000.0
+        >>> calcular_total(100000, tasa=0.20)
+        120000.0
+    """</span>
+    recargo = deuda * tasa
+    <span class="kw">return</span> deuda + recargo
+
+<span class="comment"># El docstring es accesible desde el código:</span>
+help(calcular_total)     <span class="comment"># muestra la documentación</span></div>
+        <div class="tip">Un buen docstring responde tres preguntas: ¿qué hace la función?, ¿qué necesita para funcionar?, ¿qué devuelve? No hace falta explicar el <em>cómo</em>: el código ya lo dice.</div>
+      </div>
+    </div>
+
+    <!-- MODULOS -->
+    <div id="modulos" class="section">
+      <div class="section-header">
+        <div class="section-tag">Conceptos · 20 min</div>
+        <div class="section-title">Módulos: organizar código en archivos</div>
+        <div class="section-desc">Un archivo Python es un módulo. Organizar las funciones en módulos es el primer paso hacia una arquitectura de software real.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">¿Qué es un módulo?</div>
+        <div class="card-body">Cualquier archivo <code>.py</code> es un módulo. Si tenemos <code>tramites.py</code>, podemos importar sus funciones en cualquier otro archivo del proyecto con la instrucción <code>import</code>. Así empezamos a construir un sistema con partes separadas y coherentes.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Paso 1 — Crear el módulo <code>tramites.py</code></div>
+        <div class="card-body" style="font-size:13px;margin-bottom:10px">En la carpeta <code>sistema-turnos</code>, crear un archivo nuevo llamado <code>tramites.py</code>. Aquí van a vivir todas las funciones de negocio del sistema.</div>
+        <div class="code-block"><span class="comment"># tramites.py
+# Módulo de lógica de trámites para el sistema de atención al ciudadano
+# Semana 2 - Clase 6</span>
+
+TASA_MORA_DEFAULT = 0.15      <span class="comment"># constante: mayúsculas por convención</span>
+
+<span class="kw">def</span> es_dni_valido(dni):
+    <span class="string">"""Valida si un DNI argentino tiene formato correcto."""</span>
+    dni_str = str(dni)
+    <span class="kw">return</span> dni_str.isdigit() <span class="kw">and</span> 7 <= len(dni_str) <= 8
+
+<span class="kw">def</span> calcular_total(deuda, tasa=TASA_MORA_DEFAULT):
+    <span class="string">"""Calcula el total a pagar con recargo por mora."""</span>
+    recargo = deuda * tasa
+    <span class="kw">return</span> deuda + recargo
+
+<span class="kw">def</span> formatear_turno(nombre, dni, fecha, hora):
+    <span class="string">"""Genera el texto de confirmación de un turno."""</span>
+    linea = <span class="string">"─" * 40</span>
+    confirmacion = <span class="string">f"""
+{linea}
+  TURNO CONFIRMADO
+{linea}
+  Ciudadano : {nombre}
+  DNI       : {dni}
+  Fecha     : {fecha}
+  Hora      : {hora}
+{linea}"""</span>
+    <span class="kw">return</span> confirmacion</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Paso 2 — Importar y usar el módulo desde otro archivo</div>
+        <div class="card-body" style="font-size:13px;margin-bottom:10px">Crear <code>main.py</code> en la misma carpeta. Este archivo usa las funciones de <code>tramites.py</code>.</div>
+        <div class="code-block"><span class="comment"># main.py</span>
+<span class="kw">import</span> tramites            <span class="comment"># importa todo el módulo</span>
+
+<span class="comment"># Usar las funciones con el prefijo del módulo:</span>
+dni = 28456789
+<span class="kw">if</span> tramites.es_dni_valido(dni):
+    confirmacion = tramites.formatear_turno(
+        nombre=<span class="string">"María González"</span>,
+        dni=dni,
+        fecha=<span class="string">"2024-08-15"</span>,
+        hora=<span class="string">"10:30"</span>
+    )
+    <span class="kw">print</span>(confirmacion)
+<span class="kw">else</span>:
+    <span class="kw">print</span>(<span class="string">"DNI inválido."</span>)
+
+<span class="comment"># También se puede importar solo lo que se necesita:</span>
+<span class="kw">from</span> tramites <span class="kw">import</span> calcular_total
+
+total = calcular_total(85000)
+<span class="kw">print</span>(<span class="string">f"Total con mora: ${total:,.0f}"</span>)</div>
+
+        <div class="code-block"><span class="output">────────────────────────────────────────
+  TURNO CONFIRMADO
+────────────────────────────────────────
+  Ciudadano : María González
+  DNI       : 28456789
+  Fecha     : 2024-08-15
+  Hora      : 10:30
+────────────────────────────────────────
+Total con mora: $97,750</span></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Módulos de la biblioteca estándar de Python</div>
+        <div class="card-body" style="margin-bottom:10px">Python viene con módulos listos para usar. En el contexto del sistema de turnos, los más útiles son:</div>
+        <div class="code-block"><span class="kw">import</span> datetime
+
+hoy = datetime.date.today()
+<span class="kw">print</span>(<span class="string">f"Fecha del turno: {hoy}"</span>)
+<span class="output">Fecha del turno: 2024-08-15</span>
+
+ahora = datetime.datetime.now()
+<span class="kw">print</span>(<span class="string">f"Registrado a las: {ahora.strftime('%H:%M')}"</span>)
+<span class="output">Registrado a las: 10:30</span>
+
+<span class="comment"># Calcular vencimiento de un trámite (30 días desde hoy):</span>
+vencimiento = hoy + datetime.timedelta(days=30)
+<span class="kw">print</span>(<span class="string">f"Vencimiento: {vencimiento}"</span>)</div>
+      </div>
+    </div>
+
+    <!-- PRÁCTICA -->
+    <div id="practica" class="section">
+      <div class="section-header">
+        <div class="section-tag">Práctica integradora · 25 min</div>
+        <div class="section-title">Construir el módulo de tramites completo</div>
+        <div class="section-desc">Vamos a integrar todo lo visto hoy en un módulo funcional. Este código va a seguir creciendo en las próximas semanas cuando llegue Django.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Enunciado</div>
+        <div class="card-body">El sistema de ANSES necesita un módulo que centralice la lógica de atención. Debe poder: validar DNIs, calcular montos con recargos, generar confirmaciones de turno y calcular vencimientos de trámites. Construirlo paso a paso siguiendo al instructor.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">tramites.py — versión completa de la clase</div>
+        <div class="code-block"><span class="comment"># tramites.py — Sistema de Gestión de Turnos ANSES
+# Módulo principal de lógica de negocio
+# Semana 2 - Clase 6</span>
+
+<span class="kw">import</span> datetime
+
+<span class="comment"># ── Constantes ──────────────────────────────────────────────────────</span>
+ORGANISMO       = <span class="string">"ANSES"</span>
+TASA_MORA       = 0.15
+DIAS_VENCIMIENTO = 30
+
+<span class="comment"># ── Validaciones ────────────────────────────────────────────────────</span>
+
+<span class="kw">def</span> es_dni_valido(dni):
+    <span class="string">"""Valida que el DNI tenga entre 7 y 8 dígitos numéricos."""</span>
+    dni_str = str(dni)
+    <span class="kw">return</span> dni_str.isdigit() <span class="kw">and</span> 7 <= len(dni_str) <= 8
+
+<span class="kw">def</span> es_horario_valido(hora):
+    <span class="string">"""Verifica que la hora esté en formato HH:MM."""</span>
+    partes = hora.split(<span class="string">":"</span>)
+    <span class="kw">if</span> len(partes) != 2:
+        <span class="kw">return False</span>
+    hh, mm = partes
+    <span class="kw">return</span> hh.isdigit() <span class="kw">and</span> mm.isdigit() <span class="kw">and</span> 0 <= int(hh) <= 23 <span class="kw">and</span> 0 <= int(mm) <= 59
+
+<span class="comment"># ── Cálculos ────────────────────────────────────────────────────────</span>
+
+<span class="kw">def</span> calcular_total(deuda, tasa=TASA_MORA):
+    <span class="string">"""Retorna el total a pagar (deuda + recargo)."""</span>
+    recargo = deuda * tasa
+    <span class="kw">return</span> deuda + recargo
+
+<span class="kw">def</span> calcular_vencimiento(dias=DIAS_VENCIMIENTO):
+    <span class="string">"""Retorna la fecha de vencimiento a partir de hoy."""</span>
+    hoy = datetime.date.today()
+    <span class="kw">return</span> hoy + datetime.timedelta(days=dias)
+
+<span class="comment"># ── Presentación ────────────────────────────────────────────────────</span>
+
+<span class="kw">def</span> formatear_turno(nombre, dni, fecha, hora, tramite=<span class="string">"Consulta general"</span>):
+    <span class="string">"""Genera el comprobante de turno en texto formateado."""</span>
+    linea = <span class="string">"─" * 42</span>
+    vencimiento = calcular_vencimiento()
+    <span class="kw">return</span> <span class="string">f"""
+{linea}
+  {ORGANISMO} — TURNO CONFIRMADO
+{linea}
+  Ciudadano : {nombre}
+  DNI       : {dni}
+  Trámite   : {tramite}
+  Fecha     : {fecha}
+  Hora      : {hora}
+  Vence el  : {vencimiento}
+{linea}
+  Presente este comprobante en la ventanilla.
+{linea}"""</span>
+
+<span class="comment"># ── Punto de entrada para pruebas ───────────────────────────────────</span>
+<span class="comment"># Este bloque solo se ejecuta si corremos tramites.py directamente,</span>
+<span class="comment"># no cuando lo importamos desde otro archivo.</span>
+
+<span class="kw">if</span> __name__ == <span class="string">"__main__"</span>:
+    <span class="kw">print</span>(<span class="string">"=== Prueba del módulo tramites.py ==="</span>)
+
+    <span class="comment"># Validar DNI</span>
+    <span class="kw">print</span>(<span class="string">f"DNI 28456789 válido: {es_dni_valido(28456789)}"</span>)
+
+    <span class="comment"># Calcular deuda</span>
+    capital, mora, total = 85000, 85000 * TASA_MORA, calcular_total(85000)
+    <span class="kw">print</span>(<span class="string">f"Total con mora: ${total:,.0f}"</span>)
+
+    <span class="comment"># Generar turno</span>
+    comprobante = formatear_turno(
+        nombre=<span class="string">"Juan Pérez"</span>,
+        dni=28456789,
+        fecha=<span class="string">"2024-08-20"</span>,
+        hora=<span class="string">"14:00"</span>,
+        tramite=<span class="string">"Asignación Universal por Hijo"</span>
+    )
+    <span class="kw">print</span>(comprobante)</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Ejecutar y verificar</div>
+        <div class="code-block">python3 tramites.py</div>
+        <div class="code-block" style="margin-top:8px"><span class="output">=== Prueba del módulo tramites.py ===
+DNI 28456789 válido: True
+Total con mora: $97,750
+──────────────────────────────────────────
+  ANSES — TURNO CONFIRMADO
+──────────────────────────────────────────
+  Ciudadano : Juan Pérez
+  DNI       : 28456789
+  Trámite   : Asignación Universal por Hijo
+  Fecha     : 2024-08-20
+  Hora      : 14:00
+  Vence el  : 2024-09-19
+──────────────────────────────────────────
+  Presente este comprobante en la ventanilla.
+──────────────────────────────────────────</span></div>
+        <div class="tip"><strong><code>if __name__ == "__main__"</code>:</strong> Este patrón es fundamental. Permite que el archivo funcione tanto como módulo importable (sin ejecutar las pruebas) como como script independiente (ejecutando las pruebas). Todo módulo serio en Python lo usa.</div>
+      </div>
+    </div>
+
+    <!-- CIERRE -->
+    <div id="cierre" class="section">
+      <div class="section-header">
+        <div class="section-tag">Cierre · 5 min</div>
+        <div class="section-title">Resumen y tarea para la clase 7</div>
+        <div class="section-desc">Qué nos llevamos de hoy y cómo conecta con lo que viene.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Lo que construimos hoy</div>
+        <div class="card-body">Empezamos con código suelto y terminamos con un módulo organizado que puede ser importado por cualquier otra parte del sistema. Eso es exactamente lo que hace Django internamente: módulos con funciones bien definidas que cooperan entre sí.</div>
+        <div style="margin-top:12px">
+          <span class="pill pill-success">def / return ✓</span>
+          <span class="pill pill-success">parámetros y defaults ✓</span>
+          <span class="pill pill-success">scope local ✓</span>
+          <span class="pill pill-success">módulos e import ✓</span>
+          <span class="pill pill-success">docstrings ✓</span>
+          <span class="pill pill-success">__name__ == "__main__" ✓</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Tarea para la Clase 7</div>
+        <div class="card-body">Agregar al módulo <code>tramites.py</code> dos funciones nuevas:</div>
+        <div class="code-block"><span class="comment"># Función 1: calcular edad a partir del año de nacimiento</span>
+<span class="kw">def</span> calcular_edad(anio_nacimiento):
+    <span class="string">"""
+    Retorna la edad aproximada en años.
+    Usar datetime.date.today().year para obtener el año actual.
+    """</span>
+    ...   <span class="comment"># completar</span>
+
+<span class="comment"># Función 2: determinar si un ciudadano es mayor de edad</span>
+<span class="kw">def</span> es_mayor_de_edad(anio_nacimiento):
+    <span class="string">"""
+    Retorna True si la persona tiene 18 años o más.
+    Debe usar calcular_edad() internamente.
+    """</span>
+    ...   <span class="comment"># completar</span></div>
+        <div class="tip">La Clase 7 arranca con manejo de errores y archivos. Vamos a necesitar el módulo <code>tramites.py</code> para seguir construyendo encima. Tenerlo listo y funcionando.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Conexión con lo que viene</div>
+        <div class="card-body">En la Clase 7 vamos a agregarle al sistema la capacidad de leer y escribir archivos reales: guardar turnos en un CSV, leer configuraciones desde un JSON. En la Semana 3, cuando llegue Django, todo lo que sabemos sobre funciones y módulos se aplica directamente: una vista de Django no es más que una función de Python que recibe una petición web y devuelve una respuesta.</div>
+      </div>
+    </div>
+
+    <!-- ERRORES -->
+    <div id="errores" class="section">
+      <div class="section-header">
+        <div class="section-tag">Referencia</div>
+        <div class="section-title">Errores frecuentes con funciones</div>
+        <div class="section-desc">Errores que aparecen en esta clase y cómo interpretarlos.</div>
+      </div>
+      <div class="card">
+        <div class="trouble-item">
+          <div class="trouble-q">TypeError: función_x() missing 1 required positional argument</div>
+          <div class="trouble-a">Se llamó a la función sin pasarle todos los parámetros obligatorios. Revisar cuántos parámetros tiene la función y cuántos se están pasando. Los parámetros con valor por defecto son opcionales; los que no tienen default son obligatorios.</div>
+        </div>
+        <div class="divider"></div>
+        <div class="trouble-item">
+          <div class="trouble-q">La función retorna <code>None</code> en lugar del valor esperado</div>
+          <div class="trouble-a">Falta la instrucción <code>return</code>, o está mal indentada (fuera del cuerpo de la función), o hay un camino de ejecución que no llega al <code>return</code>. Verificar que todos los <code>if/else</code> terminen en un <code>return</code>.</div>
+        </div>
+        <div class="divider"></div>
+        <div class="trouble-item">
+          <div class="trouble-q">NameError al intentar usar una variable definida dentro de otra función</div>
+          <div class="trouble-a">Las variables locales solo existen dentro de su función. Para compartir un valor entre funciones, usar <code>return</code> y pasar el valor como parámetro. No intentar acceder a variables de otras funciones directamente.</div>
+        </div>
+        <div class="divider"></div>
+        <div class="trouble-item">
+          <div class="trouble-q">ModuleNotFoundError al intentar importar <code>tramites</code></div>
+          <div class="trouble-a">El archivo <code>tramites.py</code> no está en la misma carpeta que el archivo que intenta importarlo, o la terminal no está parada en esa carpeta. Verificar con <code>ls</code> (Mac/Linux) o <code>dir</code> (Windows) que ambos archivos están en el mismo directorio.</div>
+        </div>
+        <div class="divider"></div>
+        <div class="trouble-item">
+          <div class="trouble-q">Las pruebas del módulo se ejecutan aunque lo importe desde otro archivo</div>
+          <div class="trouble-a">Falta el bloque <code>if __name__ == "__main__"</code>. Todo el código de prueba debe estar dentro de ese bloque. Sin él, al importar el módulo se ejecuta todo el código suelto que haya en el archivo.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RECURSOS -->
+    <div id="recursos" class="section">
+      <div class="section-header">
+        <div class="section-tag">Referencia</div>
+        <div class="section-title">Recursos adicionales</div>
+        <div class="section-desc">Documentación y materiales para profundizar antes de la Clase 7.</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Para esta semana</div>
+        <div class="install-row">
+          <div style="flex:1">
+            <div class="install-name">Documentación oficial: funciones en Python</div>
+            <div class="install-desc">Tutorial completo con ejemplos. Cubrir la sección "Defining Functions" y "More on Defining Functions".</div>
+            <div class="install-cmd">docs.python.org/es/3/tutorial/controlflow.html#defining-functions</div>
+          </div>
+        </div>
+        <div class="install-row">
+          <div style="flex:1">
+            <div class="install-name">Documentación: módulos en Python</div>
+            <div class="install-desc">Explicación de cómo Python encuentra módulos, la variable __name__ y cómo organizar paquetes.</div>
+            <div class="install-cmd">docs.python.org/es/3/tutorial/modules.html</div>
+          </div>
+        </div>
+        <div class="install-row">
+          <div style="flex:1">
+            <div class="install-name">Módulo <code>datetime</code> de la biblioteca estándar</div>
+            <div class="install-desc">Referencia completa para trabajar con fechas y horas. Útil para la tarea de la clase 7.</div>
+            <div class="install-cmd">docs.python.org/es/3/library/datetime.html</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Para la próxima clase — Clase 7</div>
+        <div class="card-body">Tener <code>tramites.py</code> con las dos funciones de la tarea implementadas y funcionando. La Clase 7 cubre manejo de errores (<code>try/except</code>), lectura y escritura de archivos, e introducción a JSON. Vamos a guardar los turnos del sistema en un archivo real.</div>
+        <div style="margin-top:12px">
+          <span class="pill pill-success">tramites.py funcionando ✓</span>
+          <span class="pill pill-warn">calcular_edad() implementada</span>
+          <span class="pill pill-warn">es_mayor_de_edad() implementada</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+function show(id, el) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  el.classList.add('active');
+  document.querySelector('.main').scrollTop = 0;
+}
+</script>
+</body>
+</html>

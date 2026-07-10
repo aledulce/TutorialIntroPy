@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clase 8 — Aplicaciones, rutas y vistas en Django</title>
+<link rel="stylesheet" href="canvas_shared.css">
+</head>
+<body>
+
+<div class="canvas">
+  <div class="sidebar">
+    <div class="sidebar-top">
+      <div class="sidebar-badge">Semana 2</div>
+      <div class="sidebar-title">Clase 8 — Aplicaciones, rutas y vistas</div>
+      <div class="sidebar-sub">2 horas · Clase 10 de 32</div>
+    </div>
+    <div class="nav">
+      <div class="nav-label">Contenido</div>
+      <div class="nav-item active" onclick="show('repaso',this)"><div class="nav-dot"></div>Repaso y contexto<span class="time-badge">10 min</span></div>
+      <div class="nav-item" onclick="show('apps',this)"><div class="nav-dot"></div>Apps en Django<span class="time-badge">20 min</span></div>
+      <div class="nav-item" onclick="show('flujo',this)"><div class="nav-dot"></div>Flujo de una petición<span class="time-badge">15 min</span></div>
+      <div class="nav-item" onclick="show('urls',this)"><div class="nav-dot"></div>URLs y rutas<span class="time-badge">20 min</span></div>
+      <div class="nav-item" onclick="show('vistas',this)"><div class="nav-dot"></div>Vistas<span class="time-badge">20 min</span></div>
+      <div class="nav-item" onclick="show('practica',this)"><div class="nav-dot"></div>Práctica guiada<span class="time-badge">25 min</span></div>
+      <div class="nav-item" onclick="show('cierre',this)"><div class="nav-dot"></div>Actividad de cierre<span class="time-badge">10 min</span></div>
+      <div class="nav-label">Referencia</div>
+      <div class="nav-item" onclick="show('errores',this)"><div class="nav-dot"></div>Errores frecuentes</div>
+      <div class="nav-item" onclick="show('recursos',this)"><div class="nav-dot"></div>Recursos</div>
+    </div>
+    <div class="sidebar-home-link" style="margin-top:auto;padding:12px 16px;border-top:0.5px solid var(--color-border-tertiary);">
+      <a href="index.html" style="font-size:12px;color:var(--color-text-info);text-decoration:none;font-weight:500;">← Volver al índice</a>
+    </div>
+  </div>
+
+  <div class="main">
+
+    <!-- REPASO -->
+    <div id="repaso" class="section active">
+      <div class="section-header">
+        <div class="section-tag">Apertura · 10 min</div>
+        <div class="section-title">Repaso de la Clase 7 y contexto de hoy</div>
+        <div class="section-desc">En la clase anterior creamos el proyecto Django y entendimos su estructura. Hoy le damos vida: vamos a crear nuestra primera aplicación, definir rutas y escribir vistas funcionales.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">¿Dónde quedamos?</div>
+        <div class="card-body">Al final de la Clase 7 teníamos un proyecto Django creado con <code>django-admin startproject sistema_turnos</code>, el servidor corriendo en <code>localhost:8000</code> y la página de bienvenida de Django visible en el navegador.<br><br>Hoy ese proyecto va a responder a URLs reales con contenido real.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Checklist de inicio</div>
+        <div class="card-body" style="margin-bottom:12px">Verificar que todo esté listo antes de arrancar:</div>
+        <div class="install-cmds">
+          <div class="os-row"><span class="os-label">Proyecto</span><span class="install-cmd">cd sistema_turnos</span></div>
+          <div class="os-row"><span class="os-label">Entorno</span><span class="install-cmd">source venv/bin/activate &nbsp;(Mac/Linux) &nbsp;|&nbsp; venv\Scripts\activate &nbsp;(Windows)</span></div>
+          <div class="os-row"><span class="os-label">Servidor</span><span class="install-cmd">python manage.py runserver</span></div>
+          <div class="os-row"><span class="os-label">Verificar</span><span class="install-cmd">localhost:8000 → debe mostrar la página de Django</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Objetivo de la clase</div>
+        <div class="card-body">Al finalizar vamos a tener la primera URL real del sistema de turnos respondiendo desde Django:<br><br></div>
+        <div class="code-block">localhost:8000/turnos/         → lista de turnos disponibles
+localhost:8000/turnos/nuevo/  → formulario para pedir turno
+localhost:8000/sobre-nosotros/ → información del organismo</div>
+        <div class="tip" style="margin-top:12px">Estas tres URLs van a ser generadas por código que nosotros escribimos, no por archivos HTML estáticos. Esa es la diferencia fundamental entre un sitio estático y una aplicación web.</div>
+      </div>
+    </div>
+
+    <!-- APPS -->
+    <div id="apps" class="section">
+      <div class="section-header">
+        <div class="section-tag">Conceptos · 20 min</div>
+        <div class="section-title">¿Qué es una app en Django?</div>
+        <div class="section-desc">Un proyecto Django está compuesto de aplicaciones. Cada app agrupa una funcionalidad específica del sistema. Es la forma que tiene Django de organizar código a medida que el sistema crece.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Proyecto vs. Aplicación</div>
+        <div class="card-body">La distinción es importante y se confunde seguido al principio:</div>
+        <div class="grid-2" style="margin-top:14px">
+          <div class="layer-card">
+            <div class="layer-icon" style="background:var(--color-background-info)">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="14" height="14" rx="3" stroke="var(--color-text-info)" stroke-width="1.2"/><path d="M4 8h8M8 4v8" stroke="var(--color-text-info)" stroke-width="1.2" stroke-linecap="round"/></svg>
+            </div>
+            <div class="layer-name">Proyecto</div>
+            <div class="layer-tech">sistema_turnos/</div>
+            <div class="layer-desc">El contenedor global. Define la configuración, la base de datos, los secretos, las apps instaladas. Hay uno solo por sistema.</div>
+            <div class="layer-example">Ej: "El sistema de gestión de ANSES" como conjunto.</div>
+          </div>
+          <div class="layer-card">
+            <div class="layer-icon" style="background:var(--color-background-success)">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="4" width="12" height="9" rx="2" stroke="var(--color-text-success)" stroke-width="1.2"/><path d="M5 4V3a3 3 0 016 0v1" stroke="var(--color-text-success)" stroke-width="1.2"/></svg>
+            </div>
+            <div class="layer-name">Aplicación</div>
+            <div class="layer-tech">turnos/, usuarios/, reportes/</div>
+            <div class="layer-desc">Un módulo que resuelve una función específica. Un proyecto puede tener varias apps. Cada una es reutilizable e independiente.</div>
+            <div class="layer-example">Ej: El módulo de turnos, el módulo de login, el módulo de reportes.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Analogía del Estado</div>
+        <div class="card-body">Pensar en un ministerio. El <strong>Ministerio de Salud</strong> es el proyecto. Dentro tiene direcciones independientes: Dirección de Epidemiología, Dirección de Hospitales, Dirección de Medicamentos. Cada una tiene su propio personal, sus propias reglas, su propio presupuesto — pero todas forman parte del mismo ministerio.<br><br>En Django: el proyecto es el ministerio, las apps son las direcciones.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Crear la app <code>turnos</code></div>
+        <div class="card-body" style="margin-bottom:10px">Con el entorno virtual activo y estando en la carpeta del proyecto:</div>
+        <div class="code-block">python manage.py startapp turnos</div>
+        <div class="card-body" style="margin-top:12px;margin-bottom:10px">Esto genera la siguiente estructura:</div>
+        <div class="code-block">turnos/
+├── __init__.py       <span class="comment"># Marca la carpeta como módulo Python</span>
+├── admin.py          <span class="comment"># Configuración del panel de administración</span>
+├── apps.py           <span class="comment"># Configuración de la app</span>
+├── migrations/       <span class="comment"># Historial de cambios en la base de datos</span>
+│   └── __init__.py
+├── models.py         <span class="comment"># Definición de datos (Semana 4)</span>
+├── tests.py          <span class="comment"># Tests automatizados</span>
+└── views.py          <span class="comment"># ← Acá vivimos hoy</span></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Registrar la app en el proyecto</div>
+        <div class="card-body" style="margin-bottom:10px">Django no sabe que la app existe hasta que la registramos. Abrir <code>sistema_turnos/settings.py</code> y agregar <code>'turnos'</code> a <code>INSTALLED_APPS</code>:</div>
+        <div class="code-block"><span class="comment"># sistema_turnos/settings.py</span>
+
+INSTALLED_APPS = [
+    <span class="string">'django.contrib.admin'</span>,
+    <span class="string">'django.contrib.auth'</span>,
+    <span class="string">'django.contrib.contenttypes'</span>,
+    <span class="string">'django.contrib.sessions'</span>,
+    <span class="string">'django.contrib.messages'</span>,
+    <span class="string">'django.contrib.staticfiles'</span>,
+    <span class="string">'turnos'</span>,   <span class="comment"># ← Agregar esta línea</span>
+]</div>
+        <div class="warn">Si la app no está registrada acá, Django ignora sus modelos, URLs y migraciones. Es un error silencioso muy común.</div>
+      </div>
+    </div>
+
+    <!-- FLUJO -->
+    <div id="flujo" class="section">
+      <div class="section-header">
+        <div class="section-tag">Conceptos · 15 min</div>
+        <div class="section-title">Flujo de una petición web en Django</div>
+        <div class="section-desc">Cuando alguien escribe <code>localhost:8000/turnos/</code> en el navegador, ¿qué pasa exactamente dentro de Django? Entender este recorrido es entender cómo funciona cualquier framework web.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">El recorrido completo</div>
+        <div class="flow">
+          <div class="flow-step">
+            <div class="flow-left"><div class="flow-num">1</div><div class="flow-line"></div></div>
+            <div class="flow-content">
+              <div class="flow-title">Navegador envía una petición HTTP</div>
+              <div class="flow-text">El ciudadano accede a <code>localhost:8000/turnos/</code>. El navegador genera un mensaje HTTP GET y lo envía al servidor Django.</div>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-left"><div class="flow-num">2</div><div class="flow-line"></div></div>
+            <div class="flow-content">
+              <div class="flow-title">Django busca en <code>urls.py</code> del proyecto</div>
+              <div class="flow-text">Django toma la URL <code>/turnos/</code> y la compara con cada patrón definido en <code>sistema_turnos/urls.py</code>. Es como buscar en un directorio telefónico.</div>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-left"><div class="flow-num">3</div><div class="flow-line"></div></div>
+            <div class="flow-content">
+              <div class="flow-title">Encuentra una coincidencia y delega</div>
+              <div class="flow-text">El patrón <code>turnos/</code> coincide. Django delega el resto al <code>urls.py</code> de la app <code>turnos</code> usando <code>include()</code>.</div>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-left"><div class="flow-num">4</div><div class="flow-line"></div></div>
+            <div class="flow-content">
+              <div class="flow-title">La URL interna apunta a una vista</div>
+              <div class="flow-text">El <code>urls.py</code> de la app relaciona el patrón vacío <code>""</code> con la función <code>lista_turnos</code> en <code>views.py</code>.</div>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-left"><div class="flow-num">5</div><div class="flow-line"></div></div>
+            <div class="flow-content">
+              <div class="flow-title">La vista procesa y responde</div>
+              <div class="flow-text">La función <code>lista_turnos</code> recibe el <code>request</code>, ejecuta la lógica necesaria (por ahora, sencilla) y devuelve una respuesta HTTP con el contenido HTML.</div>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-left"><div class="flow-num">6</div></div>
+            <div class="flow-content">
+              <div class="flow-title">El navegador muestra la respuesta</div>
+              <div class="flow-text">Django envía el HTML al navegador. El ciudadano ve la página. Todo este recorrido ocurre en milisegundos.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Diagrama simplificado</div>
+        <div class="code-block">Navegador
+    ↓  GET /turnos/
+sistema_turnos/urls.py   →  include('turnos.urls')
+    ↓
+turnos/urls.py           →  path("", views.lista_turnos)
+    ↓
+turnos/views.py          →  def lista_turnos(request):
+    ↓                            return HttpResponse("...")
+Navegador recibe HTML</div>
+        <div class="tip">Este flujo — URL → urls.py → views.py → respuesta — es el núcleo de Django. Todo lo que aprendemos en las próximas semanas (modelos, templates, formularios) se inserta en algún punto de este recorrido.</div>
+      </div>
+    </div>
+
+    <!-- URLS -->
+    <div id="urls" class="section">
+      <div class="section-header">
+        <div class="section-tag">Código · 20 min</div>
+        <div class="section-title">URLs y enrutamiento</div>
+        <div class="section-desc">El sistema de URLs de Django relaciona direcciones web con funciones Python. Es explícito: cada URL que el sistema acepta está declarada en algún <code>urls.py</code>.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">El <code>urls.py</code> del proyecto — puerta de entrada</div>
+        <div class="card-body" style="margin-bottom:10px">Este archivo ya existe, creado por Django. Lo modificamos para incluir las URLs de nuestra app:</div>
+        <div class="code-block"><span class="comment"># sistema_turnos/urls.py</span>
+
+<span class="kw">from</span> django.contrib <span class="kw">import</span> admin
+<span class="kw">from</span> django.urls <span class="kw">import</span> path, include
+
+urlpatterns = [
+    path(<span class="string">'admin/'</span>, admin.site.urls),
+    path(<span class="string">'turnos/'</span>, include(<span class="string">'turnos.urls'</span>)),  <span class="comment"># ← Agregar</span>
+]</div>
+        <div class="card-body" style="margin-top:10px">La función <code>include()</code> le dice a Django: "todo lo que empiece con <code>turnos/</code>, pasalo al archivo <code>turnos/urls.py</code>".</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Crear <code>urls.py</code> dentro de la app</div>
+        <div class="card-body" style="margin-bottom:10px">Este archivo <strong>no existe</strong> por defecto. Hay que crearlo en la carpeta <code>turnos/</code>:</div>
+        <div class="code-block"><span class="comment"># turnos/urls.py</span>
+
+<span class="kw">from</span> django.urls <span class="kw">import</span> path
+<span class="kw">from</span> . <span class="kw">import</span> views
+
+urlpatterns = [
+    path(<span class="string">''</span>, views.lista_turnos, name=<span class="string">'lista_turnos'</span>),
+    path(<span class="string">'nuevo/'</span>, views.nuevo_turno, name=<span class="string">'nuevo_turno'</span>),
+]</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Anatomía de un <code>path()</code></div>
+        <div class="code-block">path( <span class="string">'nuevo/'</span>,  views.nuevo_turno,  name=<span class="string">'nuevo_turno'</span> )
+       ↑               ↑                    ↑
+   patrón URL      función vista        nombre interno</div>
+        <div style="margin-top:14px">
+          <div class="trouble-item">
+            <div class="trouble-q" style="color:var(--color-text-info)">Patrón URL</div>
+            <div class="trouble-a">La dirección relativa que Django debe reconocer. <code>''</code> significa la raíz de este grupo (<code>/turnos/</code>). <code>'nuevo/'</code> significa <code>/turnos/nuevo/</code>.</div>
+          </div>
+          <div class="divider"></div>
+          <div class="trouble-item">
+            <div class="trouble-q" style="color:var(--color-text-info)">Función vista</div>
+            <div class="trouble-a">La función Python en <code>views.py</code> que va a manejar esa URL. Se pasa sin paréntesis — Django la llama cuando la necesita.</div>
+          </div>
+          <div class="divider"></div>
+          <div class="trouble-item">
+            <div class="trouble-q" style="color:var(--color-text-info)">Nombre interno</div>
+            <div class="trouble-a">Un alias para referirnos a esta URL en templates y código sin escribir la ruta literal. Si la URL cambia, el alias sigue funcionando.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">URLs con parámetros dinámicos</div>
+        <div class="card-body" style="margin-bottom:10px">Para mostrar el detalle de un turno específico necesitamos pasar un ID en la URL:</div>
+        <div class="code-block"><span class="comment"># turnos/urls.py</span>
+
+urlpatterns = [
+    path(<span class="string">''</span>, views.lista_turnos, name=<span class="string">'lista_turnos'</span>),
+    path(<span class="string">'nuevo/'</span>, views.nuevo_turno, name=<span class="string">'nuevo_turno'</span>),
+    path(<span class="string">'&lt;int:turno_id&gt;/'</span>, views.detalle_turno, name=<span class="string">'detalle_turno'</span>),
+]</div>
+        <div class="card-body" style="margin-top:10px">Con esto, <code>/turnos/42/</code> llama a <code>detalle_turno(request, turno_id=42)</code>. Django convierte el <code>42</code> de texto a entero automáticamente por el prefijo <code>int:</code>.</div>
+        <div class="warn">El trailing slash (<code>/</code> al final) es convención en Django. <code>APPEND_SLASH = True</code> en settings redirige automáticamente si alguien omite el slash.</div>
+      </div>
+    </div>
+
+    <!-- VISTAS -->
+    <div id="vistas" class="section">
+      <div class="section-header">
+        <div class="section-tag">Código · 20 min</div>
+        <div class="section-title">Vistas — el corazón del backend</div>
+        <div class="section-desc">Una vista es una función Python que recibe una petición HTTP y devuelve una respuesta HTTP. Es donde vive la lógica del sistema.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Vista mínima funcional</div>
+        <div class="card-body" style="margin-bottom:10px">Toda vista sigue la misma firma: recibe <code>request</code>, devuelve una respuesta.</div>
+        <div class="code-block"><span class="comment"># turnos/views.py</span>
+
+<span class="kw">from</span> django.http <span class="kw">import</span> HttpResponse
+
+<span class="kw">def</span> lista_turnos(request):
+    <span class="kw">return</span> HttpResponse(<span class="string">"&lt;h1&gt;Turnos disponibles&lt;/h1&gt;"</span>)</div>
+        <div class="tip">En la Clase 11 vamos a reemplazar el HTML literal por templates. Por ahora, <code>HttpResponse</code> nos permite verificar que todo el flujo URL → vista → respuesta funciona.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">El objeto <code>request</code></div>
+        <div class="card-body" style="margin-bottom:10px">Django entrega a cada vista toda la información sobre la petición entrante:</div>
+        <div class="code-block"><span class="kw">def</span> lista_turnos(request):
+    metodo = request.method          <span class="comment"># 'GET' o 'POST'</span>
+    usuario = request.user           <span class="comment"># Usuario autenticado</span>
+    parametros = request.GET         <span class="comment"># Parámetros en la URL</span>
+    datos_form = request.POST        <span class="comment"># Datos enviados por formulario</span>
+    
+    <span class="kw">return</span> HttpResponse(<span class="string">f"Método: {metodo}"</span>)</div>
+        <div class="card-body" style="margin-top:10px">Hoy usamos <code>request.method</code>. En las semanas siguientes vamos a explorar todos los demás atributos a medida que los necesitemos.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Vista con lógica condicional — GET vs POST</div>
+        <div class="card-body" style="margin-bottom:10px">Esta es la estructura más común en Django. Una misma URL maneja dos comportamientos según el método HTTP:</div>
+        <div class="code-block"><span class="kw">def</span> nuevo_turno(request):
+    <span class="kw">if</span> request.method == <span class="string">'POST'</span>:
+        <span class="comment"># El ciudadano envió el formulario</span>
+        nombre = request.POST.get(<span class="string">'nombre'</span>, <span class="string">''</span>)
+        <span class="kw">return</span> HttpResponse(
+            <span class="string">f"&lt;p&gt;Turno solicitado para: {nombre}&lt;/p&gt;"</span>
+        )
+    <span class="comment"># GET: mostrar el formulario vacío</span>
+    <span class="kw">return</span> HttpResponse(<span class="string">"""
+        &lt;form method="post"&gt;
+            &lt;input name="nombre" placeholder="Tu nombre"&gt;
+            &lt;button type="submit"&gt;Pedir turno&lt;/button&gt;
+        &lt;/form&gt;
+    """</span>)</div>
+        <div class="warn"><strong>GET</strong> = "dame el formulario". <strong>POST</strong> = "procesá lo que completé". Esta distinción es fundamental en cualquier aplicación web.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Vista con parámetro de URL</div>
+        <div class="code-block"><span class="kw">def</span> detalle_turno(request, turno_id):
+    <span class="comment"># turno_id llega como argumento porque lo declaramos</span>
+    <span class="comment"># en urls.py con &lt;int:turno_id&gt;</span>
+    <span class="kw">return</span> HttpResponse(
+        <span class="string">f"&lt;h2&gt;Detalle del turno #{turno_id}&lt;/h2&gt;"</span>
+        <span class="string">f"&lt;p&gt;Fecha: martes 10 de junio, 10:30 hs&lt;/p&gt;"</span>
+    )</div>
+        <div class="card-body" style="margin-top:10px">Probar en el navegador: <code>localhost:8000/turnos/1/</code>, <code>localhost:8000/turnos/99/</code>. Django pasa el número como argumento automáticamente.</div>
+      </div>
+    </div>
+
+    <!-- PRÁCTICA -->
+    <div id="practica" class="section">
+      <div class="section-header">
+        <div class="section-tag">Práctica guiada · 25 min</div>
+        <div class="section-title">Construir las rutas del sistema de turnos</div>
+        <div class="section-desc">Implementación completa paso a paso. Todos los archivos que hay que modificar o crear.</div>
+      </div>
+
+      <div class="card">
+        <div class="ex-header"><div class="ex-num">1</div><div class="ex-title">Crear la app y registrarla</div></div>
+        <div class="code-block"><span class="comment"># En la terminal:</span>
+python manage.py startapp turnos</div>
+        <div class="code-block"><span class="comment"># sistema_turnos/settings.py — agregar 'turnos':</span>
+INSTALLED_APPS = [
+    ...
+    <span class="string">'turnos'</span>,
+]</div>
+      </div>
+
+      <div class="card">
+        <div class="ex-header"><div class="ex-num">2</div><div class="ex-title">Escribir las vistas</div></div>
+        <div class="code-block"><span class="comment"># turnos/views.py — reemplazar el contenido por:</span>
+
+<span class="kw">from</span> django.http <span class="kw">import</span> HttpResponse
+
+<span class="kw">def</span> lista_turnos(request):
+    turnos_disponibles = [
+        {<span class="string">"id"</span>: 1, <span class="string">"fecha"</span>: <span class="string">"Lunes 9 jun, 09:00"</span>, <span class="string">"tipo"</span>: <span class="string">"Jubilación"</span>},
+        {<span class="string">"id"</span>: 2, <span class="string">"fecha"</span>: <span class="string">"Lunes 9 jun, 10:30"</span>, <span class="string">"tipo"</span>: <span class="string">"Asignación"</span>},
+        {<span class="string">"id"</span>: 3, <span class="string">"fecha"</span>: <span class="string">"Martes 10 jun, 11:00"</span>, <span class="string">"tipo"</span>: <span class="string">"Consulta"</span>},
+    ]
+    items_html = <span class="string">""</span>
+    <span class="kw">for</span> t <span class="kw">in</span> turnos_disponibles:
+        items_html += <span class="string">f'&lt;li&gt;Turno #{t["id"]} — {t["fecha"]} ({t["tipo"]})&lt;/li&gt;'</span>
+
+    html = <span class="string">f"""
+    &lt;h1&gt;Sistema de Turnos — ANSES&lt;/h1&gt;
+    &lt;h2&gt;Turnos disponibles&lt;/h2&gt;
+    &lt;ul&gt;{items_html}&lt;/ul&gt;
+    &lt;p&gt;&lt;a href="/turnos/nuevo/"&gt;→ Solicitar nuevo turno&lt;/a&gt;&lt;/p&gt;
+    """</span>
+    <span class="kw">return</span> HttpResponse(html)
+
+
+<span class="kw">def</span> nuevo_turno(request):
+    <span class="kw">if</span> request.method == <span class="string">'POST'</span>:
+        nombre = request.POST.get(<span class="string">'nombre'</span>, <span class="string">'ciudadano'</span>)
+        tipo = request.POST.get(<span class="string">'tipo'</span>, <span class="string">'consulta'</span>)
+        <span class="kw">return</span> HttpResponse(
+            <span class="string">f"&lt;h2&gt;✓ Turno registrado&lt;/h2&gt;"</span>
+            <span class="string">f"&lt;p&gt;Nombre: {nombre}&lt;/p&gt;"</span>
+            <span class="string">f"&lt;p&gt;Tipo: {tipo}&lt;/p&gt;"</span>
+            <span class="string">f"&lt;p&gt;&lt;a href='/turnos/'&gt;← Volver&lt;/a&gt;&lt;/p&gt;"</span>
+        )
+    html = <span class="string">"""
+    &lt;h1&gt;Solicitar turno&lt;/h1&gt;
+    &lt;form method="post"&gt;
+        &lt;p&gt;Nombre: &lt;input name="nombre" required&gt;&lt;/p&gt;
+        &lt;p&gt;Tipo:
+            &lt;select name="tipo"&gt;
+                &lt;option&gt;Jubilación&lt;/option&gt;
+                &lt;option&gt;Asignación&lt;/option&gt;
+                &lt;option&gt;Consulta&lt;/option&gt;
+            &lt;/select&gt;
+        &lt;/p&gt;
+        &lt;button type="submit"&gt;Confirmar turno&lt;/button&gt;
+    &lt;/form&gt;
+    """</span>
+    <span class="kw">return</span> HttpResponse(html)
+
+
+<span class="kw">def</span> detalle_turno(request, turno_id):
+    <span class="kw">return</span> HttpResponse(
+        <span class="string">f"&lt;h2&gt;Turno #{turno_id}&lt;/h2&gt;"</span>
+        <span class="string">f"&lt;p&gt;Estado: Confirmado&lt;/p&gt;"</span>
+        <span class="string">f"&lt;p&gt;&lt;a href='/turnos/'&gt;← Volver al listado&lt;/a&gt;&lt;/p&gt;"</span>
+    )</div>
+      </div>
+
+      <div class="card">
+        <div class="ex-header"><div class="ex-num">3</div><div class="ex-title">Crear el archivo de URLs de la app</div></div>
+        <div class="card-body" style="margin-bottom:10px">Crear el archivo <code>turnos/urls.py</code> (no existe, hay que crearlo):</div>
+        <div class="code-block"><span class="comment"># turnos/urls.py</span>
+
+<span class="kw">from</span> django.urls <span class="kw">import</span> path
+<span class="kw">from</span> . <span class="kw">import</span> views
+
+urlpatterns = [
+    path(<span class="string">''</span>, views.lista_turnos, name=<span class="string">'lista_turnos'</span>),
+    path(<span class="string">'nuevo/'</span>, views.nuevo_turno, name=<span class="string">'nuevo_turno'</span>),
+    path(<span class="string">'&lt;int:turno_id&gt;/'</span>, views.detalle_turno, name=<span class="string">'detalle_turno'</span>),
+]</div>
+      </div>
+
+      <div class="card">
+        <div class="ex-header"><div class="ex-num">4</div><div class="ex-title">Conectar en el proyecto principal</div></div>
+        <div class="code-block"><span class="comment"># sistema_turnos/urls.py</span>
+
+<span class="kw">from</span> django.contrib <span class="kw">import</span> admin
+<span class="kw">from</span> django.urls <span class="kw">import</span> path, include
+
+urlpatterns = [
+    path(<span class="string">'admin/'</span>, admin.site.urls),
+    path(<span class="string">'turnos/'</span>, include(<span class="string">'turnos.urls'</span>)),
+]</div>
+      </div>
+
+      <div class="card">
+        <div class="ex-header"><div class="ex-num">5</div><div class="ex-title">Verificar en el navegador</div></div>
+        <div class="code-block">python manage.py runserver</div>
+        <div class="code-block" style="margin-top:8px"><span class="output">localhost:8000/turnos/           → Lista de turnos ✓
+localhost:8000/turnos/nuevo/    → Formulario de solicitud ✓
+localhost:8000/turnos/1/        → Detalle del turno 1 ✓
+localhost:8000/turnos/99/       → Detalle del turno 99 ✓</span></div>
+        <div class="tip">Si alguna URL devuelve 404, el problema casi siempre está en el <code>urls.py</code>: un typo en el patrón, falta el <code>include()</code>, o la app no está en <code>INSTALLED_APPS</code>.</div>
+      </div>
+    </div>
+
+    <!-- CIERRE -->
+    <div id="cierre" class="section">
+      <div class="section-header">
+        <div class="section-tag">Actividad · 10 min</div>
+        <div class="section-title">Desafío de cierre</div>
+        <div class="section-desc">Aplicar lo aprendido de forma autónoma antes de la próxima clase.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Consigna</div>
+        <div class="card-body">Agregar una nueva sección al sistema: <strong>información del organismo</strong>. El objetivo es practicar el ciclo completo URL → vista → respuesta de forma independiente.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Pasos</div>
+        <div class="flow">
+          <div class="flow-step">
+            <div class="flow-left"><div class="flow-num">1</div><div class="flow-line"></div></div>
+            <div class="flow-content">
+              <div class="flow-title">Crear la vista <code>sobre_nosotros</code> en <code>views.py</code></div>
+              <div class="flow-text">Que devuelva un <code>HttpResponse</code> con el nombre del organismo, dirección, horario de atención y un enlace de vuelta a <code>/turnos/</code>.</div>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-left"><div class="flow-num">2</div><div class="flow-line"></div></div>
+            <div class="flow-content">
+              <div class="flow-title">Registrar la URL en <code>turnos/urls.py</code></div>
+              <div class="flow-text">Agregar <code>path('sobre-nosotros/', views.sobre_nosotros, name='sobre_nosotros')</code> a la lista <code>urlpatterns</code>.</div>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-left"><div class="flow-num">3</div></div>
+            <div class="flow-content">
+              <div class="flow-title">Agregar el enlace desde <code>lista_turnos</code></div>
+              <div class="flow-text">Modificar el HTML que devuelve <code>lista_turnos</code> para incluir <code>&lt;a href="/turnos/sobre-nosotros/"&gt;Sobre nosotros&lt;/a&gt;</code>.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Lo que viene en la Clase 9</div>
+        <div class="card-body">Hoy escribimos HTML como strings en Python — funciona, pero es incómodo y difícil de mantener. En la próxima clase introducimos los <strong>templates de Django</strong>: archivos HTML separados que se renderizan con datos dinámicos. El código queda limpio, el HTML queda legible.</div>
+        <div style="margin-top:14px">
+          <span class="pill pill-success">turnos/urls.py ✓</span>
+          <span class="pill pill-success">turnos/views.py ✓</span>
+          <span class="pill pill-success">include() configurado ✓</span>
+          <span class="pill pill-warn">Templates · Clase 9</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ERRORES FRECUENTES -->
+    <div id="errores" class="section">
+      <div class="section-header">
+        <div class="section-tag">Referencia</div>
+        <div class="section-title">Errores frecuentes en esta clase</div>
+        <div class="section-desc">Los problemas más comunes al trabajar con URLs y vistas por primera vez.</div>
+      </div>
+      <div class="card">
+        <div class="trouble-item">
+          <div class="trouble-q">Page not found (404) — "Using the URLconf defined in sistema_turnos.urls, Django tried these URL patterns..."</div>
+          <div class="trouble-a">La URL no coincide con ningún patrón definido. Revisar: (1) que el <code>include('turnos.urls')</code> esté en el <code>urls.py</code> del proyecto, (2) que el patrón en <code>turnos/urls.py</code> sea correcto, (3) que la URL en el navegador tenga el trailing slash.</div>
+        </div>
+        <div class="divider"></div>
+        <div class="trouble-item">
+          <div class="trouble-q">ImportError: cannot import name 'lista_turnos' from 'turnos.views'</div>
+          <div class="trouble-a">El nombre de la función en <code>views.py</code> no coincide exactamente con el que se importa en <code>urls.py</code>. Python distingue mayúsculas y minúsculas. Verificar que sea <code>lista_turnos</code> en ambos archivos.</div>
+        </div>
+        <div class="divider"></div>
+        <div class="trouble-item">
+          <div class="trouble-q">ModuleNotFoundError: No module named 'turnos.urls'</div>
+          <div class="trouble-a">El archivo <code>turnos/urls.py</code> no existe. Hay que crearlo manualmente — Django no lo genera con <code>startapp</code>.</div>
+        </div>
+        <div class="divider"></div>
+        <div class="trouble-item">
+          <div class="trouble-q">CSRF verification failed. Request aborted.</div>
+          <div class="trouble-a">Al enviar un formulario POST, Django exige un token de seguridad. En la Clase 16 vamos a ver esto en profundidad. Por ahora, para las pruebas, agregar <code>{% csrf_token %}</code> dentro del <code>&lt;form&gt;</code>, o en su defecto usar el decorador <code>@csrf_exempt</code> solo para desarrollo.</div>
+        </div>
+        <div class="divider"></div>
+        <div class="trouble-item">
+          <div class="trouble-q">El servidor no refleja los cambios que hago en el código</div>
+          <div class="trouble-a">El servidor de desarrollo de Django recarga automáticamente cuando detecta cambios. Si no ocurre, verificar que el archivo esté guardado (Ctrl+S / Cmd+S). En casos raros, detener el servidor (Ctrl+C) y reiniciarlo.</div>
+        </div>
+        <div class="divider"></div>
+        <div class="trouble-item">
+          <div class="trouble-q">ValueError: The view turnos.views.lista_turnos didn't return an HttpResponse object</div>
+          <div class="trouble-a">La función vista no tiene <code>return</code> o el <code>return</code> devuelve <code>None</code>. Toda vista debe devolver un objeto de respuesta. Verificar que cada rama del <code>if/else</code> tenga su propio <code>return HttpResponse(...)</code>.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RECURSOS -->
+    <div id="recursos" class="section">
+      <div class="section-header">
+        <div class="section-tag">Referencia</div>
+        <div class="section-title">Recursos adicionales</div>
+        <div class="section-desc">Documentación oficial y material de consulta para profundizar entre clases.</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Para esta semana</div>
+        <div class="install-row">
+          <div style="flex:1">
+            <div class="install-name">Django URL dispatcher (documentación oficial)</div>
+            <div class="install-desc">Explicación completa del sistema de URLs: convertidores de tipo, expresiones regulares, namespaces.</div>
+            <div class="install-cmd">docs.djangoproject.com/en/stable/topics/http/urls/</div>
+          </div>
+        </div>
+        <div class="install-row">
+          <div style="flex:1">
+            <div class="install-name">Django Views — Introducción (documentación oficial)</div>
+            <div class="install-desc">Function-based views vs Class-based views. En el curso usamos function-based por claridad. La documentación explica ambas.</div>
+            <div class="install-cmd">docs.djangoproject.com/en/stable/topics/http/views/</div>
+          </div>
+        </div>
+        <div class="install-row">
+          <div style="flex:1">
+            <div class="install-name">HttpRequest y HttpResponse — objetos disponibles en las vistas</div>
+            <div class="install-desc">Todos los atributos y métodos disponibles en <code>request</code> y las opciones de respuesta.</div>
+            <div class="install-cmd">docs.djangoproject.com/en/stable/ref/request-response/</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Próximas clases</div>
+        <div class="install-row">
+          <div style="flex:1">
+            <div class="install-name">Django Templates (para la Clase 11)</div>
+            <div class="install-desc">El sistema de templates: variables, etiquetas, filtros, herencia de templates.</div>
+            <div class="install-cmd">docs.djangoproject.com/en/stable/topics/templates/</div>
+          </div>
+        </div>
+        <div class="install-row">
+          <div style="flex:1">
+            <div class="install-name">Django Admin (para la Clase 12)</div>
+            <div class="install-desc">Documentación del panel administrativo automático de Django.</div>
+            <div class="install-cmd">docs.djangoproject.com/en/stable/ref/contrib/admin/</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Para la próxima clase</div>
+        <div class="card-body">Tener las tres URLs funcionando (<code>/turnos/</code>, <code>/turnos/nuevo/</code>, <code>/turnos/&lt;id&gt;/</code>) y el desafío de cierre completado. La Clase 11 arranca directamente con templates — el HTML sale de los <code>views.py</code> y va a archivos <code>.html</code> separados.</div>
+        <div style="margin-top:12px">
+          <span class="pill pill-success">App turnos creada ✓</span>
+          <span class="pill pill-success">3 rutas funcionando ✓</span>
+          <span class="pill pill-success">Vista GET+POST implementada ✓</span>
+          <span class="pill pill-warn">Templates · Clase 11</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+function show(id, el) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  el.classList.add('active');
+  document.querySelector('.main').scrollTop = 0;
+}
+</script>
+</body>
+</html>

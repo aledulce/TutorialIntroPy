@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Manual de GitHub y GitHub Desktop</title>
+<style>
+body { font-family: Calibri, Arial, sans-serif; max-width: 900px; margin: 40px auto; padding: 20px; line-height: 1.6; }
+h1 { color: #24292e; border-bottom: 3px solid #0366d6; padding-bottom: 10px; }
+h2 { color: #0366d6; margin-top: 30px; }
+h3 { color: #24292e; margin-top: 20px; }
+h4 { color: #586069; }
+ul, ol { margin: 10px 0 15px 20px; }
+li { margin-bottom: 8px; }
+code { background: #f6f8fa; padding: 2px 6px; border-radius: 4px; font-size: 0.9em; }
+.note { background: #fff3cd; border-left: 4px solid #ffc107; padding: 10px 15px; margin: 15px 0; }
+.warning { background: #f8d7da; border-left: 4px solid #dc3545; padding: 10px 15px; margin: 15px 0; }
+.success { background: #d4edda; border-left: 4px solid #28a745; padding: 10px 15px; margin: 15px 0; }
+.page-break { page-break-after: always; border-bottom: 1px dashed #ccc; margin: 30px 0; }
+</style>
+</head>
+<body>
+
+<!-- ===== CONTENIDO COMPLETO AQUÍ ===== -->
+
+<h1>Manual completo de GitHub y GitHub Desktop</h1>
+
+<p><strong>Autor:</strong> [Tu nombre]</p>
+<p><strong>Fecha:</strong> Julio 2026</p>
+<p><strong>Versión:</strong> 1.0</p>
+
+<hr>
+
+<h2>Introducción</h2>
+<p>GitHub es una plataforma de desarrollo colaborativo que permite compartir código y trabajar en equipo. GitHub Desktop es una aplicación que facilita la interacción con GitHub mediante una interfaz gráfica, eliminando la necesidad de usar comandos complejos en la terminal.</p>
+
+<!-- ===== PARTE 1 ===== -->
+<h2>Parte 1: Creación de una cuenta de GitHub</h2>
+
+<ol>
+  <li>Ingresa a la página de registro de GitHub a través del siguiente enlace: <a href="https://github.com/signup">https://github.com/signup</a></li>
+  <li>Completa el formulario con:
+    <ul>
+      <li>Una dirección de correo electrónico válida</li>
+      <li>Una contraseña segura</li>
+      <li>Un nombre de usuario (username) único</li>
+    </ul>
+  </li>
+  <li>Verifica la cuenta y haz clic en el botón <strong>"Create account"</strong>. Recibirás un correo de confirmación.</li>
+  <li>Abre el email de confirmación y copia el código de verificación, luego pégalo en la página de GitHub.</li>
+  <li>¡Listo! Después de saltar la configuración inicial, la cuenta estará creada y lista para funcionar.</li>
+</ol>
+
+<!-- ===== PARTE 2 ===== -->
+<h2>Parte 2: Instalación de GitHub Desktop</h2>
+
+<ol>
+  <li>Descarga GitHub Desktop desde <a href="https://desktop.github.com">https://desktop.github.com</a>
+    <ul>
+      <li>Selecciona la versión correspondiente a tu sistema operativo (Windows, macOS o Linux)</li>
+    </ul>
+  </li>
+  <li>Ejecuta el archivo descargado para comenzar la instalación.</li>
+  <li>Al abrir la aplicación, selecciona <strong>"Sign in to GitHub.com"</strong> e introduce tu nombre de usuario y contraseña.
+    <ul>
+      <li>Si ya estás logueado, la aplicación te lo mostrará y podrás saltar este paso.</li>
+    </ul>
+  </li>
+  <li>Haz clic en <strong>"Authorize desktop"</strong> para sincronizar la información de tu cuenta.</li>
+  <li>Configura tu cuenta eligiendo <strong>"Use my GitHub account name and email address"</strong> y seleccionando tu dirección de correo electrónico.</li>
+  <li>Haz clic en <strong>"Finish"</strong> para completar la instalación.</li>
+</ol>
+
+<!-- ===== PARTE 3 ===== -->
+<h2>Parte 3: Conceptos básicos de Git y GitHub Desktop</h2>
+
+<h3>Interfaz principal</h3>
+<p>La barra superior de GitHub Desktop muestra el estado actual de tu repositorio:</p>
+<ul>
+  <li><strong>Current repository:</strong> Nombre del repositorio en el que estás trabajando</li>
+  <li><strong>Current branch:</strong> La rama actual (por defecto, <code>main</code>)</li>
+  <li><strong>Publish repository/Push origin:</strong> Botón contextual para publicar o enviar cambios</li>
+</ul>
+
+<h3>Cambios e Historia</h3>
+<p>En la barra lateral izquierda encontrarás dos vistas principales:</p>
+<ul>
+  <li><strong>Changes:</strong> Muestra los archivos modificados que aún no has guardado (commit)</li>
+  <li><strong>History:</strong> Muestra el historial de commits realizados en tu repositorio</li>
+</ul>
+
+<!-- ===== PARTE 4 ===== -->
+<h2>Parte 4: Creación de un repositorio local</h2>
+
+<h3>Opción A: Crear un repositorio completamente nuevo</h3>
+<ol>
+  <li>En GitHub Desktop, ve a <strong>File &gt; New repository</strong> (o haz clic en "Create a New Repository on your Hard Drive")</li>
+  <li>Completa los campos:
+    <ul>
+      <li><strong>Name:</strong> El nombre de tu repositorio</li>
+      <li><strong>Description:</strong> (Opcional) Una breve descripción del proyecto</li>
+      <li><strong>Local path:</strong> Ubicación donde se guardará el repositorio en tu computadora</li>
+      <li><strong>Initialize this repository with a README:</strong> Recomendado. Crea un archivo README.md</li>
+      <li><strong>Git ignore:</strong> Útil para ignorar archivos específicos</li>
+      <li><strong>License:</strong> Puedes agregar una licencia de código abierto</li>
+    </ul>
+  </li>
+  <li>Haz clic en <strong>Create repository</strong>.</li>
+</ol>
+
+<h3>Opción B: Agregar un repositorio existente</h3>
+<ol>
+  <li>Crea una carpeta en tu computadora (ejemplo: "prueba")</li>
+  <li>En GitHub Desktop, ve a <strong>File &gt; Add Local Repository</strong></li>
+  <li>Busca la carpeta y selecciona "Seleccionar carpeta"</li>
+  <li>Sigue las instrucciones en pantalla para configurarlo como repositorio Git.</li>
+</ol>
+
+<!-- ===== PARTE 5 ===== -->
+<h2>Parte 5: Publicar un repositorio en GitHub</h2>
+
+<ol>
+  <li>En la barra superior, haz clic en <strong>Publish repository</strong></li>
+  <li>En la ventana emergente:
+    <ul>
+      <li><strong>Name:</strong> El nombre del repositorio (se autocompleta)</li>
+      <li><strong>Description:</strong> Descripción opcional</li>
+      <li><strong>Keep this code private:</strong> Desmarca esta opción para que el repositorio sea público</li>
+    </ul>
+  </li>
+  <li>Haz clic en <strong>Publish Repository</strong></li>
+  <li>Para ver tu repositorio en GitHub, ve a <strong>Repository &gt; View on GitHub</strong> en el menú.</li>
+</ol>
+
+<!-- ===== PARTE 6 ===== -->
+<h2>Parte 6: Trabajar con cambios (Commits)</h2>
+
+<h3>Hacer cambios locales</h3>
+<ol>
+  <li>Abre tu repositorio en tu editor de texto preferido</li>
+  <li>Realiza modificaciones en tus archivos y guárdalos</li>
+  <li>En GitHub Desktop, ve a la vista <strong>Changes</strong></li>
+  <li>Selecciona con la casilla de verificación los archivos que deseas incluir en el commit</li>
+  <li>En la parte inferior:
+    <ul>
+      <li>Escribe un <strong>resumen</strong> corto (obligatorio)</li>
+      <li>Opcionalmente, una <strong>descripción</strong> más detallada</li>
+    </ul>
+  </li>
+  <li>Haz clic en <strong>Commit to [nombre de tu rama]</strong></li>
+</ol>
+
+<h3>Ver diferencias (Diff)</h3>
+<ul>
+  <li><strong>Líneas en verde:</strong> Texto agregado</li>
+  <li><strong>Líneas en rojo:</strong> Texto eliminado</li>
+  <li><strong>Cuadros amarillos:</strong> Archivos modificados</li>
+</ul>
+
+<!-- ===== PARTE 7 ===== -->
+<h2>Parte 7: Sincronización con GitHub (Push y Pull)</h2>
+
+<h3>Push: Enviar cambios locales a GitHub</h3>
+<ol>
+  <li>En la barra superior, haz clic en <strong>Push origin</strong></li>
+  <li>Los cambios ahora estarán disponibles en GitHub</li>
+</ol>
+
+<h3>Pull: Obtener cambios de GitHub</h3>
+<ol>
+  <li>Haz clic en <strong>Fetch origin</strong> para verificar si hay cambios</li>
+  <li>Si hay cambios nuevos, haz clic en <strong>Pull origin</strong></li>
+  <li>Si hay conflictos, GitHub Desktop te lo notificará</li>
+</ol>
+
+<!-- ===== PARTE 8 ===== -->
+<h2>Parte 8: Trabajo con Ramas (Branches)</h2>
+
+<h3>Crear una rama nueva</h3>
+<ol>
+  <li>Ve a <strong>Branch &gt; New Branch</strong></li>
+  <li>Escribe el nombre de la nueva rama (ejemplo: <code>feature-nueva-funcion</code>)</li>
+  <li>Haz clic en <strong>Create Branch</strong></li>
+  <li>Para publicarla en GitHub, haz clic en <strong>Publish branch</strong>.</li>
+</ol>
+
+<h3>Cambiar entre ramas</h3>
+<ol>
+  <li>En la barra superior, haz clic en <strong>Current branch</strong></li>
+  <li>Selecciona la rama a la que deseas cambiar</li>
+</ol>
+
+<h3>Fusionar ramas (Merge)</h3>
+<ol>
+  <li>Asegúrate de estar en la rama de destino (ejemplo: <code>main</code>)</li>
+  <li>Ve a <strong>Branch &gt; Merge into Current Branch</strong></li>
+  <li>Selecciona la rama que deseas fusionar</li>
+  <li>Haz clic en <strong>Merge [rama] into [rama_destino]</strong></li>
+  <li>Resuelve conflictos si los hay</li>
+</ol>
+
+<!-- ===== PARTE 9 ===== -->
+<h2>Parte 9: Pull Requests</h2>
+
+<h3>Crear un Pull Request desde GitHub Desktop</h3>
+<ol>
+  <li>Asegúrate de haber subido (push) los cambios de tu rama</li>
+  <li>En GitHub Desktop, ve a <strong>Branch &gt; Create Pull Request</strong></li>
+  <li>Haz clic en <strong>Create Pull Request</strong></li>
+  <li>En GitHub, escribe título y descripción, luego haz clic en <strong>Create pull request</strong></li>
+</ol>
+
+<h3>Actualizar una rama desde main con Pull</h3>
+<ol>
+  <li>Cambia a tu rama de trabajo</li>
+  <li>Ve a <strong>Branch &gt; Update from [rama_principal]</strong></li>
+  <li>Resuelve conflictos si existen</li>
+</ol>
+
+<!-- ===== PARTE 10 ===== -->
+<h2>Parte 10: Guardar cambios temporalmente (Stash)</h2>
+
+<h3>Guardar cambios (Stash)</h3>
+<ol>
+  <li>Haz clic derecho en el encabezado de archivos modificados</li>
+  <li>Selecciona <strong>Stash All Changes</strong></li>
+</ol>
+
+<h3>Restaurar cambios guardados</h3>
+<ol>
+  <li>Asegúrate de estar en la rama correcta</li>
+  <li>Ve a la vista <strong>Changes</strong>, haz clic en <strong>Stashed Changes</strong></li>
+  <li>Haz clic en <strong>Restore</strong> para recuperar los cambios</li>
+</ol>
+
+<!-- ===== PARTE 11 ===== -->
+<h2>Parte 11: Clonar un repositorio existente</h2>
+
+<h3>Clonar desde GitHub (navegador)</h3>
+<ol>
+  <li>Ve al repositorio en GitHub.com</li>
+  <li>Haz clic en el botón verde <strong>Code</strong></li>
+  <li>Selecciona <strong>Open with GitHub Desktop</strong></li>
+  <li>Elige la ubicación local y haz clic en <strong>Clone</strong>.</li>
+</ol>
+
+<h3>Clonar desde GitHub Desktop</h3>
+<ol>
+  <li>Ve a <strong>File &gt; Clone Repository</strong></li>
+  <li>Elige entre <strong>GitHub.com</strong> o <strong>URL</strong></li>
+  <li>Selecciona la ubicación y haz clic en <strong>Clone</strong>.</li>
+</ol>
+
+<!-- ===== PARTE 12 ===== -->
+<h2>Parte 12: Forks y colaboración</h2>
+
+<h3>Crear un Fork</h3>
+<ol>
+  <li>En GitHub.com, ve al repositorio que deseas bifurcar</li>
+  <li>Haz clic en el botón <strong>Fork</strong></li>
+  <li>Elige nombre y haz clic en "Create Fork".</li>
+</ol>
+
+<h3>Contribuir con Pull Request desde un Fork</h3>
+<ol>
+  <li>Haz cambios en tu fork local y súbelos (push)</li>
+  <li>En GitHub.com, ve a tu fork y haz clic en <strong>Contribute &gt; Open Pull Request</strong></li>
+  <li>Crea el Pull Request</li>
+</ol>
+
+<!-- ===== RESUMEN ===== -->
+<h2>Resumen de flujo de trabajo básico</h2>
+<ol>
+  <li><strong>Crear/Clonar</strong> repositorio</li>
+  <li><strong>Crear una rama</strong> para cambios</li>
+  <li><strong>Hacer cambios</strong> en tu editor y guardarlos</li>
+  <li><strong>Commit</strong> de los cambios localmente</li>
+  <li><strong>Push</strong> para subir cambios a GitHub</li>
+  <li><strong>Crear Pull Request</strong> para fusionar ramas</li>
+  <li><strong>Pull</strong> para sincronizar cambios de colaboradores</li>
+  <li><strong>Fusionar ramas</strong> (merge)</li>
+</ol>
+
+<!-- ===== SOLUCIÓN DE PROBLEMAS ===== -->
+<h2>Solución de problemas comunes</h2>
+
+<h3>Conflictos de merge</h3>
+<ol>
+  <li>GitHub Desktop te notificará conflictos</li>
+  <li>Abre el archivo en tu editor y busca marcadores como <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</code></li>
+  <li>Decide qué cambios conservar</li>
+  <li>Guarda y marca como resuelto en GitHub Desktop</li>
+  <li>Haz commit del merge resuelto y push</li>
+</ol>
+
+<h3>No veo mis cambios en el repositorio remoto</h3>
+<ol>
+  <li>Verifica que hiciste commit localmente</li>
+  <li>Asegúrate de haber hecho push</li>
+  <li>Refresca la página de GitHub en tu navegador</li>
+</ol>
+
+<h3>Olvidé hacer commit antes de cambiar de rama</h3>
+<ol>
+  <li>Si GitHub Desktop te ofrece stash, elige <strong>Stash All Changes</strong></li>
+  <li>Cambia de rama y luego restaura los cambios con <strong>Restore</strong></li>
+</ol>
+
+</body>
+</html>

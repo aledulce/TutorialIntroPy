@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clase 3 — Estructuras Condicionales</title>
+<link rel="stylesheet" href="canvas_shared.css">
+</head>
+<body>
+
+<div class="canvas">
+  <div class="sidebar">
+    <div class="sidebar-top">
+      <div class="sidebar-badge">Semana 1 · Clase 3</div>
+      <div class="sidebar-title">Estructuras condicionales y lógica de decisiones</div>
+      <div class="sidebar-sub">1 hora · 10 clases en total</div>
+    </div>
+    <div class="nav">
+      <div class="nav-label">Contenido</div>
+      <div class="nav-item active" onclick="show('intro',this)"><div class="nav-dot"></div>Introducción<span class="time-badge">10 min</span></div>
+      <div class="nav-item" onclick="show('booleanos',this)"><div class="nav-dot"></div>Booleanos y comparaciones<span class="time-badge">15 min</span></div>
+      <div class="nav-item" onclick="show('if_else',this)"><div class="nav-dot"></div>if / else<span class="time-badge">20 min</span></div>
+      <div class="nav-item" onclick="show('elif',this)"><div class="nav-dot"></div>elif y condiciones múltiples<span class="time-badge">20 min</span></div>
+      <div class="nav-item" onclick="show('operadores',this)"><div class="nav-dot"></div>Operadores lógicos<span class="time-badge">15 min</span></div>
+      <div class="nav-item" onclick="show('practica',this)"><div class="nav-dot"></div>Práctica guiada<span class="time-badge">25 min</span></div>
+      <div class="nav-item" onclick="show('cierre',this)"><div class="nav-dot"></div>Actividad de cierre<span class="time-badge">15 min</span></div>
+      <div class="nav-label">Referencia</div>
+      <div class="nav-item" onclick="show('errores',this)"><div class="nav-dot"></div>Errores frecuentes</div>
+      <div class="nav-item" onclick="show('recursos',this)"><div class="nav-dot"></div>Recursos</div>
+    </div>
+    <div class="sidebar-home-link" style="margin-top:auto;padding:12px 16px;border-top:0.5px solid var(--color-border-tertiary);">
+      <a href="index.html" style="font-size:12px;color:var(--color-text-info);text-decoration:none;font-weight:500;">← Volver al índice</a>
+    </div>
+  </div>
+
+  <div class="main">
+
+    <!-- INTRO -->
+    <div id="intro" class="section active">
+      <div class="section-header">
+        <div class="section-tag">Apertura · 10 min</div>
+        <div class="section-title">¿Qué es una estructura condicional?</div>
+        <div class="section-desc">Hasta ahora los programas ejecutan instrucciones de arriba hacia abajo, siempre en el mismo orden. Los condicionales permiten que el programa <em>tome decisiones</em> según los datos.</div>
+      </div>
+      <div class="card">
+        <div class="card-title">La lógica de decisión existe en todo sistema de gestión</div>
+        <div class="card-body">Pensemos en cómo funciona la asignación de turnos en PAMI o ANSES. El sistema nunca hace lo mismo para todos: evalúa condiciones y actúa en consecuencia.</div>
+        <div class="flow" style="margin-top:16px">
+          <div class="flow-step">
+            <div class="flow-left"><div class="flow-num">?</div><div class="flow-line"></div></div>
+            <div class="flow-content"><div class="flow-title">¿El ciudadano tiene cobertura activa?</div><div class="flow-text">Si <strong>sí</strong> → puede pedir turno. Si <strong>no</strong> → se muestra un mensaje de error.</div></div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-left"><div class="flow-num">?</div><div class="flow-line"></div></div>
+            <div class="flow-content"><div class="flow-title">¿El trámite requiere documentación adicional?</div><div class="flow-text">Si <strong>sí</strong> → se agrega un paso al formulario. Si <strong>no</strong> → se avanza directo.</div></div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-left"><div class="flow-num">?</div></div>
+            <div class="flow-content"><div class="flow-title">¿Hay turnos disponibles hoy?</div><div class="flow-text">Si <strong>sí</strong> → se muestra el calendario. Si <strong>no</strong> → se ofrece el próximo día hábil.</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Lo que vamos a aprender hoy</div>
+        <div class="card-body">Al final de esta clase van a poder escribir programas que evalúan condiciones y ejecutan código diferente según el resultado.</div>
+        <div style="margin-top:12px">
+          <span class="pill pill-info">Booleanos (True/False)</span>
+          <span class="pill pill-info">Operadores de comparación</span>
+          <span class="pill pill-success">if / else</span>
+          <span class="pill pill-success">elif</span>
+          <span class="pill pill-warn">and / or / not</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Repaso rápido: variables y tipos de datos (Clase 2)</div>
+        <div class="code-block"><span class="comment"># Retomamos desde acá</span>
+nombre = <span class="string">"Ana García"</span>       <span class="comment"># str</span>
+dni = 35789012            <span class="comment"># int</span>
+deuda = 12500.50          <span class="comment"># float</span>
+tiene_cobertura = <span class="kw">True</span>   <span class="comment"># bool ← nuevo hoy</span></div>
+        <div class="card-body" style="font-size:13px;margin-top:8px">Hoy nos enfocamos en el tipo <code>bool</code> y en cómo usarlo para controlar el flujo del programa.</div>
+      </div>
+    </div>
+
+    <!-- BOOLEANOS -->
+    <div id="booleanos" class="section">
+      <div class="section-header">
+        <div class="section-tag">Conceptos · 15 min</div>
+        <div class="section-title">Booleanos y operadores de comparación</div>
+        <div class="section-desc">Antes de tomar una decisión, el programa necesita evaluar una condición. El resultado siempre es <code>True</code> o <code>False</code>.</div>
+      </div>
+      <div class="card">
+        <div class="card-title">El tipo bool</div>
+        <div class="code-block"><span class="kw">>>></span> <span class="kw">type</span>(<span class="kw">True</span>)
+&lt;class 'bool'&gt;
+
+<span class="kw">>>></span> tiene_turno = <span class="kw">True</span>
+<span class="kw">>>></span> sistema_activo = <span class="kw">False</span>
+
+<span class="kw">>>></span> <span class="kw">print</span>(tiene_turno)
+True</div>
+        <div class="card-body" style="font-size:13px;margin-top:8px">En Python, <code>True</code> y <code>False</code> van con mayúscula inicial. <code>true</code> en minúscula da <code>NameError</code>.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Operadores de comparación</div>
+        <div class="card-body">Comparan dos valores y devuelven un booleano:</div>
+        <div class="code-block"><span class="kw">>>></span> 10 == 10       <span class="comment"># igual a</span>
+True
+<span class="kw">>>></span> 10 != 5        <span class="comment"># distinto de</span>
+True
+<span class="kw">>>></span> 10 &gt; 20        <span class="comment"># mayor que</span>
+False
+<span class="kw">>>></span> 10 &lt; 20        <span class="comment"># menor que</span>
+True
+<span class="kw">>>></span> 10 &gt;= 10       <span class="comment"># mayor o igual</span>
+True
+<span class="kw">>>></span> 10 &lt;= 9        <span class="comment"># menor o igual</span>
+False</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Comparaciones con variables del sistema de turnos</div>
+        <div class="code-block">turnos_disponibles = 12
+edad_jubilado = 68
+deuda_ciudadano = 0
+
+<span class="kw">>>></span> turnos_disponibles &gt; 0
+True
+<span class="kw">>>></span> edad_jubilado &gt;= 60
+True
+<span class="kw">>>></span> deuda_ciudadano == 0
+True</div>
+        <div class="tip">Cada comparación genera un <code>True</code> o <code>False</code>. Esos son los valores que el <code>if</code> va a evaluar.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">⚠️ El error más común: = vs ==</div>
+        <div class="code-block"><span class="comment"># = asigna un valor a una variable</span>
+estado = <span class="string">"activo"</span>
+
+<span class="comment"># == compara dos valores</span>
+<span class="kw">>>></span> estado == <span class="string">"activo"</span>
+True
+
+<span class="comment"># Mezclarlos es uno de los errores más frecuentes</span>
+<span class="kw">>>></span> <span class="kw">if</span> estado = <span class="string">"activo"</span>:   <span class="comment"># SyntaxError</span>
+  File "&lt;stdin&gt;", line 1
+SyntaxError: invalid syntax</div>
+        <div class="warn">Dentro de un <code>if</code> siempre se usa <code>==</code> para comparar, nunca <code>=</code>.</div>
+      </div>
+    </div>
+
+    <!-- IF ELSE -->
+    <div id="if_else" class="section">
+      <div class="section-header">
+        <div class="section-tag">Conceptos · 20 min</div>
+        <div class="section-title">La estructura if / else</div>
+        <div class="section-desc">La instrucción fundamental para tomar decisiones. Si la condición es verdadera, ejecuta un bloque. Si no, ejecuta el otro.</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Sintaxis básica</div>
+        <div class="code-block"><span class="kw">if</span> condicion:
+    <span class="comment"># bloque que se ejecuta si condicion es True</span>
+    instruccion_1
+    instruccion_2
+<span class="kw">else</span>:
+    <span class="comment"># bloque que se ejecuta si condicion es False</span>
+    instruccion_alternativa</div>
+        <div class="card-body" style="font-size:13px;margin-top:10px">Dos reglas de sintaxis que no se pueden olvidar: los dos puntos <code>:</code> al final del <code>if</code> y el <code>else</code>, y la indentación de 4 espacios en cada bloque.</div>
+        <div class="tip">Python usa la indentación para definir bloques de código. No es una cuestión de estilo: si falta la indentación, el programa falla. La mayoría de los editores la agregan automáticamente.</div>
+      </div>
+
+      <div class="card">
+        <div class="ex-header"><div class="ex-num">1</div><div class="ex-title">Verificación de turno disponible</div></div>
+        <div class="code-block">turnos_disponibles = 12
+
+<span class="kw">if</span> turnos_disponibles &gt; 0:
+    <span class="kw">print</span>(<span class="string">"Hay turnos disponibles. Puede continuar."</span>)
+<span class="kw">else</span>:
+    <span class="kw">print</span>(<span class="string">"No hay turnos disponibles para hoy."</span>)
+
+<span class="output">Hay turnos disponibles. Puede continuar.</span></div>
+        <div class="card-body" style="font-size:13px;margin-top:8px">Cambiar <code>turnos_disponibles = 0</code> y ejecutar de nuevo. Observar cuál bloque se ejecuta.</div>
+      </div>
+
+      <div class="card">
+        <div class="ex-header"><div class="ex-num">2</div><div class="ex-title">Validación de cobertura</div></div>
+        <div class="code-block">tiene_cobertura = <span class="kw">True</span>
+nombre_ciudadano = <span class="string">"Carlos Fernández"</span>
+
+<span class="kw">if</span> tiene_cobertura:
+    <span class="kw">print</span>(<span class="string">f"{nombre_ciudadano} tiene cobertura activa."</span>)
+    <span class="kw">print</span>(<span class="string">"Puede solicitar turno médico."</span>)
+<span class="kw">else</span>:
+    <span class="kw">print</span>(<span class="string">f"{nombre_ciudadano} no tiene cobertura activa."</span>)
+    <span class="kw">print</span>(<span class="string">"Debe regularizar su situación antes de continuar."</span>)
+
+<span class="output">Carlos Fernández tiene cobertura activa.
+Puede solicitar turno médico.</span></div>
+        <div class="card-body" style="font-size:13px;margin-top:8px">Cuando la condición es una variable booleana, se puede escribir directamente <code>if tiene_cobertura:</code> en lugar de <code>if tiene_cobertura == True:</code>. Ambas formas son válidas, pero la primera es más pythónica.</div>
+      </div>
+
+      <div class="card">
+        <div class="ex-header"><div class="ex-num">3</div><div class="ex-title">El bloque else es opcional</div></div>
+        <div class="code-block"><span class="comment"># A veces solo queremos actuar si algo es True</span>
+deuda = 0
+
+<span class="kw">if</span> deuda &gt; 0:
+    <span class="kw">print</span>(<span class="string">f"El ciudadano tiene una deuda de ${deuda}."</span>)
+    <span class="kw">print</span>(<span class="string">"Se envía notificación de pago."</span>)
+
+<span class="comment"># Si deuda es 0, no pasa nada y el programa sigue</span>
+<span class="kw">print</span>(<span class="string">"Verificación completada."</span>)
+
+<span class="output">Verificación completada.</span></div>
+      </div>
+    </div>
+
+    <!-- ELIF -->
+    <div id="elif" class="section">
+      <div class="section-header">
+        <div class="section-tag">Conceptos · 20 min</div>
+        <div class="section-title">elif — más de dos caminos posibles</div>
+        <div class="section-desc">Cuando hay más de dos posibilidades, <code>elif</code> (abreviatura de "else if") permite encadenar condiciones.</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Sintaxis con elif</div>
+        <div class="code-block"><span class="kw">if</span> condicion_1:
+    <span class="comment"># se ejecuta si condicion_1 es True</span>
+<span class="kw">elif</span> condicion_2:
+    <span class="comment"># se ejecuta si condicion_1 es False y condicion_2 es True</span>
+<span class="kw">elif</span> condicion_3:
+    <span class="comment"># se ejecuta si las anteriores son False y condicion_3 es True</span>
+<span class="kw">else</span>:
+    <span class="comment"># se ejecuta si ninguna condición anterior fue True</span></div>
+        <div class="card-body" style="font-size:13px;margin-top:10px">Python evalúa las condiciones <strong>de arriba hacia abajo</strong> y ejecuta solo el primer bloque verdadero. Una vez que encuentra uno, ignora el resto.</div>
+      </div>
+
+      <div class="card">
+        <div class="ex-header"><div class="ex-num">1</div><div class="ex-title">Clasificación de trámites por prioridad</div></div>
+        <div class="code-block">tipo_tramite = <span class="string">"urgente"</span>
+
+<span class="kw">if</span> tipo_tramite == <span class="string">"urgente"</span>:
+    <span class="kw">print</span>(<span class="string">"Prioridad ALTA — ventanilla preferencial."</span>)
+<span class="kw">elif</span> tipo_tramite == <span class="string">"normal"</span>:
+    <span class="kw">print</span>(<span class="string">"Prioridad NORMAL — espera estimada: 20 minutos."</span>)
+<span class="kw">elif</span> tipo_tramite == <span class="string">"informativo"</span>:
+    <span class="kw">print</span>(<span class="string">"Prioridad BAJA — puede realizarse online."</span>)
+<span class="kw">else</span>:
+    <span class="kw">print</span>(<span class="string">"Tipo de trámite no reconocido."</span>)
+
+<span class="output">Prioridad ALTA — ventanilla preferencial.</span></div>
+      </div>
+
+      <div class="card">
+        <div class="ex-header"><div class="ex-num">2</div><div class="ex-title">Cálculo de descuento por categoría</div></div>
+        <div class="card-body" style="font-size:13px;margin-bottom:10px">Un sistema de tasas municipales aplica descuentos según la categoría del contribuyente:</div>
+        <div class="code-block">categoria = <span class="string">"jubilado"</span>
+tasa_base = 5000
+
+<span class="kw">if</span> categoria == <span class="string">"jubilado"</span>:
+    descuento = 0.50
+<span class="kw">elif</span> categoria == <span class="string">"discapacidad"</span>:
+    descuento = 0.75
+<span class="kw">elif</span> categoria == <span class="string">"monotributista"</span>:
+    descuento = 0.20
+<span class="kw">else</span>:
+    descuento = 0.0
+
+monto_final = tasa_base * (1 - descuento)
+<span class="kw">print</span>(<span class="string">f"Categoría: {categoria}"</span>)
+<span class="kw">print</span>(<span class="string">f"Descuento aplicado: {int(descuento * 100)}%"</span>)
+<span class="kw">print</span>(<span class="string">f"Monto a pagar: ${monto_final}"</span>)
+
+<span class="output">Categoría: jubilado
+Descuento aplicado: 50%
+Monto a pagar: $2500.0</span></div>
+        <div class="tip">Probar con <code>categoria = "discapacidad"</code> y <code>categoria = "empresa"</code>. Observar cómo cambia el resultado sin tocar el resto del código.</div>
+      </div>
+
+      <div class="card">
+        <div class="ex-header"><div class="ex-num">3</div><div class="ex-title">Condicionales anidados</div></div>
+        <div class="card-body" style="font-size:13px;margin-bottom:10px">Un <code>if</code> puede contener otro <code>if</code> adentro:</div>
+        <div class="code-block">tiene_dni = <span class="kw">True</span>
+dni_vigente = <span class="kw">True</span>
+
+<span class="kw">if</span> tiene_dni:
+    <span class="kw">if</span> dni_vigente:
+        <span class="kw">print</span>(<span class="string">"Identidad verificada. Acceso permitido."</span>)
+    <span class="kw">else</span>:
+        <span class="kw">print</span>(<span class="string">"DNI vencido. Debe renovarlo en el Registro Civil."</span>)
+<span class="kw">else</span>:
+    <span class="kw">print</span>(<span class="string">"Sin documento de identidad. No se puede continuar."</span>)
+
+<span class="output">Identidad verificada. Acceso permitido.</span></div>
+        <div class="warn">Con los anidamientos es fácil perder la indentación. Si el código empieza a tener muchos niveles, conviene reescribirlo usando operadores lógicos (siguiente sección).</div>
+      </div>
+    </div>
+
+    <!-- OPERADORES LOGICOS -->
+    <div id="operadores" class="section">
+      <div class="section-header">
+        <div class="section-tag">Conceptos · 15 min</div>
+        <div class="section-title">Operadores lógicos: and, or, not</div>
+        <div class="section-desc">Permiten combinar varias condiciones en una sola expresión, haciendo el código más legible y menos anidado.</div>
+      </div>
+
+      <div class="grid-2">
+        <div class="layer-card">
+          <div class="layer-name">and</div>
+          <div class="layer-tech">ambas deben ser True</div>
+          <div class="layer-desc">El resultado es <code>True</code> solo si <strong>todas</strong> las condiciones son verdaderas.</div>
+          <div class="layer-example">True and True → True<br>True and False → False<br>False and True → False</div>
+        </div>
+        <div class="layer-card">
+          <div class="layer-name">or</div>
+          <div class="layer-tech">al menos una debe ser True</div>
+          <div class="layer-desc">El resultado es <code>True</code> si <strong>al menos una</strong> condición es verdadera.</div>
+          <div class="layer-example">True or False → True<br>False or True → True<br>False or False → False</div>
+        </div>
+        <div class="layer-card">
+          <div class="layer-name">not</div>
+          <div class="layer-tech">invierte el valor</div>
+          <div class="layer-desc">Devuelve el valor opuesto: convierte <code>True</code> en <code>False</code> y viceversa.</div>
+          <div class="layer-example">not True → False<br>not False → True</div>
+        </div>
+        <div class="layer-card">
+          <div class="layer-name">Orden de evaluación</div>
+          <div class="layer-tech">not → and → or</div>
+          <div class="layer-desc">Python evalúa primero <code>not</code>, luego <code>and</code> y finalmente <code>or</code>. Los paréntesis cambian el orden.</div>
+          <div class="layer-example">Usar paréntesis para dejar claro el orden cuando hay dudas.</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="ex-header"><div class="ex-num">1</div><div class="ex-title">and — reemplazando un if anidado</div></div>
+        <div class="code-block"><span class="comment"># Versión con anidamiento (más difícil de leer)</span>
+<span class="kw">if</span> tiene_dni:
+    <span class="kw">if</span> dni_vigente:
+        <span class="kw">print</span>(<span class="string">"Acceso permitido."</span>)
+
+<span class="comment"># Versión con and (más legible)</span>
+<span class="kw">if</span> tiene_dni <span class="kw">and</span> dni_vigente:
+    <span class="kw">print</span>(<span class="string">"Acceso permitido."</span>)</div>
+        <div class="tip">Ambas versiones hacen exactamente lo mismo. La segunda se entiende de una sola lectura.</div>
+      </div>
+
+      <div class="card">
+        <div class="ex-header"><div class="ex-num">2</div><div class="ex-title">or — múltiples condiciones habilitantes</div></div>
+        <div class="code-block">tipo_beneficio = <span class="string">"pensión"</span>
+
+<span class="kw">if</span> tipo_beneficio == <span class="string">"jubilación"</span> <span class="kw">or</span> tipo_beneficio == <span class="string">"pensión"</span>:
+    <span class="kw">print</span>(<span class="string">"Beneficiario ANSES — descuento del 50% aplicado."</span>)
+<span class="kw">else</span>:
+    <span class="kw">print</span>(<span class="string">"Sin descuento aplicable."</span>)
+
+<span class="output">Beneficiario ANSES — descuento del 50% aplicado.</span></div>
+      </div>
+
+      <div class="card">
+        <div class="ex-header"><div class="ex-num">3</div><div class="ex-title">Condición compleja real</div></div>
+        <div class="card-body" style="font-size:13px;margin-bottom:10px">Un sistema de AFIP habilita el plan de pagos si el contribuyente no tiene deuda previa <strong>y</strong> el monto supera cierto mínimo:</div>
+        <div class="code-block">deuda_anterior = 0
+monto_declarado = 85000
+monto_minimo_plan = 10000
+
+<span class="kw">if</span> deuda_anterior == 0 <span class="kw">and</span> monto_declarado &gt;= monto_minimo_plan:
+    <span class="kw">print</span>(<span class="string">"Habilitado para plan de pagos en hasta 12 cuotas."</span>)
+<span class="kw">elif</span> deuda_anterior &gt; 0:
+    <span class="kw">print</span>(<span class="string">"No habilitado: regularizar deuda anterior primero."</span>)
+<span class="kw">else</span>:
+    <span class="kw">print</span>(<span class="string">"Monto insuficiente para plan de pagos."</span>)
+
+<span class="output">Habilitado para plan de pagos en hasta 12 cuotas.</span></div>
+      </div>
+    </div>
+
+    <!-- PRACTICA -->
+    <div id="practica" class="section">
+      <div class="section-header">
+        <div class="section-tag">Práctica guiada · 25 min</div>
+        <div class="section-title">Construyendo el módulo de validación de turnos</div>
+        <div class="section-desc">Vamos a crear un archivo real que simula la lógica de validación de un ciudadano para solicitar turno. Todo lo de hoy aplicado en conjunto.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Crear el archivo <code>validacion_turno.py</code></div>
+        <div class="tip">Abrir la carpeta <code>sistema-turnos</code> que creamos en la Clase 1. Crear un nuevo archivo con este nombre.</div>
+      </div>
+
+      <div class="card">
+        <div class="ex-header"><div class="ex-num">1</div><div class="ex-title">Parte 1 — Datos del ciudadano</div></div>
+        <div class="code-block"><span class="comment"># Sistema de Gestión de Turnos - Módulo de Validación
+# Semana 1 · Clase 3</span>
+
+nombre = <span class="string">"Lucía Ramírez"</span>
+dni = 40123456
+edad = 72
+tiene_cobertura = <span class="kw">True</span>
+deuda_pendiente = 0
+tipo_tramite = <span class="string">"médico"</span>
+turnos_disponibles = 8
+
+<span class="kw">print</span>(<span class="string">"=" * 48</span>)
+<span class="kw">print</span>(<span class="string">f"  Validación de turno — {nombre}"</span>)
+<span class="kw">print</span>(<span class="string">"=" * 48</span>)</div>
+      </div>
+
+      <div class="card">
+        <div class="ex-header"><div class="ex-num">2</div><div class="ex-title">Parte 2 — Validaciones en orden</div></div>
+        <div class="code-block"><span class="comment"># 1. Verificar disponibilidad</span>
+<span class="kw">if</span> turnos_disponibles == 0:
+    <span class="kw">print</span>(<span class="string">"Sin turnos disponibles hoy. Intente mañana."</span>)
+<span class="kw">else</span>:
+    <span class="kw">print</span>(<span class="string">f"Turnos disponibles: {turnos_disponibles}"</span>)
+
+<span class="comment"># 2. Verificar cobertura</span>
+<span class="kw">if</span> tiene_cobertura:
+    <span class="kw">print</span>(<span class="string">"Cobertura activa"</span>)
+<span class="kw">else</span>:
+    <span class="kw">print</span>(<span class="string">"Sin cobertura — regularizar antes de continuar."</span>)
+
+<span class="comment"># 3. Verificar deuda</span>
+<span class="kw">if</span> deuda_pendiente &gt; 0:
+    <span class="kw">print</span>(<span class="string">f"Deuda pendiente: ${deuda_pendiente}"</span>)
+<span class="kw">else</span>:
+    <span class="kw">print</span>(<span class="string">"Sin deuda pendiente"</span>)</div>
+      </div>
+
+      <div class="card">
+        <div class="ex-header"><div class="ex-num">3</div><div class="ex-title">Parte 3 — Decisión final y prioridad</div></div>
+        <div class="code-block"><span class="comment"># 4. Prioridad por edad</span>
+<span class="kw">if</span> edad &gt;= 60:
+    prioridad = <span class="string">"PREFERENCIAL"</span>
+<span class="kw">elif</span> edad &gt;= 18:
+    prioridad = <span class="string">"NORMAL"</span>
+<span class="kw">else</span>:
+    prioridad = <span class="string">"MENOR — requiere adulto acompañante"</span>
+
+<span class="kw">print</span>(<span class="string">f"Prioridad asignada: {prioridad}"</span>)
+
+<span class="comment"># 5. Decisión final</span>
+<span class="kw">print</span>(<span class="string">"=" * 48</span>)
+<span class="kw">if</span> tiene_cobertura <span class="kw">and</span> turnos_disponibles &gt; 0:
+    <span class="kw">print</span>(<span class="string">f"TURNO HABILITADO — Prioridad {prioridad}"</span>)
+    <span class="kw">print</span>(<span class="string">f"Trámite: {tipo_tramite}"</span>)
+    <span class="kw">print</span>(<span class="string">f"Presentarse con DNI {dni}"</span>)
+<span class="kw">else</span>:
+    <span class="kw">print</span>(<span class="string">"TURNO NO DISPONIBLE — Ver detalle arriba."</span>)
+<span class="kw">print</span>(<span class="string">"=" * 48</span>)</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Salida esperada</div>
+        <div class="code-block"><span class="output">================================================
+  Validación de turno — Lucía Ramírez
+================================================
+Turnos disponibles: 8
+Cobertura activa
+Sin deuda pendiente
+Prioridad asignada: PREFERENCIAL
+================================================
+TURNO HABILITADO — Prioridad PREFERENCIAL
+Trámite: médico
+Presentarse con DNI 40123456
+================================================</span></div>
+      </div>
+    </div>
+
+    <!-- CIERRE -->
+    <div id="cierre" class="section">
+      <div class="section-header">
+        <div class="section-tag">Actividad · 15 min</div>
+        <div class="section-title">Desafío: extender el validador</div>
+        <div class="section-desc">Aplicar lo aprendido modificando el programa para que maneje casos adicionales.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Desafío 1 — Nivel básico</div>
+        <div class="card-body">Modificar <code>validacion_turno.py</code> para agregar una nueva validación: si el tipo de trámite es <code>"documentación"</code>, mostrar el mensaje <em>"Recuerde traer fotocopias de todos los documentos requeridos."</em></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Desafío 2 — Nivel intermedio</div>
+        <div class="card-body">Agregar una variable <code>hora_actual</code> con un valor entre 0 y 23. El sistema solo acepta turnos entre las 8 y las 17 horas. Si está fuera de ese rango, mostrar <em>"Fuera del horario de atención"</em> sin continuar con las validaciones.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Desafío 3 — Nivel avanzado</div>
+        <div class="card-body">Crear un nuevo archivo <code>calculadora_multa.py</code>. AFIP aplica recargos progresivos según los días de mora:</div>
+        <div style="margin-top:12px">
+          <span class="pill pill-success">0 días → sin recargo</span>
+          <span class="pill pill-warn">1–30 días → 10%</span>
+          <span class="pill pill-warn">31–90 días → 25%</span>
+          <span class="pill pill-info">más de 90 días → 50% + notificación</span>
+        </div>
+        <div class="card-body" style="margin-top:12px">Definir una deuda y los días de mora, calcular el recargo correspondiente e imprimir el monto final con un mensaje acorde a cada caso.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Para la próxima clase — Bucles (for, while)</div>
+        <div class="card-body">La Clase 4 introduce los bucles: permiten repetir instrucciones sin copiar y pegar código. El validador de hoy tendrá que procesar decenas de ciudadanos, no uno solo. Ahí entra el <code>for</code>.</div>
+        <div style="margin-top:12px">
+          <span class="pill pill-success">validacion_turno.py ✓</span>
+          <span class="pill pill-info">Desafíos opcionales completados</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ERRORES FRECUENTES -->
+    <div id="errores" class="section">
+      <div class="section-header">
+        <div class="section-tag">Referencia</div>
+        <div class="section-title">Errores frecuentes en condicionales</div>
+        <div class="section-desc">Los errores más comunes al trabajar con estructuras condicionales y cómo resolverlos.</div>
+      </div>
+      <div class="card">
+        <div class="trouble-item">
+          <div class="trouble-q">IndentationError: expected an indented block</div>
+          <div class="trouble-a">Falta la indentación de 4 espacios después del <code>if</code> o el <code>else</code>. En Python la indentación no es opcional: define la estructura del código. VS Code la agrega automáticamente si se escriben los dos puntos y se presiona Enter.</div>
+        </div>
+        <div class="divider"></div>
+        <div class="trouble-item">
+          <div class="trouble-q">SyntaxError al usar = en vez de == dentro del if</div>
+          <div class="trouble-a"><code>if estado = "activo":</code> es un error de sintaxis. Para comparar siempre se usa <code>==</code>. El operador <code>=</code> solo sirve para asignar valores a variables.</div>
+        </div>
+        <div class="divider"></div>
+        <div class="trouble-item">
+          <div class="trouble-q">El else nunca se ejecuta aunque la condición debería ser False</div>
+          <div class="trouble-a">Verificar que el <code>else</code> esté al mismo nivel de indentación que el <code>if</code> al que pertenece. Si está más adentro, Python lo interpreta como parte de otro bloque.</div>
+        </div>
+        <div class="divider"></div>
+        <div class="trouble-item">
+          <div class="trouble-q">La condición siempre es True aunque el dato cambia</div>
+          <div class="trouble-a">Revisar si se compara el valor correcto. <code>if nombre == "ana":</code> no es True si <code>nombre = "Ana"</code> — Python distingue mayúsculas. Usar <code>nombre.lower() == "ana"</code> para comparar sin importar el caso.</div>
+        </div>
+        <div class="divider"></div>
+        <div class="trouble-item">
+          <div class="trouble-q">TypeError al comparar tipos incompatibles</div>
+          <div class="trouble-a"><code>if edad > "18":</code> da error porque compara un número con un texto. Asegurarse de que ambos lados de la comparación sean del mismo tipo. Si viene de input del usuario, convertir con <code>int()</code>.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RECURSOS -->
+    <div id="recursos" class="section">
+      <div class="section-header">
+        <div class="section-tag">Referencia</div>
+        <div class="section-title">Recursos adicionales</div>
+        <div class="section-desc">Documentación y materiales para profundizar los conceptos de esta clase.</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Para esta semana</div>
+        <div class="install-row">
+          <div style="flex:1">
+            <div class="install-name">Documentación oficial — Control de flujo en Python</div>
+            <div class="install-desc">Sección del tutorial oficial que cubre if, elif y else con ejemplos.</div>
+            <div class="install-cmd">docs.python.org/es/3/tutorial/controlflow.html</div>
+          </div>
+        </div>
+        <div class="install-row">
+          <div style="flex:1">
+            <div class="install-name">Python Tutor — Visualizador de ejecución paso a paso</div>
+            <div class="install-desc">Permite ver cómo Python recorre cada línea de los condicionales. Muy útil para entender el flujo de ejecución.</div>
+            <div class="install-cmd">pythontutor.com</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Archivos de esta clase</div>
+        <div class="install-row">
+          <div style="flex:1">
+            <div class="install-name">validacion_turno.py</div>
+            <div class="install-desc">El programa principal desarrollado en la práctica guiada. Punto de partida para los desafíos.</div>
+          </div>
+        </div>
+        <div class="install-row">
+          <div style="flex:1">
+            <div class="install-name">calculadora_multa.py</div>
+            <div class="install-desc">Archivo del Desafío 3, a crear desde cero. Usa condicionales con rangos numéricos y recargos progresivos.</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Checklist para la Clase 4</div>
+        <div class="card-body">La próxima clase introduce <code>for</code> y <code>while</code>. Los condicionales de hoy van a aparecer dentro de esos bucles. Conviene llegar con el validador funcionando y los desafíos intentados.</div>
+        <div style="margin-top:12px">
+          <span class="pill pill-success">if / else ✓</span>
+          <span class="pill pill-success">elif ✓</span>
+          <span class="pill pill-success">and / or / not ✓</span>
+          <span class="pill pill-info">Bucles → Clase 4</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+function show(id, el) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  el.classList.add('active');
+  document.querySelector('.main').scrollTop = 0;
+}
+</script>
+</body>
+</html>
